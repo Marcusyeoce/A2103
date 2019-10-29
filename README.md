@@ -1,8 +1,7 @@
-# A2103
-A++++++++++ only
-Week 11- intialize all entities & session beans
-Week 12- settle all the logic etc
-Week 13- presentation tier
+Group Member 1: Hendrick Ling Heng Jie
+Matriculation number: A0188337R
+Email: hendrick.ling@u.nus.edu
 
--Macus & Hendrick
-A+ for this mod
+Group Member 2: Yeo Chong Ern, Marcus
+Matriculation number: A0183414J
+Email: e0310209@u.nus.edu
