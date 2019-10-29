@@ -1,0 +1,47 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# User defined
+nbproject/private/
+build/
+dist/
+CaRMSManagementSystem-ejb/nbproject/private/
+CaRMSManagementSystem-ejb/build/
+CaRMSManagementSystem-ejb/dist/
+
+CaRMSManagementSystem-war/nbproject/private/
+CaRMSManagementSystem-war/build/
+CaRMSManagementSystem-war/dist/
+
+CaRMSManagementClient/nbproject/private/
+CaRMSManagementClient/build/
+CaRMSManagementClient/dist/
+
+CaRMSReservationClient/nbproject/private/
+CaRMSReservationClient/build/
+CaRMSReservationClient/dist/
+
+CaRMSManagementSystemtLibrary/nbproject/private/
+CaRMSManagementSystemtLibrary/build/
+CaRMSManagementSystemtLibrary/dist/
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
