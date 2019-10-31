@@ -1,6 +1,7 @@
 package Entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,23 +15,83 @@ public class CustomerEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
     
-    private String name;
+    @Column(length = 32, nullable = false)
+    private String firstName;
+    @Column(length = 32, nullable = false)
+    private String lastName;
+    //what to put??
+    private long mobileNum;
+    @Column(length = 32, nullable = false)
+    private String email;
+    @Column(length = 32, nullable = false)
+    private String passportNum;
+    @Column(length = 32, nullable = false)
+    private String password;
+    
 
     public CustomerEntity() {
+    
     }
 
-    public CustomerEntity(String name) {
-        this();
-        this.name = name;
+    public CustomerEntity(String firstName, String lastName, long mobileNum, String email, String passportNum, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mobileNum = mobileNum;
+        this.email = email;
+        this.passportNum = passportNum;
+        this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public long getMobileNum() {
+        return mobileNum;
+    }
+
+    public void setMobileNum(long mobileNum) {
+        this.mobileNum = mobileNum;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassportNum() {
+        return passportNum;
+    }
+
+    public void setPassportNum(String passportNum) {
+        this.passportNum = passportNum;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    
+    
 
     public Long getCustomerId() {
         return customerId;
