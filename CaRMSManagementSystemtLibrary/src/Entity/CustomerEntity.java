@@ -19,18 +19,17 @@ public class CustomerEntity implements Serializable {
     private String firstName;
     @Column(length = 32, nullable = false)
     private String lastName;
-    //what to put??
+    @Column(nullable = false, unique = true)
     private long mobileNum;
-    @Column(length = 32, nullable = false)
+    @Column(length = 32, nullable = false, unique = true)
     private String email;
-    @Column(length = 32, nullable = false)
+    @Column(length = 32, nullable = false, unique = true)
     private String passportNum;
     @Column(length = 32, nullable = false)
     private String password;
     
 
     public CustomerEntity() {
-    
     }
 
     public CustomerEntity(String firstName, String lastName, long mobileNum, String email, String passportNum, String password) {
