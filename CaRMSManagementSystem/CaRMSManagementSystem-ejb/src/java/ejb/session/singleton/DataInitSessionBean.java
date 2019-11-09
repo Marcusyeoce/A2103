@@ -7,6 +7,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.enumeration.AccessRightEnum;
 
 @Singleton
 @LocalBean
@@ -25,7 +26,7 @@ public class DataInitSessionBean {
 
     private void initData() {
         
-        EmployeeEntity employeeEntity = new EmployeeEntity("System Admin", "admin", "password", 0);
+        EmployeeEntity employeeEntity = new EmployeeEntity("Admin","System", "admin", "password", AccessRightEnum.ADMINISTRATOR);
         
         em.persist(employeeEntity);
         em.flush();

@@ -1,10 +1,14 @@
 package Entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class CarEntity implements Serializable {
@@ -13,7 +17,8 @@ public class CarEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long carId;
-    
+    @Column(nullable = false, unique = true, length = 10)
+    @NotNull
     private String licensePlateNumber;
     
     private String color;
@@ -21,6 +26,10 @@ public class CarEntity implements Serializable {
     private String status; //???
     
     private String location; //???
+    
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = false)
+    private ModelEntity modelEntity;
 
     public Long getCarId() {
         return carId;

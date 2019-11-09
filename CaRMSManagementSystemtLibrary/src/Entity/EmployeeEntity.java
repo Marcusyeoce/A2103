@@ -1,11 +1,17 @@
 package Entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import util.enumeration.AccessRightEnum;
 
 @Entity
 public class EmployeeEntity implements Serializable {
@@ -14,10 +20,24 @@ public class EmployeeEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
-    private String employeeName;
+    @Column(nullable = false, length = 32)
+    @NotNull
+    private String firstName;
+    @Column(nullable = false, length = 32)
+    @NotNull
+    private String lastName;
+    @Column(nullable = false, unique = true, length = 32)
+    @NotNull
+    @Size(min = 4, max = 32)
     private String username;
+    @Column(nullable = false, length = 32)
+    @NotNull
+    @Size(min = 4, max = 32)
     private String password;
-    private int role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @NotNull
+    private AccessRightEnum accessRightEnum;
     
     @ManyToOne(optional = true) //change to false
     //@JoinColumn(nullable = false)
@@ -26,11 +46,12 @@ public class EmployeeEntity implements Serializable {
     public EmployeeEntity() {
     }
 
-    public EmployeeEntity(String employeeName, String username, String password, int role) {
-        this.employeeName = employeeName;
+    public EmployeeEntity(String firstName, String lastName, String username, String password, AccessRightEnum accessRightEnum) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.accessRightEnum = accessRightEnum;
     }
 
     public Long getEmployeeId() {
@@ -41,14 +62,22 @@ public class EmployeeEntity implements Serializable {
         this.employeeId = employeeId;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    
     public String getUsername() {
         return username;
     }
@@ -65,12 +94,12 @@ public class EmployeeEntity implements Serializable {
         this.password = password;
     }
 
-    public int getRole() {
-        return role;
+    public AccessRightEnum getAccessRightEnum() {
+        return accessRightEnum;
     }
-    
-    public void setRole(int role) {
-        this.role = role;
+
+    public void setAccessRightEnum(AccessRightEnum accessRightEnum) {
+        this.accessRightEnum = accessRightEnum;
     }
 
     @Override
