@@ -2,10 +2,13 @@ package Entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 
 @Entity
@@ -15,9 +18,24 @@ public class OutletEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long outletId;
+    private String outletName;
     private String address;
-    private Date openingTime;
-    private Date closingTime;
+    private Date openingHour;
+    private Date closingHour;
+    
+    @OneToMany(mappedBy = "outletEntity")
+    private List<EmployeeEntity> employeeEntities;
+
+    public OutletEntity() {
+    }
+
+    public OutletEntity(String outletName, String address, Date openingTime, Date closingTime) {
+        this();
+        this.outletName = outletName;
+        this.address = address;
+        this.openingHour = openingTime;
+        this.closingHour = closingTime;
+    }
 
     public Long getOutletId() {
         return outletId;
@@ -25,6 +43,38 @@ public class OutletEntity implements Serializable {
 
     public void setOutletId(Long outletId) {
         this.outletId = outletId;
+    }
+
+    public String getOutletName() {
+        return outletName;
+    }
+
+    public void setOutletName(String outletName) {
+        this.outletName = outletName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Date getOpeningHour() {
+        return openingHour;
+    }
+
+    public void setOpeningHour(Date openingHour) {
+        this.openingHour = openingHour;
+    }
+
+    public Date getClosingHour() {
+        return closingHour;
+    }
+
+    public void setClosingHour(Date closingHour) {
+        this.closingHour = closingHour;
     }
 
     @Override
@@ -51,5 +101,4 @@ public class OutletEntity implements Serializable {
     public String toString() {
         return "Entity.OutletEntity[ id=" + outletId + " ]";
     }
-    
 }

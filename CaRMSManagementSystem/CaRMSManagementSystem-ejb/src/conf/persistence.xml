@@ -6,6 +6,7 @@
     <class>Entity.CarEntity</class>
     <class>Entity.EmployeeEntity</class>
     <class>Entity.OutletEntity</class>
+    <class>Entity.CategoryEntity</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
