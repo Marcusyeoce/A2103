@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import Entity.EmployeeEntity;
+import util.exception.InvalidLoginCredentialException;
 
 public interface EmployeeSessionBeanRemote {
     
@@ -16,5 +17,7 @@ public interface EmployeeSessionBeanRemote {
     public void updateEmployeeEntity(EmployeeEntity employeeEntity);
 
     public void deleteEmployeeEntity(Long employeeId);
+    
+    public EmployeeEntity employeeLogin(String username, String password) throws InvalidLoginCredentialException;
     
 }

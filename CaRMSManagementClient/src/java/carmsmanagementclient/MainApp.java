@@ -1,19 +1,22 @@
 package carmsmanagementclient;
 
 import ejb.session.stateless.CustomerSessionBeanRemote;
+import ejb.session.stateless.EmployeeSessionBeanRemote;
 import java.util.Scanner;
 import util.exception.InvalidLoginCredentialException;
 
 public class MainApp {
     
-    private CustomerSessionBeanRemote customerSessionBeanRemote;
+    private static EmployeeSessionBeanRemote employeeSessionBean;
+    
+    
     
     public MainApp()
     {
     }
     
-    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote) {
-        this.customerSessionBeanRemote = customerSessionBeanRemote;
+    public MainApp(EmployeeSessionBeanRemote employeeSessionBean) {
+        this.employeeSessionBean = employeeSessionBean;
     }
     
     public void runApp()
@@ -28,7 +31,7 @@ public class MainApp {
             System.out.println("***Welcome To CaRMS Management System***");
             System.out.println("1: Login as System Admin");
             System.out.println("2: Login as employee");
-            System.out.println("3: Logout\n");
+            System.out.println("3: Exit\n");
             
             response = 0;
                 
@@ -50,11 +53,11 @@ public class MainApp {
                     try {
                         int employeeRole = loginAsEmployee();
                         if (employeeRole == 1) { 
-                            mainMenuEmployee();
+                            mainMenuSalesManager();
                         } else if (employeeRole == 2) {
-                            mainMenuEmployee();
+                            mainMenuOperationsManager();
                         } else {
-                            mainMenuEmployee();
+                            mainMenuCustomerRelastions();
                         }
                     } catch(InvalidLoginCredentialException ex) {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
@@ -80,10 +83,13 @@ public class MainApp {
         System.out.print("Enter username> ");
         String username = scanner.nextLine().trim();
         System.out.print("Enter password> ");
-        String password = scanner.nextLine().trim();
+        String password = scanner.nextLine().trim();  
         
-        System.out.println();
-        
+        if (username.length() > 0 && password.length() > 0) {
+            employeeSessionBean.employeeLogin(username, password);
+        } else {
+            throw new InvalidLoginCredentialException("Missing login credentials!");
+        }
     }
 
     private int loginAsEmployee() throws InvalidLoginCredentialException {
@@ -269,5 +275,131 @@ public class MainApp {
             }
         }
         
+    }
+
+    private void mainMenuSalesManager() {
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while(true)
+        {
+            System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
+            System.out.println("You are logged in as Employee\n");
+            System.out.println("1: ");
+            System.out.println("2: Create new employee");
+            System.out.println("3: Create new partner");
+            System.out.println("4: Create new category");
+            System.out.println("5: Logout");
+            response = 0;
+            
+            while(response < 1 || response > 3)
+            {
+            
+                System.out.print("> ");
+                
+                response = scanner.nextInt();
+                
+                if (response == 1) {
+                    createNewOutlet();
+                } else if (response == 2) {
+                    createNewEmployee();
+                } else if (response == 3) {
+                    createNewPartner();
+                } else if (response == 4) {
+                    createNewCategory();
+                } else if (response == 5) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+            if (response == 5) {
+                break;
+            }
+        }
+    }
+
+    private void mainMenuOperationsManager() {
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while(true)
+        {
+            System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
+            System.out.println("You are logged in as Employee\n");
+            System.out.println("1: ");
+            System.out.println("2: Create new employee");
+            System.out.println("3: Create new partner");
+            System.out.println("4: Create new category");
+            System.out.println("5: Logout");
+            response = 0;
+            
+            while(response < 1 || response > 3)
+            {
+            
+                System.out.print("> ");
+                
+                response = scanner.nextInt();
+                
+                if (response == 1) {
+                    createNewOutlet();
+                } else if (response == 2) {
+                    createNewEmployee();
+                } else if (response == 3) {
+                    createNewPartner();
+                } else if (response == 4) {
+                    createNewCategory();
+                } else if (response == 5) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+            if (response == 5) {
+                break;
+            }
+        }
+    }
+
+    private void mainMenuCustomerRelastions() {
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while(true)
+        {
+            System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
+            System.out.println("You are logged in as Employee\n");
+            System.out.println("1: ");
+            System.out.println("2: Create new employee");
+            System.out.println("3: Create new partner");
+            System.out.println("4: Create new category");
+            System.out.println("5: Logout");
+            response = 0;
+            
+            while(response < 1 || response > 3)
+            {
+            
+                System.out.print("> ");
+                
+                response = scanner.nextInt();
+                
+                if (response == 1) {
+                    createNewOutlet();
+                } else if (response == 2) {
+                    createNewEmployee();
+                } else if (response == 3) {
+                    createNewPartner();
+                } else if (response == 4) {
+                    createNewCategory();
+                } else if (response == 5) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+            if (response == 5) {
+                break;
+            }
+        }
     }
 }
