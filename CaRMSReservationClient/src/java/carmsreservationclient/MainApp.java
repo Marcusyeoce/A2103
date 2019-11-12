@@ -1,20 +1,30 @@
 package carmsreservationclient;
 
+import Entity.CarEntity;
+import Entity.CategoryEntity;
 import Entity.CustomerEntity;
+import Entity.ModelEntity;
+import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
+import ejb.session.stateless.ModelSessionBeanRemote;
+import java.util.List;
 import java.util.Scanner;
 import util.exception.InvalidLoginCredentialException;
 
 public class MainApp {
     
     private CustomerSessionBeanRemote customerSessionBeanRemote;
+    private ModelSessionBeanRemote modelSessionBeanRemote;
+    
     private CustomerEntity currentCustomerEntity;
-
+    
+    
     public MainApp() {
     }
 
-    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote) {
+    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote) {
         this.customerSessionBeanRemote = customerSessionBeanRemote;
+        this.modelSessionBeanRemote = modelSessionBeanRemote;
     }
     
     public void runApp()
@@ -52,7 +62,7 @@ public class MainApp {
                     }
                 }
                 else if (response == 3) {
-                    searchCar();
+                    //searchCar();
                 } 
                 else if (response == 4) {
                     break;
@@ -65,8 +75,6 @@ public class MainApp {
                     break;
             }
         }
-        
-        
     }
     
     public void createNewCustomer() {
@@ -121,16 +129,22 @@ public class MainApp {
         }
     }
 
-    private void searchCar() {
+    /* private List<CarEntity> searchCar() {
         Scanner sc = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Search car\n***");
         System.out.println("Enter car model> ");
         String model = sc.nextLine();
         System.out.println("Enter car manufacturer> ");
-        String manufacturer = sc.nextLine();
+        String make = sc.nextLine();
         
-        System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate", "Location", "");
-    }
+        ModelEntity modelEntity = modelSessionBeanRemote.retrieveModelEntityByModelAndMake(model, make);
+        
+         for (CarEntity car: modelEntity.getCars()) {
+            System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate", "Location", "");
+        }
+        
+        return searchedCars; 
+    } */
 
     private void mainMenu() {
         Scanner scanner = new Scanner(System.in);
@@ -177,7 +191,29 @@ public class MainApp {
     
     private void reserveCar() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Reserve Car**\n*");
+        Integer response = 0;
+        
+        System.out.println("\n***Welcome To CaRMS Reservation System :: Reserve Car***\n");
+        
+        System.out.println("1. Search For Car By Model And Make");
+        System.out.println("2. Pick a Particular Category");
+        response = 0;
+            
+            while(response < 1 || response > 2) {
+                if (response == 1) {
+                    //List<CarEntity> cars = searchCar();
+                    System.out.println("Invalid option, please try again!\n");
+                    int carOption = sc.nextInt();
+                    //makeReservationModel();
+                } else if (response == 2) {
+                    //makeReservationCategory();
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }   
+    }
+    
+    private void makeReservationModel(Long modelId) {    
     }
 
     private void cancelReservation() {

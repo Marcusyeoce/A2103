@@ -5,16 +5,13 @@
  */
 package ejb.session.stateless;
 
-import Entity.ModelEntity;
 import javax.ejb.Local;
 
 /**
  *
- * @author user
+ * @author Marcusyeoce
  */
 @Local
-public interface ModelSessionBeanLocal {
-
-    public ModelEntity retrieveModelEntityByModelAndMake(String model, String make);
+public interface EjbTimerSessionBeanLocal {
     
 }

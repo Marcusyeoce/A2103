@@ -24,15 +24,14 @@ public class ModelEntity implements Serializable {
     @Column(nullable = false, unique = true)
     private String model;
     
-    @OneToMany(mappedBy = "modelEntity")
-    private List<CarEntity> carList;
-    
-    @ManyToOne(optional = true)
-    @JoinColumn(nullable = false)
+    @OneToMany//(mappedBy = "modelEntity")
+    private List<CarEntity> cars;
+    @ManyToOne//(optional = true)
+    @JoinColumn//(nullable = false)
     private CategoryEntity categoryEntity;
 
     public ModelEntity() {
-        carList = new ArrayList<>();
+        cars = new ArrayList<>();
     }
 
     public ModelEntity(String make, String model) {
@@ -56,6 +55,14 @@ public class ModelEntity implements Serializable {
     public void setModel(String model) {
         this.model = model;
     }
+    
+    public List<CarEntity> getCars() {
+       return cars;
+    }
+
+    public void setCars(List<CarEntity> cars) {
+        this.cars = cars;
+    }
 
     public CategoryEntity getCategoryEntity() {
         return categoryEntity;
@@ -64,8 +71,6 @@ public class ModelEntity implements Serializable {
     public void setCategoryEntity(CategoryEntity categoryEntity) {
         this.categoryEntity = categoryEntity;
     }
-    
-    
 
     public Long getModelId() {
         return modelId;
@@ -99,5 +104,4 @@ public class ModelEntity implements Serializable {
     public String toString() {
         return "Entity.ModelEntity[ id=" + modelId + " ]";
     }
-    
 }

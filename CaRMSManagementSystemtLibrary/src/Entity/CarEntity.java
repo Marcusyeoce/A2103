@@ -23,14 +23,13 @@ public class CarEntity implements Serializable {
     @Column(nullable = false, length = 32)
     @NotNull
     private String color;
+    private boolean isAvailable; //status    
     
-    private String status; //???
-    
-    private String location; //???
-    
-    @ManyToOne(optional = true)
-    @JoinColumn(nullable = false)
+    @ManyToOne//(optional = true)
+    //@JoinColumn(nullable = false)
     private ModelEntity modelEntity;
+    @ManyToOne
+    private OutletEntity outlet; //location
 
     public CarEntity() {
     }

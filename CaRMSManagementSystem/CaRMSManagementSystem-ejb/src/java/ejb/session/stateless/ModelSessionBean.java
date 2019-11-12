@@ -1,5 +1,6 @@
 package ejb.session.stateless;
 
+import Entity.CategoryEntity;
 import Entity.ModelEntity;
 import java.util.Set;
 import javax.ejb.Local;
@@ -8,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -68,6 +70,18 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
                 throw new UnknownPersistenceException(ex.getMessage());
             }
         }
+    }
+    
+    @Override
+    public ModelEntity retrieveModelEntityByModelAndMake(String model, String make) {
+        
+        Query query = em.createQuery("SELECT m FROM ModelEntity m WHERE m.model = :inModel AND m.make = :inMake");
+        query.setParameter("inModel", model);
+        query.setParameter("inMake", make);
+        
+        ModelEntity modelEntity = (ModelEntity) query.getSingleResult();
+        
+        return modelEntity;
     }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<ModelEntity>>constraintViolations)

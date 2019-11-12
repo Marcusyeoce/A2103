@@ -1,6 +1,9 @@
 package ejb.session.stateless;
 
 import Entity.CarEntity;
+import Entity.ModelEntity;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -8,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -33,6 +37,7 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         validator = validatorFactory.getValidator();
     }
 
+    @Override
     public CarEntity createNewCar(CarEntity newCar) throws CarExistException, InputDataValidationException, UnknownPersistenceException {
         try
         {

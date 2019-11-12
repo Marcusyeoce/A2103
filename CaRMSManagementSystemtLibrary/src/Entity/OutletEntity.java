@@ -36,7 +36,7 @@ public class OutletEntity implements Serializable {
     @NotNull
     private String closingHour;
     
-    @OneToMany(mappedBy = "outletEntity")
+    @OneToMany//(mappedBy = "outletEntity")
     private List<EmployeeEntity> employeeEntities;
 
     public OutletEntity() {

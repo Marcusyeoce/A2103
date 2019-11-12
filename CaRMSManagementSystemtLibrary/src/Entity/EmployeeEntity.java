@@ -1,6 +1,7 @@
 package Entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import util.enumeration.AccessRightEnum;
@@ -39,9 +41,11 @@ public class EmployeeEntity implements Serializable {
     @NotNull
     private AccessRightEnum accessRightEnum;
     
-    @ManyToOne(optional = true) //change to false
+    @ManyToOne//(optional = false) 
     //@JoinColumn(nullable = false)
     private OutletEntity outletEntity;
+    @OneToMany
+    private List<TransitDispatchRecordEntity> transitDispatchRecords;
 
     public EmployeeEntity() {
     }

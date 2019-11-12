@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import Entity.ModelEntity;
 import javax.ejb.Remote;
 
 /**
@@ -13,5 +14,7 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface ModelSessionBeanRemote {
+    
+    public ModelEntity retrieveModelEntityByModelAndMake(String model, String make);
     
 }

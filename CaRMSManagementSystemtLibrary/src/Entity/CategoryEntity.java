@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -24,7 +21,14 @@ public class CategoryEntity implements Serializable {
     private Long categoryId;   
     private String categoryName;
     private int capacity; 
-
+    
+    @OneToMany
+    private List<ModelEntity> models;
+    @OneToMany
+    private List<RentalRateEntity> rentalRates;
+    @OneToMany
+    private List<ReservationEntity> reservations;
+    
     public CategoryEntity() {
     }
     
