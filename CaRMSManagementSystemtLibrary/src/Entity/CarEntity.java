@@ -32,6 +32,42 @@ public class CarEntity implements Serializable {
     @JoinColumn(nullable = false)
     private ModelEntity modelEntity;
 
+    public CarEntity() {
+    }
+
+    public CarEntity(String licensePlateNumber, String color, ModelEntity modelEntity) {
+        this();
+        this.licensePlateNumber = licensePlateNumber;
+        this.color = color;
+        this.modelEntity = modelEntity;
+    }
+
+    public String getLicensePlateNumber() {
+        return licensePlateNumber;
+    }
+
+    public void setLicensePlateNumber(String licensePlateNumber) {
+        this.licensePlateNumber = licensePlateNumber;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public ModelEntity getModelEntity() {
+        return modelEntity;
+    }
+
+    public void setModelEntity(ModelEntity modelEntity) {
+        this.modelEntity = modelEntity;
+    }
+    
+    
+
     public Long getCarId() {
         return carId;
     }

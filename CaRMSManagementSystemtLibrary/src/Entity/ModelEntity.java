@@ -21,7 +21,7 @@ public class ModelEntity implements Serializable {
     private Long modelId;
     @Column(nullable = false)
     private String make;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String model;
     
     @OneToMany(mappedBy = "modelEntity")
@@ -36,9 +36,36 @@ public class ModelEntity implements Serializable {
     }
 
     public ModelEntity(String make, String model) {
+        this();
         this.make = make;
         this.model = model;
     }
+
+    public String getMake() {
+        return make;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public CategoryEntity getCategoryEntity() {
+        return categoryEntity;
+    }
+
+    public void setCategoryEntity(CategoryEntity categoryEntity) {
+        this.categoryEntity = categoryEntity;
+    }
+    
+    
 
     public Long getModelId() {
         return modelId;
