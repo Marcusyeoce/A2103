@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class CustomerEntity implements Serializable {
@@ -30,10 +29,11 @@ public class CustomerEntity implements Serializable {
     @Column(length = 32, nullable = false)
     private String password;
     
-    @OneToMany
+    //@OneToMany()
     private List<ReservationEntity> reservations;
     //@ManyToOne
-    //private List<PartnerEntity> partner;
+    private List<PartnerEntity> partner;
+    
 
     public CustomerEntity() {
     }

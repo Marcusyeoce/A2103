@@ -1,6 +1,5 @@
 package Entity;
 
-import Entity.RentalDayEntity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -8,14 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-/**
- *
- * @author Marcusyeoce
- */
+
 @Entity
 public class ReservationEntity implements Serializable {
 
@@ -32,6 +29,7 @@ public class ReservationEntity implements Serializable {
     private int status; //0 for reserved, 1 for cancelled, 2 for success(car returned)
     
     @ManyToOne
+    @JoinColumn
     private CustomerEntity customer;
     @ManyToOne
     private PartnerEntity partner;
@@ -45,7 +43,7 @@ public class ReservationEntity implements Serializable {
     private OutletEntity pickupOutlet;
     @OneToOne
     private OutletEntity returnOutlet;
-    @OneToMany
+    //@OneToMany
     private List<RentalDayEntity> rentalDays;
     @OneToOne
     private TransitDispatchRecordEntity transitDispatchRecord;

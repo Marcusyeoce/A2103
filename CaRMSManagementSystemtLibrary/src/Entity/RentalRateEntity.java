@@ -23,7 +23,7 @@ public class RentalRateEntity implements Serializable {
     
     @ManyToOne
     private CategoryEntity category;
-    @OneToMany
+    //@OneToMany
     private RentalDayEntity rentalDays;
 
     public RentalRateEntity() {
