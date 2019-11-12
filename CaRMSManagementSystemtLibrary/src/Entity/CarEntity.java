@@ -20,7 +20,8 @@ public class CarEntity implements Serializable {
     @Column(nullable = false, unique = true, length = 10)
     @NotNull
     private String licensePlateNumber;
-    
+    @Column(nullable = false, length = 32)
+    @NotNull
     private String color;
     
     private String status; //???

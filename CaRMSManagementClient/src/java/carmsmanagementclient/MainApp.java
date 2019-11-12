@@ -46,7 +46,7 @@ public class MainApp {
         while(true)
         {
             
-            System.out.println("***Welcome To CaRMS Management System***");
+            System.out.println("\n***Welcome To CaRMS Management System***");
             System.out.println("1: Login as System Admin");
             System.out.println("2: Login as employee");
             System.out.println("3: Exit\n");
@@ -311,51 +311,7 @@ public class MainApp {
             System.out.println("New category created successfully! Category is " + name + ".\n");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-        }
-        
-    }
-    
-    private void mainMenuEmployee() {
-        Scanner scanner = new Scanner(System.in);
-        Integer response = 0;
-        
-        while(true)
-        {
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
-            System.out.println("You are logged in as Employee\n");
-            System.out.println("1: ");
-            System.out.println("2: Create new employee");
-            System.out.println("3: Create new partner");
-            System.out.println("4: Create new category");
-            System.out.println("5: Logout");
-            response = 0;
-            
-            while(response < 1 || response > 3)
-            {
-            
-                System.out.print("> ");
-                
-                response = scanner.nextInt();
-                
-                if (response == 1) {
-                    createNewOutlet();
-                } else if (response == 2) {
-                    createNewEmployee();
-                } else if (response == 3) {
-                    createNewPartner();
-                } else if (response == 4) {
-                    createNewCategory();
-                } else if (response == 5) {
-                    break;
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
-                }
-            }
-            if (response == 5) {
-                break;
-            }
-        }
-        
+        }   
     }
 
     private void mainMenuSalesManager() {
@@ -365,15 +321,14 @@ public class MainApp {
         while(true)
         {
             System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
-            System.out.println("You are logged in as Employee\n");
-            System.out.println("1: ");
-            System.out.println("2: Create new employee");
-            System.out.println("3: Create new partner");
-            System.out.println("4: Create new category");
-            System.out.println("5: Logout");
+            System.out.println("You are logged in as Sales Manager\n");
+            System.out.println("1: Create rental rate");
+            System.out.println("3: View all rental rate");
+            System.out.println("3: View rental details");
+            System.out.println("4: Logout");
             response = 0;
             
-            while(response < 1 || response > 3)
+            while(response < 1 || response > 4)
             {
             
                 System.out.print("> ");
@@ -381,20 +336,18 @@ public class MainApp {
                 response = scanner.nextInt();
                 
                 if (response == 1) {
-                    createNewOutlet();
+                   
                 } else if (response == 2) {
-                    createNewEmployee();
+                    
                 } else if (response == 3) {
-                    createNewPartner();
+                    
                 } else if (response == 4) {
-                    createNewCategory();
-                } else if (response == 5) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-            if (response == 5) {
+            if (response == 4) {
                 break;
             }
         }
@@ -407,15 +360,23 @@ public class MainApp {
         while(true)
         {
             System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
-            System.out.println("You are logged in as Employee\n");
-            System.out.println("1: ");
-            System.out.println("2: Create new employee");
-            System.out.println("3: Create new partner");
-            System.out.println("4: Create new category");
-            System.out.println("5: Logout");
+            System.out.println("You are logged in as Operations Manager\n");
+            System.out.println("1: Create new car model");
+            System.out.println("2: View all car models");
+            System.out.println("3: Update car model");
+            System.out.println("4: Delete car model");
+            System.out.println("--------------------");
+            System.out.println("5: Create new car ");
+            System.out.println("6: View all cars");
+            System.out.println("7: View car details");
+            System.out.println("--------------------");
+            System.out.println("8: View Transit driver dispatch records for current day reservations");
+            System.out.println("9: Assign transit driver");
+            System.out.println("10: Update transit as completed");
+            System.out.println("11: Logout");
             response = 0;
             
-            while(response < 1 || response > 3)
+            while(response < 1 || response > 11)
             {
             
                 System.out.print("> ");
@@ -423,20 +384,32 @@ public class MainApp {
                 response = scanner.nextInt();
                 
                 if (response == 1) {
-                    createNewOutlet();
+                    
                 } else if (response == 2) {
-                    createNewEmployee();
+                    
                 } else if (response == 3) {
-                    createNewPartner();
+                    
                 } else if (response == 4) {
-                    createNewCategory();
+                    
                 } else if (response == 5) {
+                    
+                } else if (response == 6) {
+                    
+                } else if (response == 7) {
+                    
+                } else if (response == 8) {
+                    
+                } else if (response == 9) {
+                    break;
+                } else if (response == 10) {
+                    
+                } else if (response == 11) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-            if (response == 5) {
+            if (response == 11) {
                 break;
             }
         }
@@ -449,12 +422,10 @@ public class MainApp {
         while(true)
         {
             System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
-            System.out.println("You are logged in as Employee\n");
-            System.out.println("1: ");
-            System.out.println("2: Create new employee");
-            System.out.println("3: Create new partner");
-            System.out.println("4: Create new category");
-            System.out.println("5: Logout");
+            System.out.println("You are logged in as Customer Service Relations\n");
+            System.out.println("1: Pickup car");
+            System.out.println("2: Return car");
+            System.out.println("3: Logout");
             response = 0;
             
             while(response < 1 || response > 3)
@@ -465,20 +436,16 @@ public class MainApp {
                 response = scanner.nextInt();
                 
                 if (response == 1) {
-                    createNewOutlet();
+                    
                 } else if (response == 2) {
-                    createNewEmployee();
+                    
                 } else if (response == 3) {
-                    createNewPartner();
-                } else if (response == 4) {
-                    createNewCategory();
-                } else if (response == 5) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-            if (response == 5) {
+            if (response == 3) {
                 break;
             }
         }
