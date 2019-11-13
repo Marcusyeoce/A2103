@@ -1,5 +1,6 @@
 package carmsmanagementclient;
 
+import Entity.CustomerEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
@@ -47,7 +48,7 @@ public class CustomerServiceModule {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
+            System.out.println("\n***Welcome To CaRMS Management System :: Employee Panel***");
             System.out.println("You are logged in as Customer Service Relations\n");
             System.out.println("1: Pickup car");
             System.out.println("2: Return car");
@@ -62,7 +63,7 @@ public class CustomerServiceModule {
                 response = scanner.nextInt();
                 
                 if (response == 1) {
-                    
+                    pickupCar();
                 } else if (response == 2) {
                     
                 } else if (response == 3) {
@@ -75,5 +76,59 @@ public class CustomerServiceModule {
                 break;
             }
         }
+    }
+    
+    public void pickupCar() {
+        
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while (true) {
+            System.out.println("\n***Welcome To CaRMS Management System :: Pickup Car***");
+            System.out.println("1.Identify customer by mobile number");
+            System.out.println("2.Identify customer by passport number");
+            System.out.println("3.Exit");
+            response = 0;
+
+            while(response < 1 || response > 2) {
+            
+                System.out.print("> ");
+                
+                response = scanner.nextInt();
+                
+                if (response == 1) {
+                    System.out.print("Enter customer's mobile number > ");
+                    //CustomerEntity customer = customerSessionBean.retrieveCustomerByMobileNum();
+                } else if (response == 2) {
+                    System.out.print("Enter customer's passport number > ");
+                    //CustomerEntity customer = customerSessionBean.retrieveCustomerByPassportNum();
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+            if (response == 3) {
+                break;
+            }
+        }
+        
+        //check for reservations
+        //check payment of reservation 
+        //update status and location of car
+    }
+    
+    public void returnCar() {
+        
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while (true) {
+            System.out.println("\n***Welcome To CaRMS Reservation System :: Return Car***");
+            System.out.println("Input car plate number of returning car");
+            
+            String carplateNum = scanner.nextLine();
+
+            //check if carplatenum matches reservation
+            //update status and location of car
+        } 
     }
 }
