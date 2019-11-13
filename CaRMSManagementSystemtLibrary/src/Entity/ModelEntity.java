@@ -24,10 +24,11 @@ public class ModelEntity implements Serializable {
     @Column(nullable = false, unique = true)
     private String model;
     
-    @OneToMany//(mappedBy = "modelEntity")
+    @OneToMany(mappedBy = "modelEntity")
     private List<CarEntity> cars;
-    @ManyToOne//(optional = true)
-    @JoinColumn//(nullable = false)
+    
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
     private CategoryEntity categoryEntity;
 
     public ModelEntity() {

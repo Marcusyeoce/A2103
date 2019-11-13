@@ -1,7 +1,6 @@
 package ejb.session.stateless;
 
 import Entity.CategoryEntity;
-import Entity.ModelEntity;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
@@ -15,14 +14,14 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.CategoryExistException;
 import util.exception.InputDataValidationException;
-import util.exception.ModelExistException;
 import util.exception.UnknownPersistenceException;
 
 @Stateless
-@Local(ModelSessionBeanLocal.class)
-@Remote(ModelSessionBeanRemote.class)
-public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBeanLocal {
+@Local(CategorySessionBeanLocal.class)
+@Remote(CategorySessionBeanRemote.class)
+public class CategorySessionBean implements CategorySessionBeanRemote, CategorySessionBeanLocal {
 
     @PersistenceContext(unitName = "CaRMSManagementSystem-ejbPU")
     private EntityManager em;
@@ -30,23 +29,22 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
 
-    public ModelSessionBean() {
+    public CategorySessionBean() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
     }
-    
-    public ModelEntity createNewModel(ModelEntity modelEntity) throws UnknownPersistenceException, ModelExistException, InputDataValidationException {
-        
+
+    public long createCategory(CategoryEntity newCategoryEntity) throws CategoryExistException, InputDataValidationException, UnknownPersistenceException {
         try
         {
-            Set<ConstraintViolation<ModelEntity>>constraintViolations = validator.validate(modelEntity);
+            Set<ConstraintViolation<CategoryEntity>>constraintViolations = validator.validate(newCategoryEntity);
         
             if(constraintViolations.isEmpty())
             {
-                em.persist(modelEntity);
+                em.persist(newCategoryEntity);
                 em.flush();
 
-                return modelEntity;
+                return newCategoryEntity.getCategoryId();
             }
             else
             {
@@ -59,7 +57,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
             {
                 if(ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException"))
                 {
-                    throw new ModelExistException();
+                    throw new CategoryExistException();
                 }
                 else
                 {
@@ -73,25 +71,14 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         }
     }
     
-    public List<ModelEntity> retrieveAllModels() {
-        Query query = em.createQuery("SELECT m from ModelEntity m");
+    @Override
+    public List<CategoryEntity> retrieveCategoryEntities() {
+        Query query = em.createQuery("SELECT c FROM CategoryEntity c");
         
         return query.getResultList();
     }
     
-    @Override
-    public ModelEntity retrieveModelEntityByModelAndMake(String model, String make) {
-        
-        Query query = em.createQuery("SELECT m FROM ModelEntity m WHERE m.model = :inModel AND m.make = :inMake");
-        query.setParameter("inModel", model);
-        query.setParameter("inMake", make);
-        
-        ModelEntity modelEntity = (ModelEntity) query.getSingleResult();
-        
-        return modelEntity;
-    }
-    
-    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<ModelEntity>>constraintViolations)
+    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CategoryEntity>>constraintViolations)
     {
         String msg = "Input data validation error!:";
             

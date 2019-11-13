@@ -10,4 +10,6 @@ import util.exception.UnknownPersistenceException;
 public interface CarSessionBeanRemote {
 
     public CarEntity createNewCar(CarEntity newCar) throws CarExistException, InputDataValidationException, UnknownPersistenceException;
+    
+    public List<CarEntity> retrieveAllCars();
 }

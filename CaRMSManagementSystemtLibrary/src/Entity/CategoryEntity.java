@@ -2,6 +2,7 @@ package Entity;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,17 +16,19 @@ public class CategoryEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categoryId;   
+    private Long categoryId;
+    @Column(nullable = false, unique = true)
     private String categoryName;
-    //private int capacity; 
     
-    @OneToMany
+    @OneToMany(mappedBy = "categoryEntity")
     @JoinColumn(nullable = true)
     private List<ModelEntity> models;
-    @OneToMany
+    
+    @OneToMany//(mappedBy = "")
     @JoinColumn(nullable = true)
     private List<RentalRateEntity> rentalRates;
-    @OneToMany
+    
+    @OneToMany//(mappedBy = "")
     @JoinColumn(nullable = true)
     private List<ReservationEntity> reservations;
     

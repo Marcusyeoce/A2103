@@ -1,8 +1,10 @@
 package carmsmanagementclient;
 
+import Entity.CategoryEntity;
 import Entity.EmployeeEntity;
 import Entity.OutletEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
+import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
@@ -15,6 +17,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.enumeration.AccessRightEnum;
+import util.exception.CategoryExistException;
 import util.exception.InputDataValidationException;
 import util.exception.OutletExistException;
 import util.exception.UnknownPersistenceException;
@@ -28,6 +31,7 @@ public class SystemAdminModule {
     private CarSessionBeanRemote carSessionBean;
     private OutletSessionBeanRemote outletSessionBean;
     private EmployeeSessionBeanRemote employeeSessionBean;
+    private CategorySessionBeanRemote categorySessionBean;
     
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
@@ -37,7 +41,7 @@ public class SystemAdminModule {
         validator = validatorFactory.getValidator();
     }
 
-    public SystemAdminModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean) {
+    public SystemAdminModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean) {
         this();
         this.employeeSessionBean = employeeSessionBean;
         this.outletSessionBean = outletSessionBean;
@@ -45,6 +49,7 @@ public class SystemAdminModule {
         this.customerSessionBean = customerSessionBean;
         this.modelSessionBean = modelSessionBean;
         this.rentalRateSessionBean = rentalRateSessionBean;
+        this.categorySessionBean = categorySessionBean;
     }
     
     public void mainMenuAdmin() {
@@ -100,9 +105,9 @@ public class SystemAdminModule {
         String name = scanner.nextLine();
         System.out.print("Enter Outlet address> ");
         String address = scanner.nextLine();
-        System.out.print("Enter opening hour(24 hour clock)> ");
+        System.out.print("Enter opening hour(hh:mm)> ");
         String openingHour = scanner.nextLine();
-        System.out.print("Enter closing hour(24 hour clock)> ");
+        System.out.print("Enter closing hour(hh:mm)> ");
         String closingHour = scanner.nextLine();
         outletEntity.setOutletName(name);
         outletEntity.setAddress(address);
@@ -189,41 +194,66 @@ public class SystemAdminModule {
     }
 
     private void createNewPartner() {
-        try {
-            Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Partner***\n");
+        System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Partner***\n");
 
-            System.out.print("Enter partner name> ");
-            String name = scanner.nextLine();
-            System.out.print("Enter partner number> ");
-            String openingHour = scanner.nextLine();
-            
-            System.out.println("New partner created successfully! Partner is " + name + ".\n");
-        } catch(Exception ex) {
-            ex.getMessage();
-        }
+        System.out.print("Enter partner name> ");
+        String name = scanner.nextLine();
+        System.out.print("Enter partner number> ");
+        String number = scanner.nextLine();
+
+        System.out.println("New partner created successfully! Partner is " + name + ".\n");
         
     }
 
     private void createNewCategory() {
-        try {
-            Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+        CategoryEntity newCategoryEntity = new CategoryEntity();
+        System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Category***\n");
 
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Category***\n");
+        System.out.print("Enter category name> ");
+        String name = scanner.nextLine();
+        newCategoryEntity.setCategoryName(name);
 
-            System.out.print("Enter category name> ");
-            String name = scanner.nextLine();
-            System.out.print("Enter capacity> ");
-            int capacity = scanner.nextInt();
-            
-            System.out.println("New category created successfully! Category is " + name + ".\n");
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }   
+        System.out.println("New category created successfully! Category is " + name + ".\n");
+        
+        Set<ConstraintViolation<CategoryEntity>>constraintViolations = validator.validate(newCategoryEntity);
+        
+        if (constraintViolations.isEmpty()) {
+            try {
+                categorySessionBean.createCategory(newCategoryEntity);
+                System.out.println("New category created successfully! Category is " + name + ".\n");
+            } catch(CategoryExistException ex)
+            {
+                System.out.println("An error has occurred while creating the new category!: The category already exist\n");
+            }
+            catch(UnknownPersistenceException ex)
+            {
+                System.out.println("An unknown error has occurred while creating the new category!: " + ex.getMessage() + "\n");
+            }
+            catch(InputDataValidationException ex)
+            {
+                System.out.println(ex.getMessage() + "\n");
+            }
+        } else
+        {
+            showInputDataValidationErrorsForCategoryEntity(constraintViolations);
+        }
     }
     
     private void showInputDataValidationErrorsForEmployeeEntity(Set<ConstraintViolation<EmployeeEntity>>constraintViolations) {
+        System.out.println("\nInput data validation error!:");
+            
+        for(ConstraintViolation constraintViolation:constraintViolations)
+        {
+            System.out.println("\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage());
+        }
+
+        System.out.println("\nPlease try again......\n");
+    }
+    
+    private void showInputDataValidationErrorsForCategoryEntity(Set<ConstraintViolation<CategoryEntity>>constraintViolations) {
         System.out.println("\nInput data validation error!:");
             
         for(ConstraintViolation constraintViolation:constraintViolations)

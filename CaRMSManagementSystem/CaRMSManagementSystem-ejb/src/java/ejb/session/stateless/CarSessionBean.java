@@ -75,6 +75,16 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         }
     }
     
+    public List<CarEntity> retrieveAllCars() {
+        Query query = em.createQuery("SELECT c from CarEntity c");
+        
+        return query.getResultList();
+    }
+    
+    public CarEntity retrieveCarEntityByLicensePlateNum() {
+        return null;
+    }
+    
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CarEntity>>constraintViolations)
     {
         String msg = "Input data validation error!:";

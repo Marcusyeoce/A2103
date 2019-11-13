@@ -1,6 +1,7 @@
 package carmsmanagementclient;
 
 import ejb.session.stateless.CarSessionBeanRemote;
+import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
@@ -19,6 +20,7 @@ public class SalesMangerModule {
     private CarSessionBeanRemote carSessionBean;
     private OutletSessionBeanRemote outletSessionBean;
     private EmployeeSessionBeanRemote employeeSessionBean;
+    private CategorySessionBeanRemote categorySessionBean;
     
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
@@ -28,7 +30,7 @@ public class SalesMangerModule {
         validator = validatorFactory.getValidator();
     }
 
-    public SalesMangerModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean) {
+    public SalesMangerModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean) {
         this();
         this.employeeSessionBean = employeeSessionBean;
         this.outletSessionBean = outletSessionBean;
@@ -36,6 +38,7 @@ public class SalesMangerModule {
         this.customerSessionBean = customerSessionBean;
         this.modelSessionBean = modelSessionBean;
         this.rentalRateSessionBean = rentalRateSessionBean;
+        this.categorySessionBean = categorySessionBean;
     }
     
     public void mainMenuSalesManager() {

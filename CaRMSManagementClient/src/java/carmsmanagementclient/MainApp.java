@@ -2,11 +2,13 @@ package carmsmanagementclient;
 
 import Entity.EmployeeEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
+import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import util.enumeration.AccessRightEnum;
 import util.exception.InvalidLoginCredentialException;
@@ -19,6 +21,7 @@ public class MainApp {
     private CarSessionBeanRemote carSessionBean;
     private OutletSessionBeanRemote outletSessionBean;
     private EmployeeSessionBeanRemote employeeSessionBean;
+    private CategorySessionBeanRemote categorySessionBean;
     
     private SystemAdminModule systemAdminModule;
     private SalesMangerModule salesMangerModule;
@@ -30,7 +33,7 @@ public class MainApp {
     {
     }
     
-    public MainApp(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean) {
+    public MainApp(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean) {
         this();
         this.employeeSessionBean = employeeSessionBean;
         this.outletSessionBean = outletSessionBean;
@@ -38,6 +41,7 @@ public class MainApp {
         this.customerSessionBean = customerSessionBean;
         this.modelSessionBean = modelSessionBean;
         this.rentalRateSessionBean = rentalRateSessionBean;
+        this.categorySessionBean = categorySessionBean;
     }
     
     public void runApp()
@@ -50,22 +54,33 @@ public class MainApp {
         {
             System.out.println("\n***Welcome To CaRMS Management System***");
             System.out.println("1: Login as System Admin");
-            System.out.println("2: Login as employee");
+            System.out.println("2: Login as Employee");
             System.out.println("3: Exit\n");
             
             response = 0;
                 
             while(response < 1 || response > 3)
             {
-            
-                System.out.print("> ");
+                while (true) {
+                    try {
+                        Scanner scanner = new Scanner(System.in);
+                        System.out.print("> ");
+                        response = scanner.nextInt();
+                        if (response < 1 || response > 3) {
+                            System.out.println("Please enter a valid option");
+                        } else {
+                            break;
+                        }
+                    } catch(InputMismatchException ex) {
+                        System.out.println("Please enter a number");
+                    }
+                }
                 
-                response = sc.nextInt();
                 
                 if (response == 1) {
                     try {
                         loginAsAdmin();
-                        systemAdminModule = new SystemAdminModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean);
+                        systemAdminModule = new SystemAdminModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
                         systemAdminModule.mainMenuAdmin();
                     } catch(InvalidLoginCredentialException ex) {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
@@ -74,13 +89,13 @@ public class MainApp {
                     try {
                         AccessRightEnum employeeRole = loginAsEmployee();
                         if (employeeRole == AccessRightEnum.SALESMANAGER) {
-                            salesMangerModule = new SalesMangerModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean);
+                            salesMangerModule = new SalesMangerModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
                             salesMangerModule.mainMenuSalesManager();
                         } else if (employeeRole == AccessRightEnum.OPERATIONMANAGER) {
-                            operationManagerModule = new OperationManagerModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean);
+                            operationManagerModule = new OperationManagerModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
                             operationManagerModule.mainMenuOperationsManager();
                         } else if (employeeRole == AccessRightEnum.CUSTOMERSERVICEEXECUTIVE){
-                            customerServiceModule = new CustomerServiceModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean);
+                            customerServiceModule = new CustomerServiceModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
                             customerServiceModule.mainMenuCustomerRelations();
                         } else if (employeeRole == AccessRightEnum.ADMINISTRATOR) {
                             System.out.println("Please select option 1 and login as System Admin instead!\n");
@@ -115,7 +130,10 @@ public class MainApp {
         String password = scanner.nextLine().trim();
         
         if (username.length() > 0 && password.length() > 0) {
-            employeeSessionBean.employeeLogin(username, password);
+            EmployeeEntity employee = employeeSessionBean.employeeLogin(username, password);
+            if (employee.getAccessRightEnum() != AccessRightEnum.ADMINISTRATOR) {
+                throw new InvalidLoginCredentialException("You do not have System Admin rights to access this page!");
+            }
         } else {
             throw new InvalidLoginCredentialException("Missing login credentials!");
         }

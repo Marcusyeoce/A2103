@@ -24,10 +24,12 @@ public class CarEntity implements Serializable {
     @NotNull
     private String status; //status    
     
+    @ManyToOne(optional = true) //should be false
+    @JoinColumn(nullable = true) 
+    private ModelEntity modelEntity;
+    
     @ManyToOne(optional = true)
     @JoinColumn(nullable = true)
-    private ModelEntity modelEntity;
-    @ManyToOne
     private OutletEntity outlet; //location
 
     public CarEntity() {

@@ -10,5 +10,7 @@ import util.exception.UnknownPersistenceException;
 public interface CarSessionBeanLocal {
 
     public CarEntity createNewCar(CarEntity newCar) throws CarExistException, InputDataValidationException, UnknownPersistenceException;
+
+    public List<CarEntity> retrieveAllCars();
     
 }
