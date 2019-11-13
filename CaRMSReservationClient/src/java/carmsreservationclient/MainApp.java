@@ -4,9 +4,12 @@ import Entity.CarEntity;
 import Entity.CategoryEntity;
 import Entity.CustomerEntity;
 import Entity.ModelEntity;
+import Entity.ReservationEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
+import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import util.exception.InvalidLoginCredentialException;
@@ -129,22 +132,65 @@ public class MainApp {
         }
     }
 
-    /* private List<CarEntity> searchCar() {
-        Scanner sc = new Scanner(System.in);
+    private void searchCar() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Search car\n***");
-        System.out.println("Enter car model> ");
-        String model = sc.nextLine();
-        System.out.println("Enter car manufacturer> ");
-        String make = sc.nextLine();
+        System.out.println("Enter pickup date and time in (format)> ");
+        String pickupDateTime = scanner.nextLine().trim();
+        System.out.println("Enter pickup outlet> ");
+        String pickupOutlet = scanner.nextLine().trim();
+        System.out.println("Enter return date and time in (format)> ");
+        String returnDateTime = scanner.nextLine().trim();
+        System.out.println("Enter return outlet> ");
+        String returnOutlet = scanner.nextLine().trim();
         
-        ModelEntity modelEntity = modelSessionBeanRemote.retrieveModelEntityByModelAndMake(model, make);
+        //search all cars, if available, get category and model, and if not already in list, add to list,search reservations to make sure no overlap
+        List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
         
-         for (CarEntity car: modelEntity.getCars()) {
-            System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate", "Location", "");
+        for (ModelEntity model: modelSessionBeanRemote.retrieveAllModels()) {
+            int counter = model.getCars().size();
+            for (CarEntity car: model.getCars()) {
+                //if car is unavailable, counter - 1
+                if (true) {
+                    counter--;
+                }
+            }
+            if (counter > 0) {
+                availableModels.add(model);
+            }
         }
         
-        return searchedCars; 
-    } */
+        System.out.println("\n***All available models:***\n");
+        for (ModelEntity model: availableModels) {
+            System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate", "Location", "");
+        } 
+            
+        Integer response = 0;
+        
+        while(true)
+        {
+            System.out.println("\n***More Options***\n");
+            System.out.println("1. Exit");
+            response = 0;
+            
+            while(response < 1 || response > 1)
+            {
+            
+                System.out.print("> ");
+                
+                response = scanner.nextInt();
+                
+                if (response == 1) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+            if (response == 1) {
+                break;
+            }
+        }
+    }
 
     private void mainMenu() {
         Scanner scanner = new Scanner(System.in);
@@ -158,11 +204,10 @@ public class MainApp {
             System.out.println("1: Reserve Car");
             System.out.println("2: View Reservation Details");
             System.out.println("3: View all my reservations");
-            System.out.println("4: Cancel Reservation");
-            System.out.println("5: Logout");
+            System.out.println("4: Logout");
             response = 0;
             
-            while(response < 1 || response > 3)
+            while(response < 1 || response > 4)
             {
             
                 System.out.print("> ");
@@ -174,10 +219,8 @@ public class MainApp {
                 } else if (response == 2) {
                     viewReservationDetails();
                 } else if (response == 3) {
-                    viewAllReservations();
+                    viewAllMyReservations();
                 } else if (response == 4) {
-                    cancelReservation();
-                } else if (response == 5) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
@@ -190,46 +233,120 @@ public class MainApp {
     }
     
     private void reserveCar() {
-        Scanner sc = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
         System.out.println("\n***Welcome To CaRMS Reservation System :: Reserve Car***\n");
-        
-        System.out.println("1. Search For Car By Model And Make");
-        System.out.println("2. Pick a Particular Category");
+        System.out.println("1.Reserve car of specific model and make");
+        System.out.println("2.Reserve car of a particular category");
+        System.out.println("3.Exit");
         response = 0;
+        
+        ReservationEntity reservation = new ReservationEntity();
             
-            while(response < 1 || response > 2) {
+        while(response < 1 || response > 2) {
+            if (response == 1) {
+                System.out.print("Enter car make \n>");
+                String reservationMake = scanner.nextLine().trim();
+                System.out.print("Enter car model \n>");
+                String reservationModel = scanner.nextLine().trim();
+                    
+                //check if exists and is available
+                //if not avail: System.out.println("Invalid option, please try again!\n");
+                
+                //reservation.addModel();
+                //makeReservation(reservation);
+            } else if (response == 2) {
+                    
+                //prints list of categories, get all categories
+                System.out.println("All categories available:");
+                /* for (CategoryEntity category: CategorySessionBeanRemote.retrieveAllCategories()) {
+                    System.out.println(category.getName());
+                } */
+                    
+                //reservation.addCategory();
+                //makeReservation(reservation);
+            } else if (response == 3) {
+                break;
+            } else {
+                System.out.println("Invalid option, please try again!\n");
+            }
+            if (response == 3) {
+                break;
+            }
+        }   
+    }
+    
+    private void makeReservation(ReservationEntity reservation) {
+ 
+        System.out.println("\n***Choose payment option:***\n");
+        System.out.println("1.Immediate rental fee payment");
+        System.out.println("2.Deferred rental fee payment");
+        
+        //for immediate, take in credit card details
+        //for deferred, also need to be guranteed by credit card
+        
+        //reservation.setCC();
+        
+        //reservationSessionBeanRemote.createNewReservation();
+    }
+
+    private void viewAllMyReservations() {
+        
+        System.out.println("\n***Welcome To CaRMS Reservation System :: View all my reservations***\n");
+        
+        /* for (ReservationEntity reservation: currentCustomerEntity.getReservations()) {
+            System.out.println();
+        } */
+    }
+    
+    private void viewReservationDetails() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n***Welcome To CaRMS Reservation System :: View reservation details***\n");
+        System.out.println("Enter reservation id");
+        
+        Long reservationId = scanner.nextLong();
+        //ReservationEntity reservationEntity = reservationSessionBeanRemote.retrieveReservationById(reservationId);
+        
+        Integer response = 0;
+        
+        while(true)
+        {
+            System.out.println("\n***More Options***\n");
+            System.out.println("1. Cancel reservation");
+            System.out.println("2. Exit");
+            response = 0;
+            
+            while(response < 1 || response > 2)
+            {
+            
+                System.out.print("> ");
+                
+                response = scanner.nextInt();
+                
                 if (response == 1) {
-                    //List<CarEntity> cars = searchCar();
-                    System.out.println("Invalid option, please try again!\n");
-                    int carOption = sc.nextInt();
-                    //makeReservationModel();
+                    //cancelReservation(reservationEntity);
                 } else if (response == 2) {
-                    //makeReservationCategory();
+                    break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
-            }   
+            }
+            if (response == 1) {
+                break;
+            }
+        }
     }
     
-    private void makeReservationModel(Long modelId) {    
-    }
-
-    private void cancelReservation() {
+    private void cancelReservation(ReservationEntity reservationEntity) {
         Scanner sc = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Cancel Reservation***\n");
-    }
-
-    private void viewAllReservations() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: View all reservations***\n");
-        System.out.println("Enter reservation number> ");
+        System.out.println("Enter reservation number to cancel reservation> ");
+        
+        //first check how close is it to the pickup date
+        //reservationSessionBean.delete()
         String reservationNum = sc.nextLine();
-    }
-
-    private void viewReservationDetails() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: View reservation details***\n");
+        
+        //refund etc
     }
 }
