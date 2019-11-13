@@ -148,11 +148,19 @@ public class OperationManagerModule {
 
         System.out.print("Enter car license plate number> ");
         String num = scanner.nextLine();
-        System.out.print("Enter car color> ");
-        String color = scanner.nextLine();
+        System.out.print("Enter status> (1 = Avilable, 2 = Repair)");
+        int status = scanner.nextInt();
+        System.out.print("Enter car model> ");
+        
+        int model = scanner.nextInt();
         
         car.setLicensePlateNumber(num);
-        car.setColor(color);
+        if (status == 1) {
+            car.setStatus("Available");
+        } else {
+            car.setStatus("Repair");
+        }
+        
         
         Set<ConstraintViolation<CarEntity>>constraintViolations = validator.validate(car);
         

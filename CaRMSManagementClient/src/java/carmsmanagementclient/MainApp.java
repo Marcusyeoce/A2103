@@ -71,8 +71,10 @@ public class MainApp {
                         } else if (employeeRole == AccessRightEnum.CUSTOMERSERVICEEXECUTIVE){
                             customerServiceModule = new CustomerServiceModule(employeeSessionBean, outletSessionBean);
                             customerServiceModule.mainMenuCustomerRelations();
-                        } else {
+                        } else if (employeeRole == AccessRightEnum.ADMINISTRATOR) {
                             System.out.println("Please select option 1 and login as System Admin instead!\n");
+                        } else {
+                            System.out.println("Welcome!!! You can't access anything yet!\n");
                         }
                     } catch(InvalidLoginCredentialException ex) {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");

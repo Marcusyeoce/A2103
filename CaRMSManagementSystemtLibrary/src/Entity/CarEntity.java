@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -16,16 +17,15 @@ public class CarEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long carId;
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(nullable = false, unique = true, length = 15)
     @NotNull
     private String licensePlateNumber;
     @Column(nullable = false, length = 32)
     @NotNull
-    private String color;
-    private boolean isAvailable; //status    
+    private String status; //status    
     
-    @ManyToOne//(optional = true)
-    //@JoinColumn(nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
     private ModelEntity modelEntity;
     @ManyToOne
     private OutletEntity outlet; //location
@@ -33,11 +33,10 @@ public class CarEntity implements Serializable {
     public CarEntity() {
     }
 
-    public CarEntity(String licensePlateNumber, String color, ModelEntity modelEntity) {
+    public CarEntity(String licensePlateNumber, String status) {
         this();
         this.licensePlateNumber = licensePlateNumber;
-        this.color = color;
-        this.modelEntity = modelEntity;
+        this.status = status;
     }
 
     public String getLicensePlateNumber() {
@@ -48,12 +47,12 @@ public class CarEntity implements Serializable {
         this.licensePlateNumber = licensePlateNumber;
     }
 
-    public String getColor() {
-        return color;
+    public String getStatus() {
+        return status;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public ModelEntity getModelEntity() {

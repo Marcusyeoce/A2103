@@ -27,16 +27,16 @@ public class OutletEntity implements Serializable {
     @Column(nullable = false, length = 64)
     @NotNull
     private String address;
-    @Column(nullable = false, length = 4)
-    @Size(min = 4, max = 4)
+    @Column(nullable = false, length = 5)
+    @Size(min = 0, max = 25)
     @NotNull
     private String openingHour;
-    @Column(nullable = false, length = 4)
-    @Size(min = 4, max = 4)
+    @Column(nullable = false, length = 5)
+    @Size(min = 0, max = 25)
     @NotNull
     private String closingHour;
     
-    @OneToMany//(mappedBy = "outletEntity")
+    @OneToMany(mappedBy = "outletEntity")
     private List<EmployeeEntity> employeeEntities;
 
     public OutletEntity() {
@@ -50,6 +50,14 @@ public class OutletEntity implements Serializable {
         this.closingHour = closingTime;
     }
 
+    public List<EmployeeEntity> getEmployeeEntities() {
+        return employeeEntities;
+    }
+
+    public void setEmployeeEntities(List<EmployeeEntity> employeeEntities) {
+        this.employeeEntities = employeeEntities;
+    }
+    
     public Long getOutletId() {
         return outletId;
     }

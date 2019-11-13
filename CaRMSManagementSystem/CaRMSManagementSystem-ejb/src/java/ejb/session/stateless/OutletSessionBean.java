@@ -15,7 +15,6 @@ import javax.validation.ValidatorFactory;
 import util.exception.InputDataValidationException;
 import util.exception.OutletExistException;
 import util.exception.UnknownPersistenceException;
-import util.exception.UsernameExistException;
 
 
 @Stateless

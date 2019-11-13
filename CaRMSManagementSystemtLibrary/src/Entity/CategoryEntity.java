@@ -6,12 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-/**
- *
- * @author Marcusyeoce
- */
 @Entity
 public class CategoryEntity implements Serializable {
 
@@ -20,22 +17,24 @@ public class CategoryEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;   
     private String categoryName;
-    private int capacity; 
+    //private int capacity; 
     
     @OneToMany
+    @JoinColumn(nullable = true)
     private List<ModelEntity> models;
     @OneToMany
+    @JoinColumn(nullable = true)
     private List<RentalRateEntity> rentalRates;
     @OneToMany
+    @JoinColumn(nullable = true)
     private List<ReservationEntity> reservations;
     
     public CategoryEntity() {
     }
     
-    public CategoryEntity(String categoryName, int capacity) {
+    public CategoryEntity(String categoryName) {
         this();
         this.categoryName = categoryName;
-        this.capacity = capacity;
     }
 
     public Long getCategoryId() {
@@ -46,20 +45,12 @@ public class CategoryEntity implements Serializable {
         return categoryName;
     }
     
-    public int getCapacity() {
-        return capacity;
-    }
-    
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
     }
 
     @Override

@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
@@ -24,10 +25,7 @@ public class EmployeeEntity implements Serializable {
     private Long employeeId;
     @Column(nullable = false, length = 32)
     @NotNull
-    private String firstName;
-    @Column(nullable = false, length = 32)
-    @NotNull
-    private String lastName;
+    private String name;
     @Column(nullable = false, unique = true, length = 32)
     @NotNull
     @Size(min = 4, max = 32)
@@ -41,8 +39,8 @@ public class EmployeeEntity implements Serializable {
     @NotNull
     private AccessRightEnum accessRightEnum;
     
-    @ManyToOne//(optional = false) 
-    //@JoinColumn(nullable = false)
+    @ManyToOne(optional = false) 
+    @JoinColumn(nullable = false)
     private OutletEntity outletEntity;
     @OneToMany
     private List<TransitDispatchRecordEntity> transitDispatchRecords;
@@ -50,9 +48,9 @@ public class EmployeeEntity implements Serializable {
     public EmployeeEntity() {
     }
 
-    public EmployeeEntity(String firstName, String lastName, String username, String password, AccessRightEnum accessRightEnum) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public EmployeeEntity(String name, String username, String password, AccessRightEnum accessRightEnum) {
+        this();
+        this.name = name;
         this.username = username;
         this.password = password;
         this.accessRightEnum = accessRightEnum;
@@ -66,20 +64,20 @@ public class EmployeeEntity implements Serializable {
         this.employeeId = employeeId;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public OutletEntity getOutletEntity() {
+        return outletEntity;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setOutletEntity(OutletEntity outletEntity) {
+        this.outletEntity = outletEntity;
     }
     
     public String getUsername() {

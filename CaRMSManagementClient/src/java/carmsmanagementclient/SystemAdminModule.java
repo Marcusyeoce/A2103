@@ -125,16 +125,13 @@ public class SystemAdminModule {
         EmployeeEntity employeeEntity = new EmployeeEntity();
         System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Employee***\n");
 
-        System.out.print("Enter employee first name> ");
+        System.out.print("Enter employee name> ");
         String firstName = scanner.nextLine();
-        System.out.print("Enter employee last name> ");
-        String lastName = scanner.nextLine();
         System.out.print("Enter username> ");
         String username = scanner.nextLine();
         System.out.print("Enter password> ");
         String password = scanner.nextLine().trim();
-        employeeEntity.setFirstName(firstName);
-        employeeEntity.setLastName(lastName);
+        employeeEntity.setName(firstName);
         employeeEntity.setUsername(username);
         employeeEntity.setPassword(password);
         String role = "";
