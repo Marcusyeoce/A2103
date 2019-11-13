@@ -4,8 +4,12 @@ import Entity.CarEntity;
 import Entity.EmployeeEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
+import ejb.session.stateless.CarSessionBeanRemote;
+import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
+import ejb.session.stateless.RentalRateSessionBeanRemote;
 import java.util.Scanner;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -18,8 +22,12 @@ import util.exception.UnknownPersistenceException;
 
 public class OperationManagerModule {
     
-    private EmployeeSessionBeanRemote employeeSessionBean;
+    private RentalRateSessionBeanRemote rentalRateSessionBean;
+    private ModelSessionBeanRemote modelSessionBean;
+    private CustomerSessionBeanRemote customerSessionBean;
+    private CarSessionBeanRemote carSessionBean;
     private OutletSessionBeanRemote outletSessionBean;
+    private EmployeeSessionBeanRemote employeeSessionBean;
     
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
@@ -29,10 +37,14 @@ public class OperationManagerModule {
         validator = validatorFactory.getValidator();
     }
 
-    public OperationManagerModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean) {
+    public OperationManagerModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean) {
         this();
         this.employeeSessionBean = employeeSessionBean;
         this.outletSessionBean = outletSessionBean;
+        this.carSessionBean = carSessionBean;
+        this.customerSessionBean = customerSessionBean;
+        this.modelSessionBean = modelSessionBean;
+        this.rentalRateSessionBean = rentalRateSessionBean;
     }
     
     public void mainMenuOperationsManager() {

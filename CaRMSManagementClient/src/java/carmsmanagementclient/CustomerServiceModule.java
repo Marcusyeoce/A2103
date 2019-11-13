@@ -1,7 +1,11 @@
 package carmsmanagementclient;
 
+import ejb.session.stateless.CarSessionBeanRemote;
+import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
+import ejb.session.stateless.RentalRateSessionBeanRemote;
 import java.util.Scanner;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -9,8 +13,12 @@ import javax.validation.ValidatorFactory;
 
 public class CustomerServiceModule {
     
-    private EmployeeSessionBeanRemote employeeSessionBean;
+    private RentalRateSessionBeanRemote rentalRateSessionBean;
+    private ModelSessionBeanRemote modelSessionBean;
+    private CustomerSessionBeanRemote customerSessionBean;
+    private CarSessionBeanRemote carSessionBean;
     private OutletSessionBeanRemote outletSessionBean;
+    private EmployeeSessionBeanRemote employeeSessionBean;
     
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
@@ -20,10 +28,14 @@ public class CustomerServiceModule {
         validator = validatorFactory.getValidator();
     }
 
-    public CustomerServiceModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean) {
+    public CustomerServiceModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean) {
         this();
         this.employeeSessionBean = employeeSessionBean;
         this.outletSessionBean = outletSessionBean;
+        this.carSessionBean = carSessionBean;
+        this.customerSessionBean = customerSessionBean;
+        this.modelSessionBean = modelSessionBean;
+        this.rentalRateSessionBean = rentalRateSessionBean;
     }
     
     public void mainMenuCustomerRelations() {
