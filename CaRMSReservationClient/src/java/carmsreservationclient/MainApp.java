@@ -4,22 +4,30 @@ import Entity.CarEntity;
 import Entity.CategoryEntity;
 import Entity.CustomerEntity;
 import Entity.ModelEntity;
+import Entity.OutletEntity;
 import Entity.ReservationEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
+import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.ModelExistException;
+import util.exception.ModelNotAvailable;
+import util.exception.NoAvailableCarsException;
 
 public class MainApp {
     
     private CustomerSessionBeanRemote customerSessionBeanRemote;
     private ModelSessionBeanRemote modelSessionBeanRemote;
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
+    private CategorySessionBeanRemote categorySessionBeanRemote;
+    private OutletSessionBeanRemote outletSessionBeanRemote;
     
     private CustomerEntity currentCustomerEntity;
     
@@ -27,10 +35,12 @@ public class MainApp {
     public MainApp() {
     }
 
-    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote) {
+    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote, CategorySessionBeanRemote categorySessionBeanRemote, OutletSessionBeanRemote outletSessionBeanRemote) {
         this.customerSessionBeanRemote = customerSessionBeanRemote;
         this.modelSessionBeanRemote = modelSessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
+        this.categorySessionBeanRemote = categorySessionBeanRemote;
+        this.outletSessionBeanRemote = outletSessionBeanRemote;
     }
     
     public void runApp()
@@ -140,14 +150,43 @@ public class MainApp {
         System.out.println("\n***Welcome To CaRMS Reservation System :: Search car\n***");
         System.out.println("Enter pickup date and time in (format)> ");
         String pickupDateTime = scanner.nextLine().trim();
+        
+        int counterPickupOutlet = 1;
         System.out.println("Enter pickup outlet> ");
-        String pickupOutlet = scanner.nextLine().trim();
+        List<OutletEntity> outlets = outletSessionBeanRemote.retrieveOutletEntities();
+        for (OutletEntity outlet: outlets) {
+            System.out.println(counterPickupOutlet + ". " + outlet.getOutletName());
+            counterPickupOutlet++;
+        } 
+        System.out.println("Enter your choice of pickup outlet> ");
+        OutletEntity pickupOutlet = outlets.get(scanner.nextInt()-1);
+        
         System.out.println("Enter return date and time in (format)> ");
         String returnDateTime = scanner.nextLine().trim();
+        
+        int counterReturnOutlet = 1;
         System.out.println("Enter return outlet> ");
-        String returnOutlet = scanner.nextLine().trim();
+        for (OutletEntity outlet: outlets) {
+            System.out.println(counterReturnOutlet + ". " + outlet.getOutletName());
+            counterReturnOutlet++;
+        } 
+        System.out.println("Enter your choice of return outlet> ");
+        OutletEntity returnOutlet = outlets.get(scanner.nextInt()-1);
         
         //search all cars, if available, get category and model, and if not already in list, add to list,search reservations to make sure no overlap
+        List<ModelEntity> availableModels = new ArrayList<>();
+                //getAvailableModels(pickupDateTime, returnDateTime, pickupOutlet, returnOutlet);
+ 
+        System.out.println("\n***All available models:***\n");
+        for (ModelEntity model: availableModels) {
+            System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate", "Location", "");
+        }
+        
+        return availableModels;
+    }
+    
+    public List<ModelEntity> getAvailableModels(Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) {
+        
         List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
         
         for (ModelEntity model: modelSessionBeanRemote.retrieveAllModels()) {
@@ -169,11 +208,6 @@ public class MainApp {
                 availableModels.add(model);
             }
         }
-        
-        System.out.println("\n***All available models:***\n");
-        for (ModelEntity model: availableModels) {
-            System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate", "Location", "");
-        } 
         
         return availableModels;
     }
@@ -201,7 +235,11 @@ public class MainApp {
                 response = scanner.nextInt();
                 
                 if (response == 1) {
-                    reserveCar();
+                    try {
+                       reserveCar();
+                    } catch (Exception ex) {
+                        //
+                    }
                 } else if (response == 2) {
                     viewReservationDetails();
                 } else if (response == 3) {
@@ -218,11 +256,43 @@ public class MainApp {
         }
     }
     
-    private void reserveCar() {
+    private void reserveCar() throws NoAvailableCarsException, ModelExistException, ModelNotAvailable {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
         System.out.println("\n***Welcome To CaRMS Reservation System :: Reserve Car***\n");
+        System.out.println("Enter pickup date and time in (format)> ");
+        String pickupDateTime = scanner.nextLine().trim();
+        
+        int counterPickupOutlet = 1;
+        System.out.println("Enter pickup outlet> ");
+        List<OutletEntity> outlets = outletSessionBeanRemote.retrieveOutletEntities();
+        for (OutletEntity outlet: outlets) {
+            System.out.println(counterPickupOutlet + ". " + outlet.getOutletName());
+            counterPickupOutlet++;
+        } 
+        System.out.println("Enter your choice of pickup outlet> ");
+        OutletEntity pickupOutlet = outlets.get(scanner.nextInt()-1);
+        
+        System.out.println("Enter return date and time in (format)> ");
+        String returnDateTime = scanner.nextLine().trim();
+        
+        int counterReturnOutlet = 1;
+        System.out.println("Enter return outlet> ");
+        for (OutletEntity outlet: outlets) {
+            System.out.println(counterReturnOutlet + ". " + outlet.getOutletName());
+            counterReturnOutlet++;
+        } 
+        System.out.println("Enter your choice of return outlet> ");
+        OutletEntity returnOutlet = outlets.get(scanner.nextInt()-1);
+        
+        //if no available cars at all
+        /* List<ModelEntity> availableModels = getAvailableModels(pickupDateTime, returnDateTime, pickupOutlet, returnOutlet);
+        if (availableModels.isEmpty()) {
+            throw new NoAvailableCarsException();
+        } */
+        
+        System.out.println("****More Options:***");
         System.out.println("1.Reserve car of specific model and make");
         System.out.println("2.Reserve car of a particular category");
         System.out.println("3.Exit");
@@ -237,27 +307,60 @@ public class MainApp {
                 System.out.print("Enter car model \n>");
                 String reservationModel = scanner.nextLine().trim();
                 
-                //search and check if exists
-                /* if () {
-                    
+                //check if model exists
+                boolean modelExists = false;      
+                for (ModelEntity model: modelSessionBeanRemote.retrieveAllModels()) {
+                    if (model.getModel() == reservationModel && model.getMake() == reservationMake) {
+                        modelExists = true;
+                        break;
+                    }
+                }
+                if (!modelExists) {
+                    throw new ModelExistException();
                 }
                 
-                //check if is available
-                for (ModelEntity model : searchCar()) {
-                    if (model == ) {
-                        //reservation.addModel();
-                        //makeReservation(reservation);
+                //check if model is available
+                boolean modelAvailable = false;
+                /* for (ModelEntity model: availableModels) {
+                    if (model.getModel() == reservationModel && model.getMake() == reservationMake) {
+                        //reservation.setModel(model);
+                        modelAvailable = true;
+                        break;
                     }
                 } */
+                if (!modelAvailable) {
+                    throw new ModelNotAvailable();
+                }
+                
+                makeReservation(reservation);
             } else if (response == 2) {
+                
+                int counter = 1;
+                List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
                     
-                //prints list of categories, get all categories
+                //prints list of categories, get all categories, and see which are available or booking
                 System.out.println("All categories available:");
-                /* for (CategoryEntity category: CategorySessionBeanRemote.retrieveAllCategories()) {
-                    System.out.println(category.getName());
+                for (CategoryEntity category: categories) {
+                    System.out.println(counter + ". " + category.getCategoryName());
+                    counter++;
+                }
+                
+                System.out.println("Please indicate the car category you want\n>");
+                int categoryChoice = scanner.nextInt();
+                
+                //check if category is available
+                boolean categoryAvailable = false;
+                /* for (ModelEntity model: availableModels) {
+                    if (model.getCategory() == categories.get(categoryChoice-1)) {
+                        categoryAvailable = true;
+                        break;
+                    }
                 } */
+                if (!categoryAvailable) {
+                    throw new ModelNotAvailable();
+                }
                     
-                //reservation.addCategory();
+                //reservation.addCategory(categories.get(categoryChoice-1));
                 //makeReservation(reservation);
             } else if (response == 3) {
                 break;

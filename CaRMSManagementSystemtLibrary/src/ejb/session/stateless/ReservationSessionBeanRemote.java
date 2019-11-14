@@ -5,6 +5,11 @@
  */
 package ejb.session.stateless;
 
+import Entity.ReservationEntity;
+import util.exception.InputDataValidationException;
+import util.exception.UnknownPersistenceException;
+
 public interface ReservationSessionBeanRemote {
     
+    public Long createReservationEntity(ReservationEntity newReservationEntity) throws InputDataValidationException, UnknownPersistenceException;
 }
