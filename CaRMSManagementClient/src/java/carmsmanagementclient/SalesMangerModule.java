@@ -118,7 +118,7 @@ public class SalesMangerModule {
         System.out.print("Enter rental rate name> ");
         String rentalRateName = scanner.nextLine();
         System.out.print("Enter rental rate day> ");
-        String day = scanner.nextLine();
+        String rentalRate = scanner.nextLine();
         System.out.print("Enter start date(dd:mm:yy)> ");
         String startDate = scanner.nextLine();
         System.out.print("Enter start time(hh:mm)> ");
@@ -140,6 +140,7 @@ public class SalesMangerModule {
         rentalRateEntity.setCategory(list.get(status - 1));
         rentalRateEntity.setStartDateTime(dstartDate);
         rentalRateEntity.setEndDateTime(dendDate);
+        rentalRateEntity.setRatePerDay(Integer.parseInt(rentalRate));
         
         Set<ConstraintViolation<RentalRateEntity>>constraintViolations = validator.validate(rentalRateEntity);
         

@@ -32,6 +32,14 @@ public class CarEntity implements Serializable {
     @JoinColumn(nullable = true)
     private OutletEntity outlet; //location
 
+    public OutletEntity getOutlet() {
+        return outlet;
+    }
+
+    public void setOutlet(OutletEntity outlet) {
+        this.outlet = outlet;
+    }
+
     public CarEntity() {
     }
 

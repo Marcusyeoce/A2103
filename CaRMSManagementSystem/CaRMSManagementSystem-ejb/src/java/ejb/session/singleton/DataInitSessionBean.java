@@ -5,6 +5,11 @@ import Entity.CategoryEntity;
 import Entity.EmployeeEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
+import Entity.RentalRateEntity;
+import ejb.session.stateless.RentalRateSessionBean;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
@@ -12,6 +17,8 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.AccessRightEnum;
+import util.exception.InputDataValidationException;
+import util.exception.UnknownPersistenceException;
 
 @Singleton
 @LocalBean
@@ -21,6 +28,8 @@ public class DataInitSessionBean {
     @PersistenceContext(unitName = "CaRMSManagementSystem-ejbPU")
     private EntityManager em;
   
+    private RentalRateSessionBean rentalRateSessionBean;
+    
     @PostConstruct
     public void postConstruct(){
         if (em.find(OutletEntity.class, 1l) == null) {
@@ -114,84 +123,131 @@ public class DataInitSessionBean {
         em.persist(employeeEntity);
         em.flush();
         
-        CategoryEntity categoryEntity = new CategoryEntity("Standard Sedan");
-        em.persist(categoryEntity);
+        CategoryEntity standard = new CategoryEntity("Standard Sedan");
+        em.persist(standard);
         em.flush();
-        categoryEntity = new CategoryEntity("Family Sedan");
-        em.persist(categoryEntity);
+        CategoryEntity family = new CategoryEntity("Family Sedan");
+        em.persist(family);
         em.flush();
-        categoryEntity = new CategoryEntity("Luxury Sedan");
-        em.persist(categoryEntity);
-        em.flush();
-        categoryEntity = new CategoryEntity("SUV and Minivan");
-        em.persist(categoryEntity);
+        CategoryEntity luxury = new CategoryEntity("Luxury Sedan");
+        em.persist(luxury);
         em.flush();
         
-        /*ModelEntity modelEntity = new ModelEntity("Toyota", "Corolla");
-        em.persist(modelEntity);
+        CategoryEntity SUV = new CategoryEntity("SUV and Minivan");
+        em.persist(SUV);
         em.flush();
-        modelEntity = new ModelEntity("Honda", "Civic");
-        em.persist(modelEntity);
+        
+        ModelEntity corolla = new ModelEntity("Toyota", "Corolla");
+        corolla.setCategoryEntity(standard);
+        em.persist(corolla);
         em.flush();
-        modelEntity = new ModelEntity("Nissan", "Sunny");
-        em.persist(modelEntity);
+        
+        ModelEntity civic = new ModelEntity("Honda", "Civic");
+        civic.setCategoryEntity(standard);
+        em.persist(civic);
         em.flush();
-        modelEntity = new ModelEntity("Mercedes", "E Class");
-        em.persist(modelEntity);
+        
+        ModelEntity sunny = new ModelEntity("Nissan", "Sunny");
+        sunny.setCategoryEntity(standard);
+        em.persist(sunny);
         em.flush();
-        modelEntity = new ModelEntity("BMW", "5 Series");
-        em.persist(modelEntity);
+        
+        ModelEntity eClass = new ModelEntity("Mercedes", "E Class");
+        eClass.setCategoryEntity(luxury);
+        em.persist(eClass);
         em.flush();
-        modelEntity = new ModelEntity("Audi", "A6");
-        em.persist(modelEntity);
+        
+        ModelEntity series = new ModelEntity("BMW", "5 Series");
+        series.setCategoryEntity(luxury);
+        em.persist(series);
+        em.flush();
+        
+        ModelEntity aSix = new ModelEntity("Audi", "A6");
+        aSix.setCategoryEntity(luxury);
+        em.persist(aSix);
         em.flush();
         
         CarEntity carEntity = new CarEntity("SS00A1TC", "Available");
+        carEntity.setModelEntity(corolla);
+        carEntity.setOutlet(outletA);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("SS00A2TC", "Available");
+        carEntity.setModelEntity(corolla);
+        carEntity.setOutlet(outletA);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("SS00A3TC", "Available");
+        carEntity.setModelEntity(corolla);
+        carEntity.setOutlet(outletA);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("SS00B1HC", "Available");
+        carEntity.setModelEntity(civic);
+        carEntity.setOutlet(outletB);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("SS00B2HC", "Available");
+        carEntity.setModelEntity(civic);
+        carEntity.setOutlet(outletB);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("SS00B3HC", "Available");
+        carEntity.setModelEntity(civic);
+        carEntity.setOutlet(outletB);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("SS00C1NS", "Available");
+        carEntity.setModelEntity(sunny);
+        carEntity.setOutlet(outletC);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("SS00C2NS", "Available");
+        carEntity.setModelEntity(sunny);
+        carEntity.setOutlet(outletC);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("SS00C3NS", "Repair");
+        carEntity.setModelEntity(sunny);
+        carEntity.setOutlet(outletC);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("LS00A4ME", "Available");
+        carEntity.setModelEntity(eClass);
+        carEntity.setOutlet(outletA);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("LS00B4ME", "Available");
+        carEntity.setModelEntity(series);
+        carEntity.setOutlet(outletB);
         em.persist(carEntity);
         em.flush();
         
         carEntity = new CarEntity("LS00C4ME", "Available");
+        carEntity.setModelEntity(aSix);
+        carEntity.setOutlet(outletC);
         em.persist(carEntity);
-        em.flush();*/
+        em.flush();
+        
+        
+        /*try {
+            rentalRateSessionBean.createRentalRate(new RentalRateEntity("Weekend Promo", 80, new Date(119, 11, 6, 12, 0), new Date(119, 11, 8, 0, 0)));
+        } catch (InputDataValidationException ex) {
+            System.out.println(ex.getMessage());
+        } catch (UnknownPersistenceException ex) {
+            System.out.println(ex.getMessage());
+        }*/
+        
+        
     }
 }
