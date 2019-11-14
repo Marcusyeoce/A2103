@@ -2,13 +2,17 @@ package Entity;
 
 import Entity.RentalDayEntity;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class RentalRateEntity implements Serializable {
@@ -17,25 +21,56 @@ public class RentalRateEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalRateId;
+    @Column(nullable = false)
     private String rentalRateName;
+    @Column(nullable = false)
     private int ratePerDay;
-    private List<Integer> validityPeriod;
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startDateTime;
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endDateTime;
     
     @ManyToOne
     private CategoryEntity category;
-    //@OneToMany
-    private RentalDayEntity rentalDays;
+
+    public CategoryEntity getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryEntity category) {
+        this.category = category;
+    }
+    @OneToMany (mappedBy = "")
+    private List<RentalDayEntity> rentalDays;
 
     public RentalRateEntity() {
     }
 
-    public RentalRateEntity(String rentalRateName, int ratePerDay, List<Integer> validityPeriod) {
+    public RentalRateEntity(String rentalRateName, int ratePerDay, Date startDateTime, Date endDateTime) {
         this.rentalRateName = rentalRateName;
         this.ratePerDay = ratePerDay;
-        this.validityPeriod = validityPeriod;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+    }
+
+    public Date getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(Date startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public Date getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(Date endDateTime) {
+        this.endDateTime = endDateTime;
     }
     
-
     public Long getRentalRateId() {
         return rentalRateId;
     }
@@ -58,14 +93,6 @@ public class RentalRateEntity implements Serializable {
 
     public void setRatePerDay(int ratePerDay) {
         this.ratePerDay = ratePerDay;
-    }
-
-    public List<Integer> getValidityPeriod() {
-        return validityPeriod;
-    }
-
-   public void setValidityPeriod(List<Integer> validityPeriod) {
-        this.validityPeriod = validityPeriod;
     }
 
     @Override

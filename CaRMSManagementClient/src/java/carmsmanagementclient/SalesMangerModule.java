@@ -1,5 +1,7 @@
 package carmsmanagementclient;
 
+import Entity.CategoryEntity;
+import Entity.ModelEntity;
 import Entity.RentalRateEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
@@ -8,10 +10,16 @@ import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.InputDataValidationException;
+import util.exception.UnknownPersistenceException;
 
 public class SalesMangerModule {
     
@@ -82,6 +90,74 @@ public class SalesMangerModule {
     }
 
     private void createRentalRate() {
+        System.out.println("\n***Welcome To CaRMS Management System :: Create Rental Rates***");
+        RentalRateEntity rentalRateEntity = new RentalRateEntity();
+        Scanner scanner = new Scanner(System.in);
+        
+        List<CategoryEntity> list = categorySessionBean.retrieveCategoryEntities();
+        System.out.println("\nAvailable car catergories");
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println((i + 1) + ") " + list.get(i).getCategoryName());
+        }
+        int status;
+        while (true) {
+            try {
+                Scanner sc = new Scanner(System.in);
+                System.out.print("Select a car catergory(Enter the number)> ");
+                status = sc.nextInt();
+                if (status < 1 || status > list.size()) {
+                    System.out.println("Please enter a valid option");
+                } else {
+                    break;
+                }
+            } catch (Exception ex) {
+                System.out.println("Please enter either 1 or 2!");
+            }
+        }
+        
+        System.out.print("Enter rental rate name> ");
+        String rentalRateName = scanner.nextLine();
+        System.out.print("Enter rental rate day> ");
+        String day = scanner.nextLine();
+        System.out.print("Enter start date(dd:mm:yy)> ");
+        String startDate = scanner.nextLine();
+        System.out.print("Enter start time(hh:mm)> ");
+        String startTime = scanner.nextLine();
+        System.out.print("Enter end date(dd:mm:yy)> ");
+        String endDate = scanner.nextLine();
+        System.out.print("Enter end time(hh:mm)> ");
+        String endTime = scanner.nextLine();
+        
+        String[] startArrayDate = startDate.split(":");
+        String[] startArrayTime = startTime.split(":");
+        Date dstartDate = new Date(Integer.parseInt(startArrayDate[0]) + 100, Integer.parseInt(startArrayDate[1]) - 1, Integer.parseInt(startArrayDate[2]), Integer.parseInt(startArrayTime[0]), Integer.parseInt(startArrayTime[1]));
+        
+        String[] endArrayDate = endDate.split(":");
+        String[] endArrayTime = endTime.split(":");
+        Date dendDate = new Date(Integer.parseInt(endArrayDate[0]) + 100, Integer.parseInt(endArrayDate[1]) - 1, Integer.parseInt(endArrayDate[2]), Integer.parseInt(endArrayTime[0]), Integer.parseInt(endArrayTime[1]));
+        
+        rentalRateEntity.setRentalRateName(rentalRateName);
+        rentalRateEntity.setCategory(list.get(status - 1));
+        rentalRateEntity.setStartDateTime(dstartDate);
+        rentalRateEntity.setEndDateTime(dendDate);
+        
+        Set<ConstraintViolation<RentalRateEntity>>constraintViolations = validator.validate(rentalRateEntity);
+        
+        if (constraintViolations.isEmpty()) {
+            try {
+                rentalRateEntity = rentalRateSessionBean.createRentalRate(rentalRateEntity);
+                
+                System.out.println("\nNew rental rate created successfully!: " + rentalRateEntity.getRentalRateName()+ "\n");
+            } 
+            catch(UnknownPersistenceException ex)
+            {
+                System.out.println("An unknown error has occurred while creating the new rental rate!: " + ex.getMessage() + "\n");
+            }
+            catch(InputDataValidationException ex)
+            {
+                System.out.println(ex.getMessage() + "\n");
+            }
+        }
         
     }
 
@@ -89,14 +165,15 @@ public class SalesMangerModule {
         System.out.println("\n***Welcome To CaRMS Management System :: View All Rental Rates***");
         int counter = 1;
         
-        //getListOfRentalRates()
+        List<RentalRateEntity> list = rentalRateSessionBean.retrieveAllRentalRates();
         
-        /* for (RentalRateEntity rentalRate: RentalRateEntity[] rentalRates) {
-            System.out.println(counter + ". Rental Rate Name: " + rentalRate.getName() + "\n" +
-        "Rental Rate Car Category: " + rentalRate.getCategory() + "\n" +
-        "Rental Rate Validilty Period:" + rentalRate.getValidityPeriod() + "\n");
-        counter++;
-        } */
+        //not sort by category yet
+        for (RentalRateEntity rentalRate: list) {
+            System.out.println(counter + ". Rental Rate Name: " + rentalRate.getRentalRateName()+ "\n" +
+            "Rental Rate Car Category: " + rentalRate.getCategory() + "\n" +
+            "Rental Rate validity Period: " + rentalRate.getStartDateTime()+ " to " + rentalRate.getEndDateTime() + "\n");
+            counter++;
+        }
         
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;

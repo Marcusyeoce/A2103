@@ -2,11 +2,14 @@ package Entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class RentalDayEntity implements Serializable {
@@ -15,18 +18,37 @@ public class RentalDayEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalDayId;
-    private Date rentalDate;
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date rentalStartDate;
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date rentalEndDate;
     
     @ManyToOne
     private RentalRateEntity prevailingRentalRate;
     @ManyToOne
     private ReservationEntity reservation;
+    
+    /*
+    DEFAULT
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+    WEEKDAY,
+    WEEKEND
+    */
 
     public RentalDayEntity() {
     }
 
-    public RentalDayEntity(Date rentalDate) {
-        this.rentalDate = rentalDate;
+    public RentalDayEntity(Date rentalStartDate, Date rentalEndDate) {
+        this.rentalStartDate = rentalStartDate;
+        this.rentalEndDate = rentalEndDate;
     }
 
     public Long getRentalDayId() {

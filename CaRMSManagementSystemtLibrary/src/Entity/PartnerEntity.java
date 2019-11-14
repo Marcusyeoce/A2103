@@ -1,6 +1,7 @@
 package Entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,31 +13,41 @@ public class PartnerEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long partnerId;
+    @Column(nullable = false)
+    private String partnerName;
 
-    public Long getId() {
-        return id;
+    public String getPartnerName() {
+        return partnerName;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPartnerName(String partnerName) {
+        this.partnerName = partnerName;
+    }
+
+    public Long getPartnerId() {
+        return partnerId;
+    }
+
+    public void setPartnerId(Long partnerId) {
+        this.partnerId = partnerId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (partnerId != null ? partnerId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        // TODO: Warning - this method won't work in the case the partnerId fields are not set
         if (!(object instanceof PartnerEntity)) {
             return false;
         }
         PartnerEntity other = (PartnerEntity) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.partnerId == null && other.partnerId != null) || (this.partnerId != null && !this.partnerId.equals(other.partnerId))) {
             return false;
         }
         return true;
@@ -44,7 +55,7 @@ public class PartnerEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.PartnerEntity[ id=" + id + " ]";
+        return "Entity.PartnerEntity[ id=" + partnerId + " ]";
     }
     
 }
