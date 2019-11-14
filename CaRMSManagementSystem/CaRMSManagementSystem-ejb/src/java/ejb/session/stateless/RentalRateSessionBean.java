@@ -1,6 +1,7 @@
 package ejb.session.stateless;
 
 import Entity.RentalRateEntity;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
@@ -75,6 +76,18 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         Query query = em.createQuery("SELECT r from RentalRateEntity r");
         return query.getResultList();
     }
+    
+    /* public RentalRateEntity getPrevailingRentalRate(Date dateTime) {
+        
+        double prevailingRentalRate = ;
+        
+        for (RentalRateEntity rentalRates: retrieveAllRentalRates()) {
+            //check if rental rate is applicable for day
+            //check if time is applicable 
+            //check if it is lower than the last rate
+        }
+        return prevailingRentalRate;
+    } */
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<RentalRateEntity>>constraintViolations)
     {

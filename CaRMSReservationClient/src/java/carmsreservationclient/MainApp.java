@@ -78,7 +78,7 @@ public class MainApp {
                     }
                 }
                 else if (response == 3) {
-                    //searchCar();
+                    searchCar();
                 } 
                 else if (response == 4) {
                     break;
@@ -145,7 +145,7 @@ public class MainApp {
         }
     }
 
-    private List<ModelEntity> searchCar() {
+    private void searchCar() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Search car\n***");
         System.out.println("Enter pickup date and time in (format)> ");
@@ -181,8 +181,6 @@ public class MainApp {
         for (ModelEntity model: availableModels) {
             System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate", "Location", "");
         }
-        
-        return availableModels;
     }
     
     public List<ModelEntity> getAvailableModels(Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) {
@@ -193,6 +191,9 @@ public class MainApp {
             int counter = model.getCars().size();
             for (CarEntity car: model.getCars()) {
                 boolean isAvailable = true;
+
+                //1. go through cars in own store
+                //2. go through cars in other stores (keep track of employee in store, and the dispatch record tied to store on that day)
                 /*for (ReservationEntity reservation: car.getReservations()) {
                     //if car is unavailable, counter - 1
                     if (reservation) {

@@ -24,7 +24,7 @@ public class RentalRateEntity implements Serializable {
     @Column(nullable = false)
     private String rentalRateName;
     @Column(nullable = false)
-    private int ratePerDay;
+    private double ratePerDay;
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date startDateTime;
@@ -48,7 +48,7 @@ public class RentalRateEntity implements Serializable {
     public RentalRateEntity() {
     }
 
-    public RentalRateEntity(String rentalRateName, int ratePerDay, Date startDateTime, Date endDateTime) {
+    public RentalRateEntity(String rentalRateName, double ratePerDay, Date startDateTime, Date endDateTime) {
         this.rentalRateName = rentalRateName;
         this.ratePerDay = ratePerDay;
         this.startDateTime = startDateTime;
@@ -87,11 +87,11 @@ public class RentalRateEntity implements Serializable {
         this.rentalRateName = rentalRateName;
     }
 
-    public int getRatePerDay() {
+    public double getRatePerDay() {
         return ratePerDay;
     }
 
-    public void setRatePerDay(int ratePerDay) {
+    public void setRatePerDay(double ratePerDay) {
         this.ratePerDay = ratePerDay;
     }
 
