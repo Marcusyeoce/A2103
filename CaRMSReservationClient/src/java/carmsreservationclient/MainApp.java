@@ -148,30 +148,36 @@ public class MainApp {
     private List<ModelEntity> searchCar() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Search car\n***");
-        System.out.println("Enter pickup date and time in (format)> ");
-        String pickupDateTime = scanner.nextLine().trim();
+        System.out.print("Enter pickup date(dd/mm/yy)> ");
+        String pickupDate = scanner.nextLine();
+        System.out.print("Enter pickup time(hh:mm)> ");
+        String pickupTime = scanner.nextLine();
         
-        int counterPickupOutlet = 1;
-        System.out.println("Enter pickup outlet> ");
+        String[] dateArray = pickupDate.split("/");
+        String[] timeArray = pickupTime.split(":");
+        
+        
         List<OutletEntity> outlets = outletSessionBeanRemote.retrieveOutletEntities();
-        for (OutletEntity outlet: outlets) {
-            System.out.println(counterPickupOutlet + ". " + outlet.getOutletName());
-            counterPickupOutlet++;
-        } 
-        System.out.println("Enter your choice of pickup outlet> ");
-        OutletEntity pickupOutlet = outlets.get(scanner.nextInt()-1);
+        for (int i = 0; i < outlets.size(); i++) {
+            System.out.println((i + 1) + ": " + outlets.get(i));
+        }
         
-        System.out.println("Enter return date and time in (format)> ");
-        String returnDateTime = scanner.nextLine().trim();
+        System.out.print("Enter your choice of pickup outlet> ");
+        OutletEntity pickupOutlet = outlets.get(scanner.nextInt() - 1);
         
-        int counterReturnOutlet = 1;
-        System.out.println("Enter return outlet> ");
-        for (OutletEntity outlet: outlets) {
-            System.out.println(counterReturnOutlet + ". " + outlet.getOutletName());
-            counterReturnOutlet++;
-        } 
+        System.out.println("Enter return date(dd/mm/yy)> ");
+        String returnDate = scanner.nextLine();
+        System.out.println("Enter pickup time(hh:mm)> ");
+        String returnTime = scanner.nextLine();
+        
+        String[] rdateArray = returnDate.split("/");
+        String[] rtimeArray = returnTime.split(":");
+        
+        for (int i = 0; i < outlets.size(); i++) {
+            System.out.println((i + 1) + ": " + outlets.get(i));
+        }
         System.out.println("Enter your choice of return outlet> ");
-        OutletEntity returnOutlet = outlets.get(scanner.nextInt()-1);
+        OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
         
         //search all cars, if available, get category and model, and if not already in list, add to list,search reservations to make sure no overlap
         List<ModelEntity> availableModels = new ArrayList<>();
