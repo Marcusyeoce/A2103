@@ -42,7 +42,7 @@ public class RentalRateEntity implements Serializable {
     public void setCategory(CategoryEntity category) {
         this.category = category;
     }
-    @OneToMany (mappedBy = "")
+    @OneToMany //(mappedBy = "")
     private List<RentalDayEntity> rentalDays;
 
     public RentalRateEntity() {

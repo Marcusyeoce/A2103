@@ -5,11 +5,10 @@ import Entity.CategoryEntity;
 import Entity.EmployeeEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
+import Entity.PartnerEntity;
 import Entity.RentalRateEntity;
 import ejb.session.stateless.RentalRateSessionBean;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
@@ -17,8 +16,6 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.enumeration.AccessRightEnum;
-import util.exception.InputDataValidationException;
-import util.exception.UnknownPersistenceException;
 
 @Singleton
 @LocalBean
@@ -240,14 +237,43 @@ public class DataInitSessionBean {
         em.flush();
         
         
-        /*try {
-            rentalRateSessionBean.createRentalRate(new RentalRateEntity("Weekend Promo", 80, new Date(119, 11, 6, 12, 0), new Date(119, 11, 8, 0, 0)));
-        } catch (InputDataValidationException ex) {
-            System.out.println(ex.getMessage());
-        } catch (UnknownPersistenceException ex) {
-            System.out.println(ex.getMessage());
-        }*/
+        RentalRateEntity rentalRateEntity = new RentalRateEntity("Standard Sedan - Default", 100, new Date(0, 0, 0, 0, 0), new Date(999, 0, 0, 0, 0));
+        rentalRateEntity.setCategory(standard);
+        em.persist(rentalRateEntity);
+        em.flush();
         
+        rentalRateEntity = new RentalRateEntity("Standard Sedan - Weekend Promo", 80, new Date(119, 11, 6, 12, 0), new Date(119, 11, 8, 0, 0));
+        rentalRateEntity.setCategory(standard);
+        em.persist(rentalRateEntity);
+        em.flush();
         
+        rentalRateEntity = new RentalRateEntity("Family Sedan - Default", 200, new Date(0, 0, 0, 0, 0), new Date(999, 0, 0, 0, 0));
+        rentalRateEntity.setCategory(family);
+        em.persist(rentalRateEntity);
+        em.flush();
+        
+        rentalRateEntity = new RentalRateEntity("Luxury Sedan - Monday", 310, new Date(119, 11, 2, 0, 0), new Date(119, 11, 2, 23, 59));
+        rentalRateEntity.setCategory(luxury);
+        em.persist(rentalRateEntity);
+        em.flush();
+        
+        rentalRateEntity = new RentalRateEntity("Luxury Sedan - Tuesday", 320, new Date(119, 11, 3, 0, 0), new Date(119, 11, 3, 23, 59));
+        rentalRateEntity.setCategory(luxury);
+        em.persist(rentalRateEntity);
+        em.flush();
+        
+        rentalRateEntity = new RentalRateEntity("Luxury Sedan - Wednesday", 330, new Date(119, 11, 4, 0, 0), new Date(119, 11, 4, 23, 59));
+        rentalRateEntity.setCategory(luxury);
+        em.persist(rentalRateEntity);
+        em.flush();
+        
+        rentalRateEntity = new RentalRateEntity("Luxury Sedan - Weekday Promo", 250, new Date(119, 11, 4, 12, 0), new Date(119, 11, 5, 12, 00));
+        rentalRateEntity.setCategory(luxury);
+        em.persist(rentalRateEntity);
+        em.flush();
+        
+        PartnerEntity partnerEntity = new PartnerEntity("Holiday.com");
+        em.persist(partnerEntity);
+        em.flush();
     }
 }

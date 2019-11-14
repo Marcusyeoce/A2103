@@ -1,12 +1,16 @@
 package Entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class CustomerEntity implements Serializable {
@@ -29,13 +33,15 @@ public class CustomerEntity implements Serializable {
     @Column(length = 32, nullable = false)
     private String password;
     
-    //@OneToMany()
+    @OneToMany//(mappedBy = "")
     private List<ReservationEntity> reservations;
-    //@ManyToOne
-    private List<PartnerEntity> partner;
     
+    //@ManyToOne(optional = true)
+    //@JoinColumn(nullable = true)
+    private List<PartnerEntity> partner;
 
     public CustomerEntity() {
+        partner = new ArrayList<PartnerEntity>();
     }
 
     public CustomerEntity(String firstName, String lastName, long mobileNum, String email, String passportNum, String password) {

@@ -1,11 +1,13 @@
 package Entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class PartnerEntity implements Serializable {
@@ -16,6 +18,22 @@ public class PartnerEntity implements Serializable {
     private Long partnerId;
     @Column(nullable = false)
     private String partnerName;
+    
+    @OneToMany//(mappedBy = "")
+    private List<CustomerEntity> customerEntitys;
+    
+    @OneToMany(mappedBy = "")
+    private List<ReservationEntity> reservationEntitys;
+
+    public PartnerEntity() {
+    }
+
+    public PartnerEntity(String partnerName) {
+        this();
+        this.partnerName = partnerName;
+    }
+    
+    
 
     public String getPartnerName() {
         return partnerName;
