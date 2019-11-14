@@ -31,30 +31,41 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
         em.persist(customer);
         em.flush();
     }
-    
-    public CustomerEntity retrieveCustomerByPassportNumber(String passport) throws CustomerNotFoundException {
-        Query query = em.createQuery("SELECT c from CustomerEntity c WHERE c.passportNum = :inpassportnum");
-        query.setParameter("inpassportnum", passport);
+
+    public CustomerEntity retrieveCustomerByMobileNum(String mobileNum) throws CustomerNotFoundException {
+        Query query = em.createQuery("SELECT c from CustomerEntity c WHERE c.mobileNum = :inmobilenum");
+        query.setParameter("inmobilenum", mobileNum);
         
         try {
             return (CustomerEntity)query.getSingleResult();
         } catch(NoResultException | NonUniqueResultException ex) {
-            throw new CustomerNotFoundException("Customer with passport number " + passport + " does not exist!");
+            throw new CustomerNotFoundException("Customer with mobile number " + mobileNum + " does not exist!");
+        }
+    }
+    
+    public CustomerEntity retrieveCustomerByPassportNum(String passportNum) throws CustomerNotFoundException {
+        Query query = em.createQuery("SELECT c from CustomerEntity c WHERE c.passportNum = :inpassportnum");
+        query.setParameter("inpassportnum", passportNum);
+        
+        try {
+            return (CustomerEntity)query.getSingleResult();
+        } catch(NoResultException | NonUniqueResultException ex) {
+            throw new CustomerNotFoundException("Customer with passport number " + passportNum + " does not exist!");
         }
     }
     
     @Override
     public CustomerEntity customerLogin(String passportNum, String password) throws InvalidLoginCredentialException {
         try {
-            CustomerEntity customerEntity = retrieveCustomerByPassportNumber(passportNum);
+            CustomerEntity customerEntity = retrieveCustomerByPassportNum(passportNum);
             if (customerEntity.getPassword().equals(password)) {
                 return customerEntity;
             } else {
                 throw new InvalidLoginCredentialException("Passport num does not exist or invalid password!");
             }
-        } catch(CustomerNotFoundException ex) {
+        } catch (CustomerNotFoundException ex) {
             throw new InvalidLoginCredentialException("Passport number does not exist or invalid password!");
         }
-    }
+    }  
 }
 

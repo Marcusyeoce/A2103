@@ -1,6 +1,7 @@
 package ejb.session.stateless;
 
 import Entity.CarEntity;
+import Entity.CustomerEntity;
 import Entity.ModelEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,8 @@ import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
@@ -17,6 +20,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.CarExistException;
+import util.exception.CustomerNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;
 
@@ -81,8 +85,16 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         return query.getResultList();
     }
     
-    public CarEntity retrieveCarEntityByLicensePlateNum() {
-        return null;
+    public CarEntity retrieveCarEntityByLicensePlateNum(String licensePlateNumber) throws CarExistException {
+        
+        Query query = em.createQuery("SELECT c from CarEntity c WHERE c.licensePlateNumber = :inLicensePlateNumber");
+        query.setParameter("inLicensePlateNumber", licensePlateNumber);
+        
+        try {
+            return (CarEntity) query.getSingleResult();
+        } catch(NoResultException | NonUniqueResultException ex) {
+            throw new CarExistException("Car with license plate number " + licensePlateNumber + " does not exist!");
+        }
     }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CarEntity>>constraintViolations)

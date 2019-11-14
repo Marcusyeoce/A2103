@@ -12,4 +12,6 @@ public interface CarSessionBeanRemote {
     public CarEntity createNewCar(CarEntity newCar) throws CarExistException, InputDataValidationException, UnknownPersistenceException;
     
     public List<CarEntity> retrieveAllCars();
+    
+    public CarEntity retrieveCarEntityByLicensePlateNum(String licensePlateNumber) throws CarExistException;
 }

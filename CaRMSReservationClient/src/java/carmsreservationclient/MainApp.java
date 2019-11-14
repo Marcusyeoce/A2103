@@ -9,6 +9,7 @@ import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
+import ejb.session.stateless.ReservationSessionBeanRemote;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -18,6 +19,7 @@ public class MainApp {
     
     private CustomerSessionBeanRemote customerSessionBeanRemote;
     private ModelSessionBeanRemote modelSessionBeanRemote;
+    private ReservationSessionBeanRemote reservationSessionBeanRemote;
     
     private CustomerEntity currentCustomerEntity;
     
@@ -25,9 +27,10 @@ public class MainApp {
     public MainApp() {
     }
 
-    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote) {
+    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote) {
         this.customerSessionBeanRemote = customerSessionBeanRemote;
         this.modelSessionBeanRemote = modelSessionBeanRemote;
+        this.reservationSessionBeanRemote = reservationSessionBeanRemote;
     }
     
     public void runApp()
@@ -132,7 +135,7 @@ public class MainApp {
         }
     }
 
-    private void searchCar() {
+    private List<ModelEntity> searchCar() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Search car\n***");
         System.out.println("Enter pickup date and time in (format)> ");
@@ -150,8 +153,15 @@ public class MainApp {
         for (ModelEntity model: modelSessionBeanRemote.retrieveAllModels()) {
             int counter = model.getCars().size();
             for (CarEntity car: model.getCars()) {
-                //if car is unavailable, counter - 1
-                if (true) {
+                boolean isAvailable = true;
+                /*for (ReservationEntity reservation: car.getReservations()) {
+                    //if car is unavailable, counter - 1
+                    if (reservation) {
+                        isAvailable = false;
+                        break;
+                    } 
+                } */
+                if (!isAvailable) {
                     counter--;
                 }
             }
@@ -164,32 +174,8 @@ public class MainApp {
         for (ModelEntity model: availableModels) {
             System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate", "Location", "");
         } 
-            
-        Integer response = 0;
         
-        while(true)
-        {
-            System.out.println("\n***More Options***\n");
-            System.out.println("1. Exit");
-            response = 0;
-            
-            while(response < 1 || response > 1)
-            {
-            
-                System.out.print("> ");
-                
-                response = scanner.nextInt();
-                
-                if (response == 1) {
-                    break;
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
-                }
-            }
-            if (response == 1) {
-                break;
-            }
-        }
+        return availableModels;
     }
 
     private void mainMenu() {
@@ -250,12 +236,19 @@ public class MainApp {
                 String reservationMake = scanner.nextLine().trim();
                 System.out.print("Enter car model \n>");
                 String reservationModel = scanner.nextLine().trim();
-                    
-                //check if exists and is available
-                //if not avail: System.out.println("Invalid option, please try again!\n");
                 
-                //reservation.addModel();
-                //makeReservation(reservation);
+                //search and check if exists
+                /* if () {
+                    
+                }
+                
+                //check if is available
+                for (ModelEntity model : searchCar()) {
+                    if (model == ) {
+                        //reservation.addModel();
+                        //makeReservation(reservation);
+                    }
+                } */
             } else if (response == 2) {
                     
                 //prints list of categories, get all categories

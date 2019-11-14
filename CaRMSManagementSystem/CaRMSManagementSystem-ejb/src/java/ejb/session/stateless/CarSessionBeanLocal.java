@@ -13,4 +13,5 @@ public interface CarSessionBeanLocal {
 
     public List<CarEntity> retrieveAllCars();
     
+    public CarEntity retrieveCarEntityByLicensePlateNum(String licensePlateNumber) throws CarExistException;
 }

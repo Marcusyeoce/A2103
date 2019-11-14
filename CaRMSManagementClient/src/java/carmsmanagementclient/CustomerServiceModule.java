@@ -1,6 +1,8 @@
 package carmsmanagementclient;
 
+import Entity.CarEntity;
 import Entity.CustomerEntity;
+import Entity.ReservationEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
@@ -12,6 +14,8 @@ import java.util.Scanner;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.CarExistException;
+import util.exception.CustomerNotFoundException;
 
 public class CustomerServiceModule {
     
@@ -65,7 +69,7 @@ public class CustomerServiceModule {
                 if (response == 1) {
                     pickupCar();
                 } else if (response == 2) {
-                    
+                    returnCar();
                 } else if (response == 3) {
                     break;
                 } else {
@@ -83,6 +87,8 @@ public class CustomerServiceModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
+        CustomerEntity customer = null;
+        
         while (true) {
             System.out.println("\n***Welcome To CaRMS Management System :: Pickup Car***");
             System.out.println("1.Identify customer by mobile number");
@@ -98,10 +104,18 @@ public class CustomerServiceModule {
                 
                 if (response == 1) {
                     System.out.print("Enter customer's mobile number > ");
-                    //CustomerEntity customer = customerSessionBean.retrieveCustomerByMobileNum();
+                    try {
+                        customer = customerSessionBean.retrieveCustomerByMobileNum(scanner.nextLine().trim());
+                    } catch (CustomerNotFoundException ex) {
+                        //System.err.println("");
+                    }
                 } else if (response == 2) {
                     System.out.print("Enter customer's passport number > ");
-                    //CustomerEntity customer = customerSessionBean.retrieveCustomerByPassportNum();
+                    try {
+                        customer = customerSessionBean.retrieveCustomerByPassportNum(scanner.nextLine().trim());
+                    } catch (CustomerNotFoundException ex) {
+                        //System.err.println("");
+                    }
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
@@ -112,6 +126,9 @@ public class CustomerServiceModule {
         }
         
         //check for reservations
+        //for (ReservationEntity reservationEntity: customer.getReservations()) {
+        //}
+        
         //check payment of reservation 
         //update status and location of car
     }
@@ -127,8 +144,17 @@ public class CustomerServiceModule {
             
             String carplateNum = scanner.nextLine();
 
-            //check if carplatenum matches reservation
-            //update status and location of car
-        } 
+            try {
+                CarEntity car = carSessionBean.retrieveCarEntityByLicensePlateNum(carplateNum);
+            } catch (CarExistException ex) {
+                //
+            }
+            
+            if (true) {
+                //if car has reservation that is returned in between the timing?
+                //check if carplatenum matches reservation
+                //update status and location of car
+            } 
+        }
     }
 }
