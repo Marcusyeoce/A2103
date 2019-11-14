@@ -466,15 +466,42 @@ public class MainApp {
         }
     }
     
-    private void cancelReservation(ReservationEntity reservationEntity) {
+    private void cancelReservation() {
         Scanner sc = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Cancel Reservation***\n");
         System.out.println("Enter reservation number to cancel reservation> ");
+        String reservationId = sc.nextLine();
+        
+        //ReservationEntity reservationEntity = reservationSessionBeanRemote.retrieveReservationById();
+        //boolean status isPaid = false;
+        
+        if (true /* reservationEntity.getPaymentStatus().equals("") */) {
+            
+        } else {
+            
+        }
         
         //first check how close is it to the pickup date
-        //reservationSessionBean.delete()
-        String reservationNum = sc.nextLine();
+        //get today's date
+        int daysBeforePickup = 0;
+        double penaltyAmount = 0.0;
         
+        //if more than 14 days
+        if (daysBeforePickup > 14) {
+            //no penalty
+        } else if (daysBeforePickup < 14 && daysBeforePickup >= 7) {
+            //20% penalty
+        } else if (daysBeforePickup < 7 && daysBeforePickup >= 3) {
+            //50% penalty
+        } else {
+            //70& penalty
+        }
+        
+        //reservationSessionBean.deleteReservation()
+
         //refund etc
+        System.out.println("You have been charged $" + penaltyAmount + " for cancellation of reservation!");
+        
+        //System.out.println("You will be refunded $" + (reservationEntity.getPrice() - penaltyAmount) + " for cancellation of reservation!");
     }
 }
