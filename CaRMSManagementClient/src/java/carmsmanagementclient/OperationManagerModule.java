@@ -5,6 +5,7 @@ import Entity.CategoryEntity;
 import Entity.EmployeeEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
+import Entity.TransitDispatchRecordEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
@@ -12,6 +13,7 @@ import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import ejb.session.stateless.TransitDispatchRecordSessionBeanRemote;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -34,6 +36,9 @@ public class OperationManagerModule {
     private OutletSessionBeanRemote outletSessionBean;
     private EmployeeSessionBeanRemote employeeSessionBean;
     private CategorySessionBeanRemote categorySessionBean;
+    private TransitDispatchRecordSessionBeanRemote transitDispatchRecordSessionBean;
+    
+    private EmployeeEntity currentEmployeeEntity;
     
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
@@ -43,8 +48,9 @@ public class OperationManagerModule {
         validator = validatorFactory.getValidator();
     }
 
-    public OperationManagerModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean) {
+    public OperationManagerModule(EmployeeEntity currentEmployeeEntity, EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean, TransitDispatchRecordSessionBeanRemote transitDispatchRecordSessionBean) {
         this();
+        this.currentEmployeeEntity = currentEmployeeEntity;
         this.employeeSessionBean = employeeSessionBean;
         this.outletSessionBean = outletSessionBean;
         this.carSessionBean = carSessionBean;
@@ -52,6 +58,7 @@ public class OperationManagerModule {
         this.modelSessionBean = modelSessionBean;
         this.rentalRateSessionBean = rentalRateSessionBean;
         this.categorySessionBean = categorySessionBean;
+        this.transitDispatchRecordSessionBean = transitDispatchRecordSessionBean;
     }
     
     public void mainMenuOperationsManager() {
@@ -292,16 +299,31 @@ public class OperationManagerModule {
     private void viewDispatchRecords() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: View transit driver dispatch records for current day reservations***\n");
+        
+        //List<TransitDispatchRecordEntity> dispatchRecords = transitDispatchRecordSessionBean.getAllTransitDispatchRecordForOutlet(currentEmployeeEntity.getOutletEntity());
+        
+        System.out.println("All transit dispatch records:");
+        /* for (TransitDispatchRecordEntity dispatchRecord: dispatchRecords) {
+            System.out.println();
+        } */
     }
 
     private void assignTransitDriver() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Assign transit driver***\n");
+
+        System.out.println("Current unassigned transit dispatch records:");
+        /* for () {
+        } */
     }
 
     private void updateTransitAsCompleted() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Update transit as complete***\n");
+        
+        System.out.println("Current transit dispatch in progress:");
+        /* for () {
+        } */
     }
     
     private void showInputDataValidationErrorsForModelEntity(Set<ConstraintViolation<ModelEntity>>constraintViolations) {

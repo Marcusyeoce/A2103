@@ -8,6 +8,7 @@ import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import ejb.session.stateless.TransitDispatchRecordSessionBeanRemote;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import util.enumeration.AccessRightEnum;
@@ -22,18 +23,21 @@ public class MainApp {
     private OutletSessionBeanRemote outletSessionBean;
     private EmployeeSessionBeanRemote employeeSessionBean;
     private CategorySessionBeanRemote categorySessionBean;
+    private TransitDispatchRecordSessionBeanRemote transitDispatchRecordSessionBean;
     
     private SystemAdminModule systemAdminModule;
     private SalesMangerModule salesMangerModule;
     private OperationManagerModule operationManagerModule;
     private CustomerServiceModule customerServiceModule;
     
+    private EmployeeEntity currentEmployeeEntity;
+    
     
     public MainApp()
     {
     }
     
-    public MainApp(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean) {
+    public MainApp(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean, TransitDispatchRecordSessionBeanRemote transitDispatchRecordSessionBean) {
         this();
         this.employeeSessionBean = employeeSessionBean;
         this.outletSessionBean = outletSessionBean;
@@ -42,6 +46,7 @@ public class MainApp {
         this.modelSessionBean = modelSessionBean;
         this.rentalRateSessionBean = rentalRateSessionBean;
         this.categorySessionBean = categorySessionBean;
+        this.transitDispatchRecordSessionBean = transitDispatchRecordSessionBean;
     }
     
     public void runApp()
@@ -89,13 +94,13 @@ public class MainApp {
                     try {
                         AccessRightEnum employeeRole = loginAsEmployee();
                         if (employeeRole == AccessRightEnum.SALESMANAGER) {
-                            salesMangerModule = new SalesMangerModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
+                            salesMangerModule = new SalesMangerModule(currentEmployeeEntity, employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
                             salesMangerModule.mainMenuSalesManager();
                         } else if (employeeRole == AccessRightEnum.OPERATIONMANAGER) {
-                            operationManagerModule = new OperationManagerModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
+                            operationManagerModule = new OperationManagerModule(currentEmployeeEntity, employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean, transitDispatchRecordSessionBean);
                             operationManagerModule.mainMenuOperationsManager();
                         } else if (employeeRole == AccessRightEnum.CUSTOMERSERVICEEXECUTIVE){
-                            customerServiceModule = new CustomerServiceModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
+                            customerServiceModule = new CustomerServiceModule(currentEmployeeEntity, employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
                             customerServiceModule.mainMenuCustomerRelations();
                         } else if (employeeRole == AccessRightEnum.ADMINISTRATOR) {
                             System.out.println("Please select option 1 and login as System Admin instead!\n");
@@ -130,8 +135,8 @@ public class MainApp {
         String password = scanner.nextLine().trim();
         
         if (username.length() > 0 && password.length() > 0) {
-            EmployeeEntity employee = employeeSessionBean.employeeLogin(username, password);
-            if (employee.getAccessRightEnum() != AccessRightEnum.ADMINISTRATOR) {
+            currentEmployeeEntity = employeeSessionBean.employeeLogin(username, password);
+            if (currentEmployeeEntity.getAccessRightEnum() != AccessRightEnum.ADMINISTRATOR) {
                 throw new InvalidLoginCredentialException("You do not have System Admin rights to access this page!");
             }
         } else {
@@ -150,8 +155,8 @@ public class MainApp {
         String password = scanner.nextLine().trim();
         
         if (username.length() > 0 && password.length() > 0) {
-            EmployeeEntity employeeEntity = employeeSessionBean.employeeLogin(username, password);
-            return employeeEntity.getAccessRightEnum();
+            currentEmployeeEntity = employeeSessionBean.employeeLogin(username, password);
+            return currentEmployeeEntity.getAccessRightEnum();
         } else {
             throw new InvalidLoginCredentialException("Missing login credentials!");
         }
