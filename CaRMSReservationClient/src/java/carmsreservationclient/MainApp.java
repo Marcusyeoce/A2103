@@ -165,9 +165,9 @@ public class MainApp {
         System.out.print("Enter your choice of pickup outlet> ");
         OutletEntity pickupOutlet = outlets.get(scanner.nextInt() - 1);
         
-        System.out.println("Enter return date(dd/mm/yy)> ");
+        System.out.println("Enter return date (dd/mm/yy) \n>");
         String returnDate = scanner.nextLine();
-        System.out.println("Enter pickup time(hh:mm)> ");
+        System.out.println("Enter pickup time (hh:mm) \n>");
         String returnTime = scanner.nextLine();
         
         String[] rdateArray = returnDate.split("/");
@@ -381,15 +381,40 @@ public class MainApp {
     }
     
     private void makeReservation(ReservationEntity reservation) {
+        
+        Scanner scanner = new Scanner(System.in);
  
         System.out.println("\n***Choose payment option:***\n");
         System.out.println("1.Immediate rental fee payment");
         System.out.println("2.Deferred rental fee payment");
-        
+        int response = 0;
         //for immediate, take in credit card details
         //for deferred, also need to be guranteed by credit card
+            
+        while(response < 1 || response > 2)
+        {
+            
+            System.out.print("> ");
+                
+            response = scanner.nextInt();
+                
+            if (response == 1) {
+                //reservation.setStatus();
+            } else if (response == 2) {
+                //reservation.setStatus();
+            } else {
+                System.out.println("Invalid option, please try again!\n");
+            }
+        }
+            
+        System.out.println("Please input your credit card number");
+        String ccNum = scanner.nextLine().trim();
+        System.out.println("Please input your credit card expiry date");
+        String ccExpiryDate = scanner.nextLine().trim();
+        System.out.println("Please input your credit card expiry date");
+        int cvv = scanner.nextInt();
         
-        //reservation.setCC();
+        //reservation.set();
         
         //reservationSessionBeanRemote.createNewReservation();
     }

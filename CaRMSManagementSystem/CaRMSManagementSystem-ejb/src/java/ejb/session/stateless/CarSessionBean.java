@@ -97,6 +97,13 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         }
     }
     
+    public List<CarEntity> retrieveCarEntityInOutlet(Long outletId) {
+        Query query = em.createQuery("SELECT c from CarEntity c WHERE c.outlet.outletId = :inOutletId");
+        query.setParameter("inOutletId", outletId);
+        
+        return query.getResultList();
+    }
+    
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CarEntity>>constraintViolations)
     {
         String msg = "Input data validation error!:";
