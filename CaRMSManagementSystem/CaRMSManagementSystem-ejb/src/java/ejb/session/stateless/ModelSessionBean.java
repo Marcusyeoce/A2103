@@ -2,6 +2,12 @@ package ejb.session.stateless;
 
 import Entity.CategoryEntity;
 import Entity.ModelEntity;
+import Entity.OutletEntity;
+import Entity.RentalRateEntity;
+import Entity.ReservationEntity;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
@@ -73,10 +79,74 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         }
     }
     
+    @Override
     public List<ModelEntity> retrieveAllModels() {
         Query query = em.createQuery("SELECT m from ModelEntity m");
         
         return query.getResultList();
+    }
+    
+    @Override
+    public List<ModelEntity> getAvailableModels(Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) {
+        List<ModelEntity> availableModels = new ArrayList<>();
+        System.out.println("Running getAvailableModel method : " + retrieveAllModels().size());
+        
+        List<ModelEntity> modelList = retrieveAllModels();
+        
+        for (ModelEntity model: modelList) {
+            System.out.println("looping");
+            //check if model got car
+            if (!model.getCars().isEmpty()) {
+                //check the reservations for the model
+                List<ReservationEntity> list = model.getReservationList();
+                if (list.isEmpty()) {
+                    availableModels.add(model);
+                }
+                for (int i = 0; i < list.size(); i++) {
+                    Date startDateTime = list.get(i).getStartDateTime();
+                    Date endDateTime = list.get(i).getEndDateTime();
+                    
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(startDateTime);
+                    c.add(Calendar.HOUR, -2);
+                    
+                    Calendar d = Calendar.getInstance();
+                    d.setTime(endDateTime);
+                    d.add(Calendar.HOUR, 2);
+                    
+                    //the model is available
+                    if (returnDateTime.compareTo(startDateTime) < 0) {
+                        availableModels.add(model);
+                        break;
+                    } else if (endDateTime.compareTo(pickupDateTime) < 0) {
+                        availableModels.add(model);
+                        break;
+                    } else {
+                        System.out.println("Compare nothing!!!!!!!!!!");
+                    }
+                }
+            } else {
+                System.out.println("Empty list of cars!!!!");
+            }
+        }
+        return availableModels;
+    }
+    
+    public double calculateRentalRate(Date pickupDateTime, Date returnDateTime, CategoryEntity categoryEntity) {
+        List<RentalRateEntity> rentalRateList = categoryEntity.getRentalRates();
+        for (int i = 0; i < rentalRateList.size(); i++) {
+            Date rentStart = rentalRateList.get(i).getStartDateTime();
+            Date rentEnd = rentalRateList.get(i).getStartDateTime();
+            double rentalRate = 0;
+            List<Double> rentalAmounts = new ArrayList<>();
+            //rental rate start datetime before pickup datetime, and rental end datetime after return datetime
+            if (rentStart.compareTo(pickupDateTime) < 0 && rentEnd.compareTo(returnDateTime) > 0) {
+                rentalAmounts.add(rentalRate);
+            } else if (rentStart.compareTo(pickupDateTime) < 0 && rentEnd.compareTo(pickupDateTime) > 0) {
+                rentalRate += rentalRateList.get(i).getRatePerDay();
+            }
+        }
+        return 0;
     }
     
     @Override

@@ -84,7 +84,7 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         for (ReservationEntity reservation :reservations) {
             
         }
-        return ;
+        return null;
     }
     
     public List<TransitDispatchRecordEntity> getAllTransitDispatchRecordForOutlet(OutletEntity outlet) {
@@ -94,6 +94,6 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         
         List<ReservationEntity> dispatchRecords = query.getResultList();
         
-        return dispatchRecords;
+        return null;//dispatchRecords;
     }
 }

@@ -1,6 +1,8 @@
 package ejb.session.stateless;
 
 import Entity.ModelEntity;
+import Entity.OutletEntity;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.InputDataValidationException;
@@ -16,4 +18,5 @@ public interface ModelSessionBeanRemote {
     
     public List<ModelEntity> retrieveAllModels();
     
+    public List<ModelEntity> getAvailableModels(Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet);
 }

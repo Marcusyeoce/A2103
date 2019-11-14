@@ -14,6 +14,7 @@ import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -197,59 +198,17 @@ public class MainApp {
         System.out.print("Enter your choice of return outlet> ");
         OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
         
+        
+        
         //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
-        List<ModelEntity> availableModels = getAvailableModels(pickUpDateByCust, returnDateByCust, pickupOutlet, returnOutlet);
+        List<ModelEntity> availableModels = modelSessionBeanRemote.getAvailableModels(pickUpDateByCust, returnDateByCust, pickupOutlet, returnOutlet);
  
-        System.out.println("\n***All available models:***\n");
-        System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate");
+        System.out.println("\n***All available models:***");
+        System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
         for (int i = 0; i < availableModels.size(); i++) {
             System.out.print((i + 1) + ") ");
-            System.out.printf("%15s%15s%15s" , availableModels.get(i).getModel(), availableModels.get(i).getMake()); //availableModels.get(i).getCategoryEntity().getRentalRates();
+            System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), "$15"); //availableModels.get(i).getCategoryEntity().getRentalRates();
         }
-    }
-    
-    public double calculateRentalRate(Date pickupDateTime, Date returnDateTime, CategoryEntity categoryEntity) {
-        List<RentalRateEntity> rentalRateList = categoryEntity.getRentalRates();
-        for (int i = 0; i < rentalRateList.size(); i++) {
-            Date rentStart = rentalRateList.get(i).getStartDateTime();
-            Date rentEnd = rentalRateList.get(i).getStartDateTime();
-            double rentalRate = 0;
-            List<Double> rentalAmounts = new ArrayList<>();
-            //rental rate start datetime before pickup datetime, and rental end datetime after return datetime
-            if (rentStart.compareTo(pickupDateTime) < 0 && rentEnd.compareTo(returnDateTime) > 0) {
-                rentalAmounts.add(rentalRate);
-            } else if (rentStart.compareTo(pickupDateTime) < 0 && rentEnd.compareTo(pickupDateTime) > 0) {
-                rentalRate += rentalRateList.get(i).getRatePerDay();
-            }
-        }
-        return 0;
-    }
-    
-    public List<ModelEntity> getAvailableModels(Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) {
-        
-        List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
-        
-        for (ModelEntity model: modelSessionBeanRemote.retrieveAllModels()) {
-            
-            //check if model got car
-            if (model.getCars().size() != 0) {
-                //check the reservations for the model
-                List<ReservationEntity> list = model.getReservationList();
-                for (int i = 0; i < list.size(); i++) {
-                    Date startDateTime = list.get(i).getStartDateTime();
-                    Date endDateTime = list.get(i).getEndDateTime();
-                    //the model is available
-                    if (returnDateTime.compareTo(startDateTime) > 2) {
-                        availableModels.add(model);
-                        break;
-                    } else if (endDateTime.compareTo(pickupDateTime) > 2) {
-                        availableModels.add(model);
-                        break;
-                    }
-                }
-            }
-        }
-        return availableModels;
     }
 
     private void mainMenu() {

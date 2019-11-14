@@ -36,6 +36,7 @@ public class ModelEntity implements Serializable {
 
     public ModelEntity() {
         cars = new ArrayList<>();
+        reservationList = new ArrayList<>();
     }
 
     public ModelEntity(String make, String model) {
