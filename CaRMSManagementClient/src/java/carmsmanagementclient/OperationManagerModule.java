@@ -296,6 +296,7 @@ public class OperationManagerModule {
         String number = scanner.nextLine();
     }
 
+    //show how many is required and status
     private void viewDispatchRecords() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: View transit driver dispatch records for current day reservations***\n");
@@ -308,21 +309,43 @@ public class OperationManagerModule {
         } */
     }
 
+    //show the dispatch records with no driver, and drivers that are available, update dispatch records
     private void assignTransitDriver() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Assign transit driver***\n");
 
+        //print out unassigned dispatch records
+        /* for () {
+        } */
+        
         System.out.println("Current unassigned transit dispatch records:");
         /* for () {
         } */
+        
+        //TransitDispatchRecordEntity dispatchRecord = .get();
+        
+        System.out.println("Available employees for the transit dispatch:");
+        //print out available employees
+        /* for () {
+        } */
+        
+        //EmployeeEntity employee = .get();
+        
+        //transitDispatchRecordSessionBean.setEmployee(employee);
+        //transitDispatchRecordSessionBean.updateTransitDispatchRecord(dispatchRecord);
     }
 
+    //update dispatch records
     private void updateTransitAsCompleted() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Update transit as complete***\n");
         
         System.out.println("Current transit dispatch in progress:");
+        
+        //if status in progress, change to completed
         /* for () {
+            dispatchRecord.setStatus("Completed");
+            transitDispatchRecordSessionBean.updateTransitDispatchRecord(dispatchRecord);
         } */
     }
     

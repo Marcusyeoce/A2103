@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import Entity.OutletEntity;
 import Entity.ReservationEntity;
 import Entity.TransitDispatchRecordEntity;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -64,6 +65,11 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         }
     } 
     
+    public void updateTransitDispatchRecord(TransitDispatchRecordEntity transitDispatchRecordEntity) {
+        
+        em.merge(transitDispatchRecordEntity);
+    }
+    
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<TransitDispatchRecordEntity>>constraintViolations)
     {
         String msg = "Input data validation error!:";
@@ -84,8 +90,8 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         for (ReservationEntity reservation :reservations) {
             
         }
-        return ;
-    }
+        return new ArrayList<TransitDispatchRecordEntity>();
+    } 
     
     public List<TransitDispatchRecordEntity> getAllTransitDispatchRecordForOutlet(OutletEntity outlet) {
         
@@ -94,6 +100,6 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         
         List<ReservationEntity> dispatchRecords = query.getResultList();
         
-        return dispatchRecords;
-    }
+        return new ArrayList<TransitDispatchRecordEntity>();
+    } 
 }
