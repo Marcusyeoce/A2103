@@ -14,6 +14,7 @@ import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.TransitDispatchRecordSessionBeanRemote;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -296,34 +297,79 @@ public class OperationManagerModule {
         String number = scanner.nextLine();
     }
 
+    //show how many is required and status
     private void viewDispatchRecords() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: View transit driver dispatch records for current day reservations***\n");
         
-        //List<TransitDispatchRecordEntity> dispatchRecords = transitDispatchRecordSessionBean.getAllTransitDispatchRecordForOutlet(currentEmployeeEntity.getOutletEntity());
+        List<TransitDispatchRecordEntity> dispatchRecords = transitDispatchRecordSessionBean.getAllTransitDispatchRecordForOutlet(currentEmployeeEntity.getOutletEntity());
         
+        int counter = 1;
         System.out.println("All transit dispatch records:");
-        /* for (TransitDispatchRecordEntity dispatchRecord: dispatchRecords) {
-            System.out.println();
-        } */
+        for (TransitDispatchRecordEntity dispatchRecord: dispatchRecords) {
+            System.out.println(counter +") Pickup Outlet: " + "" + "Pickup Time: " + "" + "Status: " + "");
+            counter++;
+        } 
     }
 
+    //show the dispatch records with no driver, and drivers that are available, update dispatch records
     private void assignTransitDriver() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Assign transit driver***\n");
 
+        //print out unassigned dispatch records
+        List<TransitDispatchRecordEntity> unassignedDispatchRecords = new ArrayList<TransitDispatchRecordEntity>();
+        for (TransitDispatchRecordEntity transitDispatchRecord :transitDispatchRecordSessionBean.getAllTransitDispatchRecordForOutlet(currentEmployeeEntity.getOutletEntity())) {
+            /* if (transitDispatchRecord.getStatus().equals("Unassigned")) {
+                unassignedDispatchRecords.add(transitDispatchRecord);
+            } */
+        } 
+        
+        System.out.println("Enter the number of unassigned transit dispatch record to assign employee");
         System.out.println("Current unassigned transit dispatch records:");
-        /* for () {
-        } */
+        int counter = 1;
+        for (TransitDispatchRecordEntity transitDispatchRecordEntity: unassignedDispatchRecords) {
+            System.out.println(counter + ") Pickup Outlet: " + "" + "Pickup Time: " + "");
+            counter++;
+        }
+        TransitDispatchRecordEntity dispatchRecord = unassignedDispatchRecords.get(scanner.nextInt() - 1);
+        
+        //print out list of available employees
+        List<EmployeeEntity> availableEmployees = new ArrayList<EmployeeEntity>();
+        for (EmployeeEntity employee: currentEmployeeEntity.getOutletEntity().getEmployeeEntities()) {
+            /* if (available) {
+                availableEmployees.add(employee);
+            } */
+        } 
+        
+        System.out.println("Enter the number of available employee to assign employee");
+        System.out.println("Available employees for the transit dispatch:");
+        counter = 1;
+        for (EmployeeEntity employee: availableEmployees) {
+            System.out.println(counter + ") Employee Name: " + "" + "Employee Role: " + "");
+            counter++;
+        }
+        EmployeeEntity employee = availableEmployees.get(scanner.nextInt() - 1);
+        
+        //transitDispatchRecordSessionBean.setEmployee(employee);
+        //transitDispatchRecordSessionBean.updateTransitDispatchRecord(dispatchRecord);
     }
 
+    //update dispatch records
     private void updateTransitAsCompleted() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Update transit as complete***\n");
-        
+        System.out.println("\n***Welcome To CaRMS Reservation System :: Update transit as completed***\n");
+        System.out.println("Input the number of the transit dispatch record to update it as completed:");
         System.out.println("Current transit dispatch in progress:");
+        
+        //if status in progress, change to completed
         /* for () {
+        
         } */
+        
+        //dispatchRecord.setStatus("Completed");
+        //transitDispatchRecordSessionBean.updateTransitDispatchRecord(dispatchRecord);
+        
     }
     
     private void showInputDataValidationErrorsForModelEntity(Set<ConstraintViolation<ModelEntity>>constraintViolations) {

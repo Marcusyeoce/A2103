@@ -18,6 +18,7 @@ public class PartnerEntity implements Serializable {
     private Long partnerId;
     @Column(nullable = false)
     private String partnerName;
+    private String password;
     
     @OneToMany//(mappedBy = "")
     private List<CustomerEntity> customerEntitys;
@@ -33,7 +34,13 @@ public class PartnerEntity implements Serializable {
         this.partnerName = partnerName;
     }
     
-    
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getPartnerName() {
         return partnerName;

@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import Entity.OutletEntity;
 import Entity.ReservationEntity;
 import Entity.TransitDispatchRecordEntity;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -64,6 +65,11 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         }
     } 
     
+    public void updateTransitDispatchRecord(TransitDispatchRecordEntity transitDispatchRecordEntity) {
+        
+        em.merge(transitDispatchRecordEntity);
+    }
+    
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<TransitDispatchRecordEntity>>constraintViolations)
     {
         String msg = "Input data validation error!:";
@@ -84,16 +90,16 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         for (ReservationEntity reservation :reservations) {
             
         }
-        return null;
-    }
+        return new ArrayList<TransitDispatchRecordEntity>();
+    } 
     
     public List<TransitDispatchRecordEntity> getAllTransitDispatchRecordForOutlet(OutletEntity outlet) {
         
         //get today date
-        Query query = em.createQuery("SELECT t FROM TransitDispatchRecordEntity t WHERE t.outlet = outlet JOIN r.startDateTime = curentDay");
+        Query query = em.createQuery("SELECT t FROM TransitDispatchRecordEntity t WHERE t.outlet.outletId = outlet.outletId JOIN r.startDateTime = curentDay");
         
-        List<ReservationEntity> dispatchRecords = query.getResultList();
+        List<TransitDispatchRecordEntity> dispatchRecords = query.getResultList();
         
-        return null;//dispatchRecords;
-    }
+        return dispatchRecords;
+    } 
 }
