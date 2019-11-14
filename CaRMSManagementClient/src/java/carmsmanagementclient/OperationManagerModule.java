@@ -209,7 +209,7 @@ public class OperationManagerModule {
         while (true) {
             try {
                 Scanner sc = new Scanner(System.in);
-                System.out.print("Enter status(1 = Avilable, 2 = Repair)> ");
+                System.out.print("Enter status(1 = Available, 2 = Repair)> ");
                 status = sc.nextInt();
                 if (status < 1 || status > 2) {
                     System.out.println("\nPlease enter a valid option");
@@ -278,7 +278,7 @@ public class OperationManagerModule {
         List<CarEntity> list = carSessionBean.retrieveAllCars();
         
         for (int i = 0; i < list.size(); i++) {
-            System.out.println((i + 1) + ")" + list.get(i));
+            System.out.println((i + 1) + ")" + list.get(i).getLicensePlateNumber() + " - " + list.get(i).getStatus() + " - " + list.get(i).getOutlet().getOutletName());
         }
     }
 

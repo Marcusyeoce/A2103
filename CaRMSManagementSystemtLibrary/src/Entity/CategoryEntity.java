@@ -13,20 +13,6 @@ import javax.persistence.OneToMany;
 @Entity
 public class CategoryEntity implements Serializable {
 
-    /**
-     * @return the rentalRates
-     */
-    public List<RentalRateEntity> getRentalRates() {
-        return rentalRates;
-    }
-
-    /**
-     * @param rentalRates the rentalRates to set
-     */
-    public void setRentalRates(List<RentalRateEntity> rentalRates) {
-        this.rentalRates = rentalRates;
-    }
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +39,15 @@ public class CategoryEntity implements Serializable {
         this();
         this.categoryName = categoryName;
     }
+    
+    public List<RentalRateEntity> getRentalRates() {
+        return rentalRates;
+    }
+
+    public void setRentalRates(List<RentalRateEntity> rentalRates) {
+        this.rentalRates = rentalRates;
+    }
+
 
     public Long getCategoryId() {
         return categoryId;

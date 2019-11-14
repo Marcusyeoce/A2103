@@ -10,6 +10,7 @@ import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -67,7 +68,7 @@ public class SystemAdminModule {
             System.out.println("5: Logout\n");
             response = 0;
             
-            while(response < 1 || response > 3)
+            while(response < 1 || response > 5)
             {
             
                 System.out.print("> ");
@@ -97,18 +98,18 @@ public class SystemAdminModule {
     
         private void createNewOutlet() {
         
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc4 = new Scanner(System.in);
         OutletEntity outletEntity = new OutletEntity();
         System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Outlet***\n");
 
         System.out.print("Enter Outlet name> ");
-        String name = scanner.nextLine();
+        String name = sc4.nextLine();
         System.out.print("Enter Outlet address> ");
-        String address = scanner.nextLine();
+        String address = sc4.nextLine();
         System.out.print("Enter opening hour(hh:mm)> ");
-        String openingHour = scanner.nextLine();
+        String openingHour = sc4.nextLine();
         System.out.print("Enter closing hour(hh:mm)> ");
-        String closingHour = scanner.nextLine();
+        String closingHour = sc4.nextLine();
         outletEntity.setOutletName(name);
         outletEntity.setAddress(address);
         outletEntity.setOpeningHour(openingHour);
@@ -138,23 +139,36 @@ public class SystemAdminModule {
 
     private void createNewEmployee() {
         
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc1 = new Scanner(System.in);
         EmployeeEntity employeeEntity = new EmployeeEntity();
         System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Employee***\n");
 
         System.out.print("Enter employee name> ");
-        String firstName = scanner.nextLine();
+        String firstName = sc1.nextLine();
         System.out.print("Enter username> ");
-        String username = scanner.nextLine();
+        String username = sc1.nextLine();
         System.out.print("Enter password> ");
-        String password = scanner.nextLine().trim();
+        String password = sc1.nextLine().trim();
+        List<OutletEntity> list = outletSessionBean.retrieveOutletEntities();
+        int counter = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (!list.get(i).getOutletName().equals("Outlet Admin")) {
+                counter++;
+                System.out.println(counter + ") " + list.get(i).getOutletName());
+            }
+            
+        }
+        System.out.println("Enter a outlet(enter the number)> ");
+        int outletNum = sc1.nextInt();
         employeeEntity.setName(firstName);
         employeeEntity.setUsername(username);
         employeeEntity.setPassword(password);
+        employeeEntity.setOutletEntity(list.get(outletNum));
         String role = "";
         while(true) {
+            Scanner scc = new Scanner(System.in);
             System.out.print("Enter Employee Role (1: Sales Manager, 2: Operation Manager, 3: Customer Service Executive)> ");
-            int roleNum = scanner.nextInt();
+            int roleNum = scc.nextInt();
             
             if (roleNum >= 1 && roleNum <= 3) {
                 employeeEntity.setAccessRightEnum(AccessRightEnum.values()[roleNum - 1]);
@@ -162,9 +176,10 @@ public class SystemAdminModule {
                     role = "Sales Manager";
                 else if (roleNum == 2) 
                     role = "Operation Manager";
-                else 
+                else if (roleNum == 3)
                     role = "Customer Service Executive";
-                break;
+                else
+                    break;
             } else {
                 System.out.println("Invalid option, please try again!\n");
             }
@@ -194,29 +209,27 @@ public class SystemAdminModule {
     }
 
     private void createNewPartner() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc3 = new Scanner(System.in);
 
         System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Partner***\n");
 
         System.out.print("Enter partner name> ");
-        String name = scanner.nextLine();
+        String name = sc3.nextLine();
         System.out.print("Enter partner number> ");
-        String number = scanner.nextLine();
+        String number = sc3.nextLine();
 
         System.out.println("New partner created successfully! Partner is " + name + ".\n");
         
     }
 
     private void createNewCategory() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc2 = new Scanner(System.in);
         CategoryEntity newCategoryEntity = new CategoryEntity();
         System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Category***\n");
 
         System.out.print("Enter category name> ");
-        String name = scanner.nextLine();
+        String name = sc2.nextLine();
         newCategoryEntity.setCategoryName(name);
-
-        System.out.println("New category created successfully! Category is " + name + ".\n");
         
         Set<ConstraintViolation<CategoryEntity>>constraintViolations = validator.validate(newCategoryEntity);
         

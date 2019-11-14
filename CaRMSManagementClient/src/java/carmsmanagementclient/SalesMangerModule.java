@@ -117,24 +117,24 @@ public class SalesMangerModule {
         
         System.out.print("Enter rental rate name> ");
         String rentalRateName = scanner.nextLine();
-        System.out.print("Enter rental rate day> ");
+        System.out.print("Enter rental rate> ");
         String rentalRate = scanner.nextLine();
-        System.out.print("Enter start date(dd:mm:yy)> ");
+        System.out.print("Enter start date(dd/mm/yy)> ");
         String startDate = scanner.nextLine();
         System.out.print("Enter start time(hh:mm)> ");
         String startTime = scanner.nextLine();
-        System.out.print("Enter end date(dd:mm:yy)> ");
+        System.out.print("Enter end date(dd/mm/yy)> ");
         String endDate = scanner.nextLine();
         System.out.print("Enter end time(hh:mm)> ");
         String endTime = scanner.nextLine();
         
-        String[] startArrayDate = startDate.split(":");
+        String[] startArrayDate = startDate.split("/");
         String[] startArrayTime = startTime.split(":");
-        Date dstartDate = new Date(Integer.parseInt(startArrayDate[0]) + 100, Integer.parseInt(startArrayDate[1]) - 1, Integer.parseInt(startArrayDate[2]), Integer.parseInt(startArrayTime[0]), Integer.parseInt(startArrayTime[1]));
+        Date dstartDate = new Date(Integer.parseInt(startArrayDate[2]) , Integer.parseInt(startArrayDate[1]) - 1, Integer.parseInt(startArrayDate[0]) + 100, Integer.parseInt(startArrayTime[0]), Integer.parseInt(startArrayTime[1]));
         
-        String[] endArrayDate = endDate.split(":");
+        String[] endArrayDate = endDate.split("/");
         String[] endArrayTime = endTime.split(":");
-        Date dendDate = new Date(Integer.parseInt(endArrayDate[0]) + 100, Integer.parseInt(endArrayDate[1]) - 1, Integer.parseInt(endArrayDate[2]), Integer.parseInt(endArrayTime[0]), Integer.parseInt(endArrayTime[1]));
+        Date dendDate = new Date(Integer.parseInt(endArrayDate[2]), Integer.parseInt(endArrayDate[1]) - 1, Integer.parseInt(endArrayDate[0]) + 100, Integer.parseInt(endArrayTime[0]), Integer.parseInt(endArrayTime[1]));
         
         rentalRateEntity.setRentalRateName(rentalRateName);
         rentalRateEntity.setCategory(list.get(status - 1));
@@ -171,7 +171,7 @@ public class SalesMangerModule {
         //not sort by category yet
         for (RentalRateEntity rentalRate: list) {
             System.out.println(counter + ". Rental Rate Name: " + rentalRate.getRentalRateName()+ "\n" +
-            "Rental Rate Car Category: " + rentalRate.getCategory() + "\n" +
+            "Rental Rate Car Category: " + rentalRate.getCategory().getCategoryName() + "\n" +
             "Rental Rate validity Period: " + rentalRate.getStartDateTime()+ " to " + rentalRate.getEndDateTime() + "\n");
             counter++;
         }
