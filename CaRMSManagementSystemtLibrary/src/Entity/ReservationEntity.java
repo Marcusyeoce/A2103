@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 
 @Entity
@@ -23,8 +24,14 @@ public class ReservationEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationId;
+    @Column(nullable = false)
+    @NotNull
     private String ccNum; 
+    @Column(nullable = false)
+    @NotNull
     private Date ccExpiryDate; //maybe String?
+    @Column(nullable = false)
+    @NotNull
     private int ccCVV;
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -32,31 +39,54 @@ public class ReservationEntity implements Serializable {
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDateTime;
+    
     private boolean isPaid;
     private int status; //0 for reserved, 1 for cancelled, 2 for success(car returned)
     
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
     private CustomerEntity customer;
-    @ManyToOne
+    
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
     private PartnerEntity partner;
+    
     @OneToOne
     private CategoryEntity category;
-    @ManyToOne//(optional = false)
-    @JoinColumn//(nullable = false)
+    
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
     private ModelEntity model;
+    
     @OneToOne//(mappedBy = "")
     private CarEntity car;
-    @OneToOne
+    
+    @OneToOne//(mappedBy = "")
     private OutletEntity pickupOutlet;
-    @OneToOne
+    
+    @OneToOne//(mappedBy = "")
     private OutletEntity returnOutlet;
+    
     //@OneToMany
     private List<RentalDayEntity> rentalDays;
-    @OneToOne
+    
+    @OneToOne//(mappedBy = "")
     private TransitDispatchRecordEntity transitDispatchRecord;
-
+    
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
+    private PartnerEntity partnerEntity;
+    
     public ReservationEntity() {
+        
+    }
+
+    public PartnerEntity getPartner() {
+        return partner;
+    }
+
+    public void setPartner(PartnerEntity partner) {
+        this.partner = partner;
     }
 
     public Date getStartDateTime() {
