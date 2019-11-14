@@ -20,7 +20,7 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
     @PersistenceContext(unitName = "CaRMSManagementSystem-ejbPU")
     private EntityManager em;
     
-    /* public Long createTransitDispatchRecord(TransitDispatchRecordEntity transitDispatchRecordEntity) {
+    /*public Long createTransitDispatchRecord(TransitDispatchRecordEntity transitDispatchRecordEntity) {
         
         
     } */
