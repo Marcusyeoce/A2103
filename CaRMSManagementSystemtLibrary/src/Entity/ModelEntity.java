@@ -30,6 +30,9 @@ public class ModelEntity implements Serializable {
     @ManyToOne(optional = true)
     @JoinColumn(nullable = true)
     private CategoryEntity categoryEntity;
+    
+    @OneToMany//(mappedBy = "")
+    private List<ReservationEntity> reservationList;
 
     public ModelEntity() {
         cars = new ArrayList<>();
@@ -40,6 +43,16 @@ public class ModelEntity implements Serializable {
         this.make = make;
         this.model = model;
     }
+
+    public List<ReservationEntity> getReservationList() {
+        return reservationList;
+    }
+
+    public void setReservationList(List<ReservationEntity> reservationList) {
+        this.reservationList = reservationList;
+    }
+    
+    
 
     public String getMake() {
         return make;

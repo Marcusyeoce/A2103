@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -22,7 +23,7 @@ public class CarEntity implements Serializable {
     private String licensePlateNumber;
     @Column(nullable = false, length = 32)
     @NotNull
-    private String status; //status    
+    private String status; //Available, Repair, Unavailable
     
     @ManyToOne(optional = true) //should be false
     @JoinColumn(nullable = true) 
@@ -31,6 +32,9 @@ public class CarEntity implements Serializable {
     @ManyToOne(optional = true)
     @JoinColumn(nullable = true)
     private OutletEntity outlet; //location
+    
+    @OneToOne
+    private ReservationEntity reservationEntity;
 
     public OutletEntity getOutlet() {
         return outlet;

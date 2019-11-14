@@ -5,6 +5,7 @@ import Entity.CategoryEntity;
 import Entity.CustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
+import Entity.RentalRateEntity;
 import Entity.ReservationEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
@@ -147,46 +148,81 @@ public class MainApp {
 
     private void searchCar() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Search car\n***");
+        System.out.println("\n***Welcome To CaRMS Reservation System :: Search car***\n");
         System.out.print("Enter pickup date(dd/mm/yy)> ");
         String pickupDate = scanner.nextLine();
         System.out.print("Enter pickup time(hh:mm)> ");
         String pickupTime = scanner.nextLine();
+        System.out.println();
         
         String[] dateArray = pickupDate.split("/");
         String[] timeArray = pickupTime.split(":");
         
+        Date pickUpDateByCust = new Date(Integer.parseInt(dateArray[2]), Integer.parseInt(dateArray[1]), Integer.parseInt(dateArray[0]), Integer.parseInt(timeArray[0]), Integer.parseInt(timeArray[1]));
         
+        System.out.println("Available Outlets");
         List<OutletEntity> outlets = outletSessionBeanRemote.retrieveOutletEntities();
+        int counter = 0;
         for (int i = 0; i < outlets.size(); i++) {
-            System.out.println((i + 1) + ": " + outlets.get(i));
+            if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
+                counter++;
+                System.out.println((counter) + ") " + outlets.get(i).getOutletName());
+            }
         }
         
-        System.out.print("Enter your choice of pickup outlet> ");
-        OutletEntity pickupOutlet = outlets.get(scanner.nextInt() - 1);
+        System.out.print("Enter your choice of pickup outlet(enter number)> ");
+        OutletEntity pickupOutlet = outlets.get(scanner.nextInt());
+        scanner.nextLine();
+        System.out.println(".................................");
         
-        System.out.println("Enter return date(dd/mm/yy)> ");
+        System.out.print("Enter return date(dd/mm/yy)> ");
         String returnDate = scanner.nextLine();
-        System.out.println("Enter pickup time(hh:mm)> ");
+        System.out.print("Enter pickup time(hh:mm)> ");
         String returnTime = scanner.nextLine();
+        System.out.println();
         
         String[] rdateArray = returnDate.split("/");
         String[] rtimeArray = returnTime.split(":");
         
+        Date returnDateByCust = new Date(Integer.parseInt(rdateArray[2]), Integer.parseInt(rdateArray[1]), Integer.parseInt(rdateArray[0]), Integer.parseInt(rtimeArray[0]), Integer.parseInt(rtimeArray[1]));
+        
+        System.out.println("Available Outlets");
+        int counterr = 0;
         for (int i = 0; i < outlets.size(); i++) {
-            System.out.println((i + 1) + ": " + outlets.get(i));
+            if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
+                counterr++;
+                System.out.println((counterr) + ") " + outlets.get(i).getOutletName());
+            }
         }
-        System.out.println("Enter your choice of return outlet> ");
+        System.out.print("Enter your choice of return outlet> ");
         OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
         
-        //search all cars, if available, get category and model, and if not already in list, add to list,search reservations to make sure no overlap
-        List<ModelEntity> availableModels = new ArrayList<>();
-                //getAvailableModels(pickupDateTime, returnDateTime, pickupOutlet, returnOutlet);
+        //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
+        List<ModelEntity> availableModels = getAvailableModels(pickUpDateByCust, returnDateByCust, pickupOutlet, returnOutlet);
  
         System.out.println("\n***All available models:***\n");
-        for (ModelEntity model: availableModels) {
-            System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate", "Location", "");
+        System.out.printf("%15s%15s%15s" , "Car Model", "Car Manufacturer", "Car Rate");
+        for (int i = 0; i < availableModels.size(); i++) {
+            System.out.print((i + 1) + ") ");
+            System.out.printf("%15s%15s%15s" , availableModels.get(i).getModel(), availableModels.get(i).getMake()); //availableModels.get(i).getCategoryEntity().getRentalRates();
         }
+    }
+    
+    public double calculateRentalRate(Date pickupDateTime, Date returnDateTime, CategoryEntity categoryEntity) {
+        List<RentalRateEntity> rentalRateList = categoryEntity.getRentalRates();
+        for (int i = 0; i < rentalRateList.size(); i++) {
+            Date rentStart = rentalRateList.get(i).getStartDateTime();
+            Date rentEnd = rentalRateList.get(i).getStartDateTime();
+            double rentalRate = 0;
+            List<Double> rentalAmounts = new ArrayList<>();
+            //rental rate start datetime before pickup datetime, and rental end datetime after return datetime
+            if (rentStart.compareTo(pickupDateTime) < 0 && rentEnd.compareTo(returnDateTime) > 0) {
+                rentalAmounts.add(rentalRate);
+            } else if (rentStart.compareTo(pickupDateTime) < 0 && rentEnd.compareTo(pickupDateTime) > 0) {
+                rentalRate += rentalRateList.get(i).getRatePerDay();
+            }
+        }
+        return 0;
     }
     
     public List<ModelEntity> getAvailableModels(Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) {
@@ -194,28 +230,25 @@ public class MainApp {
         List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
         
         for (ModelEntity model: modelSessionBeanRemote.retrieveAllModels()) {
-            int counter = model.getCars().size();
-            for (CarEntity car: model.getCars()) {
-                boolean isAvailable = true;
-
-                //1. go through cars in own store
-                //2. go through cars in other stores (keep track of employee in store, and the dispatch record tied to store on that day)
-                /*for (ReservationEntity reservation: car.getReservations()) {
-                    //if car is unavailable, counter - 1
-                    if (reservation) {
-                        isAvailable = false;
+            
+            //check if model got car
+            if (model.getCars().size() != 0) {
+                //check the reservations for the model
+                List<ReservationEntity> list = model.getReservationList();
+                for (int i = 0; i < list.size(); i++) {
+                    Date startDateTime = list.get(i).getStartDateTime();
+                    Date endDateTime = list.get(i).getEndDateTime();
+                    //the model is available
+                    if (returnDateTime.compareTo(startDateTime) > 2) {
+                        availableModels.add(model);
                         break;
-                    } 
-                } */
-                if (!isAvailable) {
-                    counter--;
+                    } else if (endDateTime.compareTo(pickupDateTime) > 2) {
+                        availableModels.add(model);
+                        break;
+                    }
                 }
             }
-            if (counter > 0) {
-                availableModels.add(model);
-            }
         }
-        
         return availableModels;
     }
 
