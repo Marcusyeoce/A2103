@@ -20,7 +20,7 @@ public class HolidayReservationWebService {
     private PartnerEntity currentPartnerEntity;
 
     @WebMethod(operationName = "runApp")
-    private void runApp() {
+    private void runApp() throws InvalidLoginCredentialException {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         

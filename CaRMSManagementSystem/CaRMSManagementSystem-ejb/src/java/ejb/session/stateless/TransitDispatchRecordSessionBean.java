@@ -96,10 +96,10 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
     public List<TransitDispatchRecordEntity> getAllTransitDispatchRecordForOutlet(OutletEntity outlet) {
         
         //get today date
-        Query query = em.createQuery("SELECT t FROM TransitDispatchRecordEntity t WHERE t.outlet = outlet JOIN r.startDateTime = curentDay");
+        Query query = em.createQuery("SELECT t FROM TransitDispatchRecordEntity t WHERE t.outlet.outletId = outlet.outletId JOIN r.startDateTime = curentDay");
         
-        List<ReservationEntity> dispatchRecords = query.getResultList();
+        List<TransitDispatchRecordEntity> dispatchRecords = query.getResultList();
         
-        return new ArrayList<TransitDispatchRecordEntity>();
+        return dispatchRecords;
     } 
 }
