@@ -219,8 +219,6 @@ public class SalesMangerModule {
         }
         System.out.println(".................................");
         
-        
-        
         while (true) {
             
             System.out.println("***More Options***\n");

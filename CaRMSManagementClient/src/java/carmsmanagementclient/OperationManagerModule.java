@@ -228,7 +228,7 @@ public class OperationManagerModule {
                     System.out.print("\nEnter new car model> ");
                     String newName = scan.nextLine();
                     //merge to DB
-                    ModelEntity m = modelSessionBean.updateManufacturerName(modelEntity.getModelId(), newName);
+                    ModelEntity m = modelSessionBean.updateModelName(modelEntity.getModelId(), newName);
                     System.out.println("Car model changed successfully: " + m.getModel());
                 } else if (response == 3) {
                     List<CategoryEntity> list = categorySessionBean.retrieveCategoryEntities();
@@ -262,16 +262,6 @@ public class OperationManagerModule {
                 }
             }
         }
-        /*
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Update Car Model***\n");
-        System.out.println("Enter car model name> ");
-        String name = scanner.nextLine();
-        
-        
-        
-        
-        System.out.println("Enter car model name> ");
-        String name = scanner.nextLine();*/
     }
 
     private void deleteCarModel() {
@@ -359,17 +349,158 @@ public class OperationManagerModule {
     private void viewAllCar() {
         System.out.println("\n***Welcome To CaRMS Reservation System :: View all Cars***\n");
         List<CarEntity> list = carSessionBean.retrieveAllCars();
-        
+        System.out.printf("%15s%15s%15s", "License Plate Number", "Status", "Outlet");
         for (int i = 0; i < list.size(); i++) {
-            System.out.println((i + 1) + ")" + list.get(i).getLicensePlateNumber() + " - " + list.get(i).getStatus() + " - " + list.get(i).getOutlet().getOutletName());
+            System.out.print((i + 1) + ")");
+            System.out.printf("%%15s%15s%15s\n", list.get(i).getLicensePlateNumber(), list.get(i).getStatus(), list.get(i).getOutlet().getOutletName());
         }
     }
 
     private void viewCarDetails() { //includes updateCar and deleteCar
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: View car details***\n");
-        System.out.println("Enter car license plate number> ");
+        System.out.print("Enter car license plate number> ");
         String number = scanner.nextLine();
+        CarEntity carEntity = new CarEntity();
+        try {
+            carEntity = carSessionBean.retrieveCarEntityByLicensePlateNum(number);
+            System.out.printf("%15s%15s%15s%15s%15s", "License Plate Number", "Status", "Model", "Outlet", "Reservation Start Date");
+            System.out.printf("%15s%15s%15s%15s%15s", carEntity.getLicensePlateNumber(), carEntity.getStatus(), carEntity.getModelEntity().getModel(), carEntity.getOutlet().getOutletName(), "N.A.");
+        } catch (CarExistException ex) {
+            System.out.println("No car with that liscence plate number exist");
+        }
+        
+        System.out.println(".................................");
+        
+        Integer response = 0;
+        while (true) {
+            
+            System.out.println("***More Options***\n");
+            System.out.println("1) Update car");
+            System.out.println("2) Delete car");
+            System.out.println("3) Exit");
+            response = 0;
+                
+            while(response < 1 || response > 3) {
+            
+                System.out.print("Enter a number> ");
+
+                response = scanner.nextInt();
+
+                if (response == 1) {
+                    updateCar(carEntity);
+                } else if (response == 2) {
+                    deleteCar();
+                } else if (response == 3) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+            if (response == 3) {
+                break;
+            }
+        }
+    }
+    
+    private void updateCar(CarEntity carEntity) {
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while (true) {
+            
+            System.out.println("\n***Welcome To CaRMS Management System :: Update Car***");
+            System.out.println("Select the field to update");
+            System.out.println("1) Change Car License Plate Number");
+            System.out.println("2) Change Car Model");
+            System.out.println("3) Change Car Status");
+            System.out.println("4) Change Car Outlet");
+            System.out.println("5) Exit");
+            response = 0;
+                
+            while(response < 1 || response > 6) {
+            
+                System.out.print("Enter a number> ");
+
+                response = scanner.nextInt();
+
+                if (response == 1) {
+                    Scanner scan = new Scanner(System.in);
+                    System.out.print("\nEnter new car license plate number> ");
+                    String newName = scan.nextLine();
+                    //merge to DB
+                    //RentalRateEntity r = rentalRateSessionBean.updateName(rentalRateEntity.getRentalRateId(), newName);
+                    CarEntity carEntity1 = carSessionBean.updateCarlicensePlateNumber(carEntity.getCarId(), newName);
+                    System.out.println("Car license plate number changed successfully: " + newName);
+                } else if (response == 2) {
+                    List<ModelEntity> list = modelSessionBean.retrieveAllModels();
+                    System.out.println("\nAvailable car models");
+                    for (int i = 0; i < list.size(); i++) {
+                        System.out.println((i + 1) + ") " + list.get(i).getModel());
+                    }
+                    int status;
+                    while (true) {
+                        try {
+                            Scanner sc = new Scanner(System.in);
+                            System.out.print("Enter number name> ");
+                            status = sc.nextInt();
+                            if (status < 1 || status > list.size()) {
+                                System.out.println("Please enter a valid option");
+                            } else {
+                                break;
+                            }
+                        } catch (Exception ex) {
+                            System.out.println("Please enter numbers only!");
+                        }
+                    }
+                    //merge to DB
+                    CarEntity re = carSessionBean.updateCarModel(carEntity.getCarId(), list.get(status - 1).getModelId());
+                    System.out.println("Car model changed successfully: " + list.get(status - 1).getModel());
+                } else if (response == 3) {
+                    Scanner ss = new Scanner(System.in);
+                    System.out.print("\nEnter new car status> ");
+                    String status = ss.nextLine();
+                    //merge to DB
+                    CarEntity re1 = carSessionBean.updateCarStatus(carEntity.getCarId(), status);
+                    System.out.println("Car status changed successfully: " + status);
+                } else if (response == 4) {
+                    List<OutletEntity> list = outletSessionBean.retrieveOutletEntities();
+                    System.out.println("\nAvailable outlets");
+                    for (int i = 0; i < list.size(); i++) {
+                        System.out.println((i + 1) + ") " + list.get(i).getOutletName());
+                    }
+                    int status;
+                    while (true) {
+                        try {
+                            Scanner sc = new Scanner(System.in);
+                            System.out.print("Enter number name> ");
+                            status = sc.nextInt();
+                            if (status < 1 || status > list.size()) {
+                                System.out.println("Please enter a valid option");
+                            } else {
+                                break;
+                            }
+                        } catch (Exception ex) {
+                            System.out.println("Please enter numbers only!");
+                        }
+                    }
+                    //merge to DB
+                    CarEntity re = carSessionBean.updateCarOutlet(carEntity.getCarId(), list.get(status - 1).getOutletId());
+                    System.out.println("Outlet that car is at is changed successfully: " + list.get(status - 1).getOutletName());
+                } else if (response == 5) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+            if (response == 5) {
+                break;
+            }
+        }
+    }
+
+    private void deleteCar() {
+        
     }
 
     //show how many is required and status

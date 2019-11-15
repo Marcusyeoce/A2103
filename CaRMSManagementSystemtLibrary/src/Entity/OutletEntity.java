@@ -38,6 +38,9 @@ public class OutletEntity implements Serializable {
     
     @OneToMany(mappedBy = "outletEntity")
     private List<EmployeeEntity> employeeEntities;
+    
+    @OneToMany//(mappedBy = "")
+    private List<CarEntity> car;
 
     public OutletEntity() {
     }
@@ -49,6 +52,16 @@ public class OutletEntity implements Serializable {
         this.openingHour = openingTime;
         this.closingHour = closingTime;
     }
+
+    public List<CarEntity> getCar() {
+        return car;
+    }
+
+    public void setCar(List<CarEntity> car) {
+        this.car = car;
+    }
+    
+    
 
     public List<EmployeeEntity> getEmployeeEntities() {
         return employeeEntities;
