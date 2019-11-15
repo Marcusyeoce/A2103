@@ -32,7 +32,7 @@ public class RentalRateEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDateTime;
     
-    private int status; //0 for active, 1 for deleted
+    //private int status; //0 for active, 1 for deleted
     
     @ManyToOne
     private CategoryEntity category;
@@ -55,14 +55,6 @@ public class RentalRateEntity implements Serializable {
         this.ratePerDay = ratePerDay;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public Date getStartDateTime() {
