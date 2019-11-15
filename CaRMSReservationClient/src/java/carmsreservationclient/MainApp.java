@@ -104,7 +104,7 @@ public class MainApp {
             
             CustomerEntity newCustomerEntity = new CustomerEntity();
             
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Register\n***");
+            System.out.println("\n***Welcome To CaRMS Reservation System :: Register**\n*");
             
             System.out.print("Enter First Name> ");
             newCustomerEntity.setFirstName(scanner.nextLine().trim());

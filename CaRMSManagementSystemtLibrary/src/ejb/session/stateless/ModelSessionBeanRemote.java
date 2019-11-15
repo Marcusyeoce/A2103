@@ -19,4 +19,10 @@ public interface ModelSessionBeanRemote {
     public List<ModelEntity> retrieveAllModels();
     
     public List<ModelEntity> getAvailableModels(Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet);
+    
+    public ModelEntity updateManufacturerName(long id, String name);
+    
+    public ModelEntity retrieveModelByName(String name);
+    
+    public ModelEntity updateCategory(long id, long catId);
 }
