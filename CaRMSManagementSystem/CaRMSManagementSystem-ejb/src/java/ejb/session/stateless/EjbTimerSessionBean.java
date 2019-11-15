@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import java.util.Scanner;
+import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -18,16 +19,14 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
 
     @PersistenceContext(unitName = "CaRMSManagementSystem-ejbPU")
     private EntityManager em;
+    
+    @EJB
+    private ReservationSessionBeanLocal reservationSessionBeanLocal;
 
     //call reservation session bean
     
     @Schedule(hour = "2")
     public void allocateCurrentDayReservation() {
-        
-        Query query = em.createQuery("SELECT r FROM ReservationEntity r WHERE r.reservationDate");
-    }
-
-    public void persist(Object object) {
-        em.persist(object);
+        //reservationSessionBeanLocal.allocateReservations();
     }
 }

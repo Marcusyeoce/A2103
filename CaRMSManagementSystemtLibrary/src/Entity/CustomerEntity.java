@@ -100,9 +100,14 @@ public class CustomerEntity implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    
-    
+
+    public List<ReservationEntity> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<ReservationEntity> reservations) {
+        this.reservations = reservations;
+    }
 
     public Long getCustomerId() {
         return customerId;

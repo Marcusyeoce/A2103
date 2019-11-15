@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -58,6 +59,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         {
             throw new UnknownPersistenceException(ex.getMessage());
         }
+    }
+    
+    public ReservationEntity retrieveReservationById(Long reservationId) {
+        Query query = em.createQuery("SELECT r from ReservationEntity r WHERE r.reservationId = :inReservationId");
+        query.setParameter("inReservationId", reservationId);
+        
+        return (ReservationEntity) query.getSingleResult();
     }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<ReservationEntity>>constraintViolations)
