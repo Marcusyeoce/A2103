@@ -37,7 +37,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         validator = validatorFactory.getValidator();
     }
     
-    @Override
+    /* @Override
     public Long createReservationEntity(ReservationEntity newReservationEntity) throws InputDataValidationException, UnknownPersistenceException {
         try
         {
@@ -59,6 +59,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         {
             throw new UnknownPersistenceException(ex.getMessage());
         }
+    } */
+    
+    public Long createReservationEntity(ReservationEntity newReservationEntity) {
+        em.persist(newReservationEntity);
+        em.flush();
+        
+        return newReservationEntity.getReservationId();
     }
     
     public ReservationEntity retrieveReservationById(Long reservationId) {

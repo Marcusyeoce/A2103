@@ -29,14 +29,14 @@ public class ReservationEntity implements Serializable {
     private String ccNum; 
     @Column(nullable = false)
     @NotNull
-    private Date ccExpiryDate; //maybe String?
+    private Date ccExpiryDate;
     @Column(nullable = false)
     @NotNull
     private int ccCVV;
-    @Column(nullable = false)
+    //@Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date startDateTime; 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDateTime;
     
@@ -78,7 +78,6 @@ public class ReservationEntity implements Serializable {
     private PartnerEntity partnerEntity;
     
     public ReservationEntity() {
-        
     }
 
     public boolean isIsPaid() {
@@ -120,8 +119,6 @@ public class ReservationEntity implements Serializable {
     public void setCcCVV(int ccCVV) {
         this.ccCVV = ccCVV;
     }
-    
-    
 
     public CustomerEntity getCustomer() {
         return customer;

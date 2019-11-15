@@ -11,7 +11,7 @@ import util.exception.UnknownPersistenceException;
 
 public interface ReservationSessionBeanLocal {
     
-    public Long createReservationEntity(ReservationEntity newReservationEntity) throws InputDataValidationException, UnknownPersistenceException;
+    public Long createReservationEntity(ReservationEntity newReservationEntity) /* InputDataValidationException, UnknownPersistenceException */;
 
     public ReservationEntity retrieveReservationById(Long reservationId);
 }

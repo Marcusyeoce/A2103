@@ -259,7 +259,9 @@ public class MainApp {
     }
     
     private void reserveCar() throws NoAvailableCarsException, ModelExistException, ModelNotAvailable, ModelNotFoundException {
+        
         Scanner scanner = new Scanner(System.in);
+        
         System.out.println("\n***Welcome To CaRMS Reservation System :: Search car***\n");
         System.out.print("Enter pickup date(dd/mm/yy)> ");
         String pickupDate = scanner.nextLine();
@@ -311,7 +313,12 @@ public class MainApp {
         
         //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
         List<ModelEntity> availableModels = modelSessionBeanRemote.getAvailableModels(pickUpDateByCust, returnDateByCust, pickupOutlet, returnOutlet);
- 
+        
+        //if there are cars
+        ReservationEntity reservation = new ReservationEntity();
+        reservation.setStartDateTime(pickUpDateByCust);
+        reservation.setEndDateTime(returnDateByCust);
+        
         System.out.println("\n***All available models:***");
         System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
         for (int i = 0; i < availableModels.size(); i++) {
@@ -324,8 +331,6 @@ public class MainApp {
         System.out.println("2.Reserve car of a particular category");
         System.out.println("3.Exit");
         Integer response = 0;
-        
-        ReservationEntity reservation = new ReservationEntity();
             
         while(response < 1 || response > 3) {
             
@@ -446,12 +451,15 @@ public class MainApp {
         reservation.setCcNum(ccNum);
         reservation.setCcExpiryDate(ccExpiryDate);
         reservation.setCcCVV(ccCVV);
-        try {
+        /* try {
             reservationSessionBeanRemote.createReservationEntity(reservation);
             System.out.println("Your reservation has been confirmed! Thank you!");
         } catch (Exception ex) {
             //
-        }
+        } */
+        
+        reservationSessionBeanRemote.createReservationEntity(reservation);
+        System.out.println("Your reservation has been confirmed! Thank you!");
     }
 
     private void viewAllMyReservations() {
