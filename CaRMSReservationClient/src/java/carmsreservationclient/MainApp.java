@@ -338,7 +338,7 @@ public class MainApp {
                 String reservationModel = scanner.nextLine().trim();
                 
                 //check if model exists
-                boolean modelExists = false;
+                /* boolean modelExists = false;
                 for (ModelEntity model: modelSessionBeanRemote.retrieveAllModels()) {
                     if (model.getModel().equals(reservationModel) && model.getMake().equals(reservationMake)) {
                         modelExists = true;
@@ -347,10 +347,10 @@ public class MainApp {
                 }
                 if (!modelExists) {
                     throw new ModelNotFoundException();
-                }
+                } */
                 
                 //check if model is available
-                boolean modelAvailable = false;
+                /* boolean modelAvailable = false;
                 for (ModelEntity model: availableModels) {
                     if (model.getModel().equals(reservationModel) && model.getMake().equals(reservationMake)) {
                         reservation.setModel(model);
@@ -360,7 +360,7 @@ public class MainApp {
                 }
                 if (!modelAvailable) {
                     throw new ModelNotAvailable();
-                }
+                } */
                 
                 makePayment(reservation);
             } else if (response == 2) {
@@ -375,11 +375,11 @@ public class MainApp {
                     counter++;
                 }
                 
-                System.out.println("Please indicate the car category you want\n>");
+                System.out.print("Please indicate the car category you want\n>");
                 int categoryChoice = scanner.nextInt();
                 
                 //check if category is available
-                boolean categoryAvailable = false;
+                /* boolean categoryAvailable = false;
                 for (ModelEntity model: availableModels) {
                     if (model.getCategoryEntity() == categories.get(categoryChoice-1)) {
                         categoryAvailable = true;
@@ -388,7 +388,7 @@ public class MainApp {
                 } 
                 if (!categoryAvailable) {
                     throw new ModelNotAvailable();
-                }
+                } */
                     
                 reservation.setCategory(categories.get(categoryChoice-1));
                 makePayment(reservation);
@@ -430,10 +430,11 @@ public class MainApp {
                 System.out.println("Invalid option, please try again!\n");
             }
         }
+        
+        scanner.nextLine();
             
         System.out.println("Please input your credit card number");
         String ccNum = scanner.nextLine().trim();
-        
         System.out.println("Please input your credit card expiry date (mm/yy)");
         String expiryDate = scanner.nextLine().trim();
         String[] expiryDateArray = expiryDate.split("/");

@@ -89,6 +89,14 @@ public class ReservationEntity implements Serializable {
         this.isPaid = isPaid;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     public String getCcNum() {
         return ccNum;
     }

@@ -81,6 +81,11 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     }
     
     @Override
+    public void updateRentalRateEntity(RentalRateEntity rentalRateEntity) {
+        em.merge(rentalRateEntity);
+    }
+    
+    @Override
     public RentalRateEntity updateName(long id, String name) {
         RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id);
         rentalRateEntity.setRentalRateName(name);
@@ -158,6 +163,15 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     public RentalRateEntity retreiveRentalRateEntityById(long rentalRateId) {
         RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, rentalRateId);
         return rentalRateEntity;
+    }
+    
+    public void deleteRentalRate(RentalRateEntity rentalRate) {
+        if (true) { //if there are no records tied to it, if not used, if no rental days/reservations
+            em.remove(rentalRate);
+        } else {
+            rentalRate.setStatus(1);
+            updateRentalRateEntity(rentalRate);
+        }
     }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<RentalRateEntity>>constraintViolations)

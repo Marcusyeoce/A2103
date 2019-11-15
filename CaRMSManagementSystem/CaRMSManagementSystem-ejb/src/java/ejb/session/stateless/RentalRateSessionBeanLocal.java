@@ -30,5 +30,7 @@ public interface RentalRateSessionBeanLocal {
     public RentalRateEntity updateStartDateTime(long id, Date date);
 
     public RentalRateEntity updateEndDateTime(long id, Date date);
+
+    public void updateRentalRateEntity(RentalRateEntity rentalRateEntity);
     
 }

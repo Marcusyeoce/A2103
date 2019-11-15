@@ -68,6 +68,15 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return (ReservationEntity) query.getSingleResult();
     }
     
+    public void updateReservation(ReservationEntity reservation) {
+        em.merge(reservation);
+    }
+    
+    public void deleteReservation(ReservationEntity reservation) {
+        reservation.setStatus(1);
+        updateReservation(reservation);
+    }
+    
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<ReservationEntity>>constraintViolations)
     {
         String msg = "Input data validation error!:";
