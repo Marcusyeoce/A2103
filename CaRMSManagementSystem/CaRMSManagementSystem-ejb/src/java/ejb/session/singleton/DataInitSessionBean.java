@@ -272,7 +272,7 @@ public class DataInitSessionBean {
         em.persist(rentalRateEntity);
         em.flush();
         
-        PartnerEntity partnerEntity = new PartnerEntity("Holiday.com");
+        PartnerEntity partnerEntity = new PartnerEntity("Holiday.com", "password");
         em.persist(partnerEntity);
         em.flush();
     }

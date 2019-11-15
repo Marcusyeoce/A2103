@@ -11,7 +11,7 @@ import util.exception.PartnerNotFoundException;
 
 public interface PartnerSessionBeanRemote {
     
-    public PartnerEntity partnerLogin(String username, String password) throws InvalidLoginCredentialException;
+    public Long partnerLogin(String username, String password) throws InvalidLoginCredentialException;
 
     public PartnerEntity retrievePartnerByUsername(String username) throws PartnerNotFoundException;
 }
