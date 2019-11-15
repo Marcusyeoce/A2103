@@ -18,5 +18,7 @@ public interface CustomerSessionBeanLocal {
     public CustomerEntity retrieveCustomerByMobileNum(String mobileNum) throws CustomerNotFoundException;
     
     public CustomerEntity retrieveCustomerByPassportNum(String passportNum) throws CustomerNotFoundException;
+
+    public void updateCustomer(CustomerEntity customer);
     
 }

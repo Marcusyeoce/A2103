@@ -458,7 +458,8 @@ public class MainApp {
             //
         } */
         
-        reservationSessionBeanRemote.createReservationEntity(reservation);
+        Long reservationId = reservationSessionBeanRemote.createReservationEntity(reservation, currentCustomerEntity.getCustomerId());
+        
         System.out.println("Your reservation has been confirmed! Thank you!");
     }
 

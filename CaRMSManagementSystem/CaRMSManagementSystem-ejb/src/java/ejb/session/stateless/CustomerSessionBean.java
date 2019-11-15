@@ -67,5 +67,10 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
             throw new InvalidLoginCredentialException("Passport number does not exist or invalid password!");
         }
     }  
+    
+    @Override
+    public void updateCustomer(CustomerEntity customer) {
+        em.merge(customer);
+    }
 }
 
