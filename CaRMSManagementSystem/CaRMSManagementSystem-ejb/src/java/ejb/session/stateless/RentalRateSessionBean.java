@@ -169,7 +169,7 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         if (true) { //if there are no records tied to it, if not used, if no rental days/reservations
             em.remove(rentalRate);
         } else {
-            rentalRate.setStatus(1);
+            //rentalRate.setStatus(1);
             updateRentalRateEntity(rentalRate);
         }
     }

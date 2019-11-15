@@ -257,9 +257,9 @@ public class OperationManagerModule {
                 } else {
                     System.out.println("Invalid Option! Please choose again.");
                 }
-                if (response == 4) {
+            }
+            if (response == 4) {
                     break;
-                }
             }
         }
     }
@@ -324,6 +324,9 @@ public class OperationManagerModule {
         }
         car.setModelEntity(list.get(modelNum - 1));
         
+        List<OutletEntity> olist = outletSessionBean.retrieveOutletEntities();
+        
+        car.setOutlet(olist.get(1));
         Set<ConstraintViolation<CarEntity>>constraintViolations = validator.validate(car);
         
         if (constraintViolations.isEmpty()) {
@@ -349,10 +352,10 @@ public class OperationManagerModule {
     private void viewAllCar() {
         System.out.println("\n***Welcome To CaRMS Reservation System :: View all Cars***\n");
         List<CarEntity> list = carSessionBean.retrieveAllCars();
-        System.out.printf("%15s%15s%15s", "License Plate Number", "Status", "Outlet");
+        System.out.printf("%15s%15s%15s\n", "License Plate Number", "Status", "Outlet");
         for (int i = 0; i < list.size(); i++) {
             System.out.print((i + 1) + ")");
-            System.out.printf("%%15s%15s%15s\n", list.get(i).getLicensePlateNumber(), list.get(i).getStatus(), list.get(i).getOutlet().getOutletName());
+            System.out.printf("%15s%15s%15s\n", list.get(i).getLicensePlateNumber(), list.get(i).getStatus(), outletSessionBean.retrieveOutletEntityByOutletId(list.get(i).getOutlet().getOutletId()).getOutletName());
         }
     }
 

@@ -482,6 +482,7 @@ public class MainApp {
         Long reservationId = scanner.nextLong();
         ReservationEntity reservationEntity = reservationSessionBeanRemote.retrieveReservationById(reservationId);
         
+        
         System.out.println("\n***Reservation Id: "+ reservationEntity.getReservationId() +"***\n");
         System.out.println("Pick up outlet: " + reservationEntity.getPickupOutlet().getOutletName());
         System.out.println("Pick up date and time: " + reservationEntity.getStartDateTime());
