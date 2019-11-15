@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import java.util.Scanner;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -24,7 +25,6 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
     public void allocateCurrentDayReservation() {
         
         Query query = em.createQuery("SELECT r FROM ReservationEntity r WHERE r.reservationDate");
-        
     }
 
     public void persist(Object object) {
