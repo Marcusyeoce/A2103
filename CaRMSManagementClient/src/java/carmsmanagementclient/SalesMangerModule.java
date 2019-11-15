@@ -135,11 +135,11 @@ public class SalesMangerModule {
         
         String[] startArrayDate = startDate.split("/");
         String[] startArrayTime = startTime.split(":");
-        Date dstartDate = new Date(Integer.parseInt(startArrayDate[2]) , Integer.parseInt(startArrayDate[1]) - 1, Integer.parseInt(startArrayDate[0]) + 100, Integer.parseInt(startArrayTime[0]), Integer.parseInt(startArrayTime[1]));
+        Date dstartDate = new Date(Integer.parseInt(startArrayDate[2]) + 100 , Integer.parseInt(startArrayDate[1]) - 1, Integer.parseInt(startArrayDate[0]), Integer.parseInt(startArrayTime[0]), Integer.parseInt(startArrayTime[1]));
         
         String[] endArrayDate = endDate.split("/");
         String[] endArrayTime = endTime.split(":");
-        Date dendDate = new Date(Integer.parseInt(endArrayDate[2]), Integer.parseInt(endArrayDate[1]) - 1, Integer.parseInt(endArrayDate[0]) + 100, Integer.parseInt(endArrayTime[0]), Integer.parseInt(endArrayTime[1]));
+        Date dendDate = new Date(Integer.parseInt(endArrayDate[2]) + 100, Integer.parseInt(endArrayDate[1]) - 1, Integer.parseInt(endArrayDate[0]), Integer.parseInt(endArrayTime[0]), Integer.parseInt(endArrayTime[1]));
         
         rentalRateEntity.setRentalRateName(rentalRateName);
         rentalRateEntity.setCategory(list.get(status - 1));
@@ -262,8 +262,8 @@ public class SalesMangerModule {
             System.out.println("1) Rental Rate Name");
             System.out.println("2) Rental Rate Car Category");
             System.out.println("3) Rental Rate Per Day");
-            System.out.println("4) Rental Rate Start Time");
-            System.out.println("5) Rental Rate End Time");
+            System.out.println("4) Rental Rate Start Date and Time");
+            System.out.println("5) Rental Rate End Date and Time");
             System.out.println("6) Exit");
             response = 0;
                 
@@ -305,14 +305,46 @@ public class SalesMangerModule {
                     RentalRateEntity re = rentalRateSessionBean.updateCategory(rentalRateEntity.getRentalRateId(), list.get(status - 1).getCategoryId());
                     System.out.println("Car category changed successfully: " + rentalRateSessionBean.retrieveCategoryNameOfCategoryId(re.getCategory().getCategoryId()));
                 } else if (response == 3) {
+                    Scanner ss = new Scanner(System.in);
                     System.out.print("\nEnter new rental rate> ");
-                    Double newRate = scanner.nextDouble();
+                    Double newRate = ss.nextDouble();
                     //merge to DB
+                    RentalRateEntity re1 = rentalRateSessionBean.updateRentalRate(rentalRateEntity.getRentalRateId(), newRate);
                     System.out.println("Car rental rate changed successfully: " + newRate);
                 } else if (response == 4) {
+                    Scanner ss2 = new Scanner(System.in);
+                    System.out.print("Enter start date(dd/mm/yy)> ");
+                    String startDate = ss2.nextLine();
+                    System.out.print("Enter start time(hh:mm)> ");
+                    String startTime = ss2.nextLine();
                     
+                    String[] startArrayDate = startDate.split("/");
+                    String[] startArrayTime = startTime.split(":");
+                    Date dstartDate = new Date(Integer.parseInt(startArrayDate[2]) + 100, Integer.parseInt(startArrayDate[1]) - 1, Integer.parseInt(startArrayDate[0]), Integer.parseInt(startArrayTime[0]), Integer.parseInt(startArrayTime[1]));
+                    RentalRateEntity re1 = rentalRateSessionBean.updateStartDateTime(rentalRateEntity.getRentalRateId(), dstartDate);
+                    
+                    String pattern = "dd/MM/yy HH:mm";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+                    String startDates = simpleDateFormat.format(re1.getStartDateTime());
+                    System.out.println("Rental rate start date and time changed successfully: " + startDates);
                 } else if (response == 5) {
+                    Scanner ss1 = new Scanner(System.in);
+                    System.out.print("Enter end date(dd/mm/yy)> ");
+                    String endDate = ss1.nextLine();
+                    System.out.print("Enter end time(hh:mm)> ");
+                    String endTime = ss1.nextLine();
                     
+                    String[] endArrayDate = endDate.split("/");
+                    String[] endArrayTime = endTime.split(":");
+                    Date dstartDate = new Date(Integer.parseInt(endArrayDate[2]) + 100, Integer.parseInt(endArrayDate[1]) - 1, Integer.parseInt(endArrayDate[0]), Integer.parseInt(endArrayTime[0]), Integer.parseInt(endArrayTime[1]));
+                    RentalRateEntity re1 = rentalRateSessionBean.updateEndDateTime(rentalRateEntity.getRentalRateId(), dstartDate);
+                    
+                    String pattern = "dd/MM/yy HH:mm";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+                    String endDates = simpleDateFormat.format(re1.getEndDateTime());
+                    System.out.println("Rental rate end date and time changed successfully: " + endDates);
                 } else if (response == 6) {
                     break;
                 } else {

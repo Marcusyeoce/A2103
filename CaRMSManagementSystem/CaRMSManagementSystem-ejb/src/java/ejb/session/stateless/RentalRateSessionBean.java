@@ -3,7 +3,9 @@ package ejb.session.stateless;
 import Entity.CategoryEntity;
 import Entity.RentalRateEntity;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -89,14 +91,46 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     
     @Override
     public RentalRateEntity updateCategory(long recordId, long catId) {
-        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, recordId);
-        CategoryEntity categoryEntity = em.find(CategoryEntity.class, catId);
+        
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, recordId, props);
+        CategoryEntity categoryEntity = em.find(CategoryEntity.class, catId, props);
         
         //update category
         categoryEntity.getRentalRates().remove(rentalRateEntity);
         rentalRateEntity.setCategory(categoryEntity);
         categoryEntity.getRentalRates().add(rentalRateEntity);
         em.merge(categoryEntity);
+        em.merge(rentalRateEntity);
+        em.flush();
+        return rentalRateEntity;
+        
+    }
+    
+    @Override
+    public RentalRateEntity updateRentalRate(long id, double rate) {
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id);
+        rentalRateEntity.setRatePerDay(rate);
+        em.merge(rentalRateEntity);
+        em.flush();
+        return rentalRateEntity;
+    }
+    
+    @Override
+    public RentalRateEntity updateStartDateTime(long id, Date date) {
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id);
+        rentalRateEntity.setStartDateTime(date);
+        em.merge(rentalRateEntity);
+        em.flush();
+        return rentalRateEntity;
+    }
+    
+    @Override
+    public RentalRateEntity updateEndDateTime(long id, Date date) {
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id);
+        rentalRateEntity.setEndDateTime(date);
         em.merge(rentalRateEntity);
         em.flush();
         return rentalRateEntity;
