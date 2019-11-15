@@ -364,8 +364,8 @@ public class OperationManagerModule {
         CarEntity carEntity = new CarEntity();
         try {
             carEntity = carSessionBean.retrieveCarEntityByLicensePlateNum(number);
-            System.out.printf("%15s%15s%15s%15s%15s", "License Plate Number", "Status", "Model", "Outlet", "Reservation Start Date");
-            System.out.printf("%15s%15s%15s%15s%15s", carEntity.getLicensePlateNumber(), carEntity.getStatus(), carEntity.getModelEntity().getModel(), carEntity.getOutlet().getOutletName(), "N.A.");
+            System.out.printf("%20s%15s%15s%15s%25s\n", "License Plate Number", "Status", "Model", "Outlet", "Reservation Start Date");
+            System.out.printf("%20s%15s%15s%15s%25s\n", carEntity.getLicensePlateNumber(), carEntity.getStatus(), carEntity.getModelEntity().getModel(), carEntity.getOutlet().getOutletName(), "N.A.");
         } catch (CarExistException ex) {
             System.out.println("No car with that liscence plate number exist");
         }
@@ -466,8 +466,12 @@ public class OperationManagerModule {
                 } else if (response == 4) {
                     List<OutletEntity> list = outletSessionBean.retrieveOutletEntities();
                     System.out.println("\nAvailable outlets");
+                    int counter = 0;
                     for (int i = 0; i < list.size(); i++) {
-                        System.out.println((i + 1) + ") " + list.get(i).getOutletName());
+                        if (!list.get(i).getOutletName().equals("Outlet Admin")) {
+                            counter++;
+                            System.out.println(counter + ") " + list.get(i).getOutletName());
+                        }
                     }
                     int status;
                     while (true) {
@@ -485,8 +489,8 @@ public class OperationManagerModule {
                         }
                     }
                     //merge to DB
-                    CarEntity re = carSessionBean.updateCarOutlet(carEntity.getCarId(), list.get(status - 1).getOutletId());
-                    System.out.println("Outlet that car is at is changed successfully: " + list.get(status - 1).getOutletName());
+                    CarEntity re = carSessionBean.updateCarOutlet(carEntity.getCarId(), list.get(status).getOutletId());
+                    System.out.println("Outlet that car is at is changed successfully: " + list.get(status).getOutletName());
                 } else if (response == 5) {
                     break;
                 } else {

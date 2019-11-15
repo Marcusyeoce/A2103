@@ -122,8 +122,8 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         Map<String, Object> props = new HashMap<>();
         props.put("javax.persistence.cache.retrieveMode", "BYPASS");
         
-        ModelEntity modelEntity = em.find(ModelEntity.class, id, props);
-        CarEntity carEntity = em.find(CarEntity.class, modelId, props);
+        ModelEntity modelEntity = em.find(ModelEntity.class, modelId, props);
+        CarEntity carEntity = em.find(CarEntity.class, id, props);
         
         //update category
         modelEntity.getCars().remove(carEntity);
