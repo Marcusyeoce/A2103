@@ -8,7 +8,9 @@ import Entity.ReservationEntity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -158,6 +160,52 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         
         ModelEntity modelEntity = (ModelEntity) query.getSingleResult();
         
+        return modelEntity;
+    }
+    
+    @Override
+    public ModelEntity retrieveModelByName(String name) {
+        Query query = em.createQuery("SELECT m FROM ModelEntity m WHERE m.model = : inModel");
+        query.setParameter("inModel", name);
+        
+        ModelEntity modelEntity = (ModelEntity) query.getSingleResult();
+        
+        return modelEntity;
+    }
+    
+    @Override
+    public ModelEntity updateManufacturerName(long id, String name) {
+        ModelEntity modelEntity = em.find(ModelEntity.class, id);
+        modelEntity.setMake(name);
+        em.merge(modelEntity);
+        em.flush();
+        return modelEntity;
+    }
+    
+    
+    public ModelEntity updateModelName(long id, String name) {
+        ModelEntity modelEntity = em.find(ModelEntity.class, id);
+        modelEntity.setModel(name);
+        em.merge(modelEntity);
+        em.flush();
+        return modelEntity;
+    }
+    
+    public ModelEntity updateCategory(long id, long catId) {
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        
+        ModelEntity modelEntity = em.find(ModelEntity.class, id, props);
+        CategoryEntity categoryEntity = em.find(CategoryEntity.class, catId, props);
+        
+        //update category
+        categoryEntity.getModels().remove(modelEntity);
+        modelEntity.setCategoryEntity(categoryEntity);
+        
+        categoryEntity.getModels().add(modelEntity);
+        em.merge(categoryEntity);
+        em.merge(modelEntity);
+        em.flush();
         return modelEntity;
     }
     

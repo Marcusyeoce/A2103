@@ -194,9 +194,84 @@ public class OperationManagerModule {
 
     private void updateCarModel() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Update car Model***\n");
+        Integer response = 0;
+        
+        System.out.print("Enter car model name> ");
+        String modelName = scanner.nextLine();
+        
+        ModelEntity modelEntity = modelSessionBean.retrieveModelByName(modelName);
+        while (true) {
+            
+            System.out.println("\n***Welcome To CaRMS Reservation System :: Update Car Model***\n");
+            System.out.println("Select the field to update");
+            System.out.println("1) Change Car Manufacture Name");
+            System.out.println("2) Change Car Model Name");
+            System.out.println("3) Change Car Category");
+            System.out.println("4) Exit");
+            response = 0;
+                
+            while(response < 1 || response > 4) {
+            
+                System.out.print("Enter a number> ");
+
+                response = scanner.nextInt();
+
+                if (response == 1) {
+                    Scanner scan = new Scanner(System.in);
+                    System.out.print("\nEnter new car manufacturer name> ");
+                    String newName = scan.nextLine();
+                    //merge to DB
+                    ModelEntity m = modelSessionBean.updateManufacturerName(modelEntity.getModelId(), newName);
+                    System.out.println("Car manufacturer changed successfully: " + m.getMake());
+                } else if (response == 2) {
+                    Scanner scan = new Scanner(System.in);
+                    System.out.print("\nEnter new car model> ");
+                    String newName = scan.nextLine();
+                    //merge to DB
+                    ModelEntity m = modelSessionBean.updateManufacturerName(modelEntity.getModelId(), newName);
+                    System.out.println("Car model changed successfully: " + m.getModel());
+                } else if (response == 3) {
+                    List<CategoryEntity> list = categorySessionBean.retrieveCategoryEntities();
+                    System.out.println("\nAvailable car catergories");
+                    for (int i = 0; i < list.size(); i++) {
+                        System.out.println((i + 1) + ") " + list.get(i).getCategoryName());
+                    }
+                    int status;
+                    while (true) {
+                        try {
+                            Scanner sc = new Scanner(System.in);
+                            System.out.print("Enter new rental category number> ");
+                            status = sc.nextInt();
+                            if (status < 1 || status > list.size()) {
+                                System.out.println("Please enter a valid option");
+                            } else {
+                                break;
+                            }
+                        } catch (Exception ex) {
+                            System.out.println("Please enter either 1 or 2!");
+                        }
+                    }
+                    modelSessionBean.updateCategory(modelEntity.getModelId(), list.get(status - 1).getCategoryId());
+                } else if (response == 4) {
+                    break;
+                } else {
+                    System.out.println("Invalid Option! Please choose again.");
+                }
+                if (response == 4) {
+                    break;
+                }
+            }
+        }
+        /*
+        System.out.println("\n***Welcome To CaRMS Reservation System :: Update Car Model***\n");
         System.out.println("Enter car model name> ");
         String name = scanner.nextLine();
+        
+        
+        
+        
+        System.out.println("Enter car model name> ");
+        String name = scanner.nextLine();*/
     }
 
     private void deleteCarModel() {

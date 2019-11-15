@@ -39,6 +39,14 @@ public class CategoryEntity implements Serializable {
         this();
         this.categoryName = categoryName;
     }
+
+    public List<ModelEntity> getModels() {
+        return models;
+    }
+
+    public void setModels(List<ModelEntity> models) {
+        this.models = models;
+    }
     
     public List<RentalRateEntity> getRentalRates() {
         return rentalRates;
