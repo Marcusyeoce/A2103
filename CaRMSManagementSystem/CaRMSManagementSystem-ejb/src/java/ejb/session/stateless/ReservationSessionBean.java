@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import Entity.CustomerEntity;
 import Entity.ReservationEntity;
 import java.util.Set;
 import javax.ejb.Local;
@@ -61,8 +62,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     } */
     
-    public Long createReservationEntity(ReservationEntity newReservationEntity) {
+    public Long createReservationEntity(ReservationEntity newReservationEntity, Long customerId) {
+        
         em.persist(newReservationEntity);
+        
+        CustomerEntity customer = em.find(CustomerEntity.class, customerId);
+        newReservationEntity.setCustomer(customer);
+        customer.getReservations().add(newReservationEntity);
+        
         em.flush();
         
         return newReservationEntity.getReservationId();
