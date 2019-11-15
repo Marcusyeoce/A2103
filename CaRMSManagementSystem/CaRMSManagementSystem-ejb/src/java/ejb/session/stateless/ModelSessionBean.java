@@ -165,7 +165,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     
     @Override
     public ModelEntity retrieveModelByName(String name) {
-        Query query = em.createQuery("SELECT m FROM ModelEntity m WHERE m.model = : inModel");
+        Query query = em.createQuery("SELECT m FROM ModelEntity m WHERE m.model = :inModel");
         query.setParameter("inModel", name);
         
         ModelEntity modelEntity = (ModelEntity) query.getSingleResult();

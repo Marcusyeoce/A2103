@@ -25,4 +25,6 @@ public interface ModelSessionBeanRemote {
     public ModelEntity retrieveModelByName(String name);
     
     public ModelEntity updateCategory(long id, long catId);
+    
+    public ModelEntity updateModelName(long id, String name);
 }

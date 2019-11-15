@@ -1,5 +1,6 @@
 package ejb.session.stateless;
 
+import Entity.CarEntity;
 import Entity.CategoryEntity;
 import java.util.List;
 import java.util.Set;

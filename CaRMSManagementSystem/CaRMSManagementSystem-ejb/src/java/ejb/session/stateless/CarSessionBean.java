@@ -3,8 +3,11 @@ package ejb.session.stateless;
 import Entity.CarEntity;
 import Entity.CustomerEntity;
 import Entity.ModelEntity;
+import Entity.OutletEntity;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -102,6 +105,63 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         query.setParameter("inOutletId", outletId);
         
         return query.getResultList();
+    }
+    
+    
+    @Override
+    public CarEntity updateCarlicensePlateNumber(long id,String num) {
+        CarEntity carEntity = em.find(CarEntity.class, id);
+        carEntity.setLicensePlateNumber(num);
+        em.merge(carEntity);
+        em.flush();
+        return carEntity;
+    }
+    
+    @Override
+    public CarEntity updateCarModel(long id, long modelId) {
+        Map<String, Object> props = new HashMap<>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        
+        ModelEntity modelEntity = em.find(ModelEntity.class, id, props);
+        CarEntity carEntity = em.find(CarEntity.class, modelId, props);
+        
+        //update category
+        modelEntity.getCars().remove(carEntity);
+        carEntity.setModelEntity(modelEntity);
+        modelEntity.getCars().add(carEntity);
+        
+        em.merge(carEntity);
+        em.merge(modelEntity);
+        em.flush();
+        return carEntity;
+    }
+    
+    @Override
+    public CarEntity updateCarStatus(long id, String status) {
+        CarEntity carEntity = em.find(CarEntity.class, id);
+        carEntity.setStatus(status);
+        em.merge(carEntity);
+        em.flush();
+        return carEntity;
+    }
+    
+    @Override
+    public CarEntity updateCarOutlet(long id, long outletId) {
+        Map<String, Object> props = new HashMap<>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        
+        OutletEntity outletEntity = em.find(OutletEntity.class, id, props);
+        CarEntity carEntity = em.find(CarEntity.class, id, props);
+        
+        //update category
+        outletEntity.getCar().remove(carEntity);
+        carEntity.setOutlet(outletEntity);
+        outletEntity.getCar().add(carEntity);
+        
+        em.merge(carEntity);
+        em.merge(outletEntity);
+        em.flush();
+        return carEntity;
     }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CarEntity>>constraintViolations)
