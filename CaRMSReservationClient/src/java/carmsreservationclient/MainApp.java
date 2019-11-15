@@ -18,9 +18,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.ModelExistException;
 import util.exception.ModelNotAvailable;
+import util.exception.ModelNotFoundException;
 import util.exception.NoAvailableCarsException;
 
 public class MainApp {
@@ -255,7 +257,7 @@ public class MainApp {
         }
     }
     
-    private void reserveCar() throws NoAvailableCarsException, ModelExistException, ModelNotAvailable {
+    private void reserveCar() throws NoAvailableCarsException, ModelExistException, ModelNotAvailable, ModelNotFoundException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***Welcome To CaRMS Reservation System :: Search car***\n");
         System.out.print("Enter pickup date(dd/mm/yy)> ");
@@ -269,7 +271,7 @@ public class MainApp {
         
         Date pickUpDateByCust = new Date(Integer.parseInt(dateArray[2]), Integer.parseInt(dateArray[1]), Integer.parseInt(dateArray[0]), Integer.parseInt(timeArray[0]), Integer.parseInt(timeArray[1]));
         
-        System.out.println("Available Outlets");
+        System.out.println("Available Pickup Outlets");
         List<OutletEntity> outlets = outletSessionBeanRemote.retrieveOutletEntities();
         int counter = 0;
         for (int i = 0; i < outlets.size(); i++) {
@@ -296,11 +298,11 @@ public class MainApp {
         Date returnDateByCust = new Date(Integer.parseInt(rdateArray[2]), Integer.parseInt(rdateArray[1]), Integer.parseInt(rdateArray[0]), Integer.parseInt(rtimeArray[0]), Integer.parseInt(rtimeArray[1]));
         
         System.out.println("Available Outlets");
-        int counterr = 0;
+        counter = 0;
         for (int i = 0; i < outlets.size(); i++) {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
-                counterr++;
-                System.out.println((counterr) + ") " + outlets.get(i).getOutletName());
+                counter++;
+                System.out.println((counter) + ") " + outlets.get(i).getOutletName());
             }
         }
         System.out.print("Enter your choice of return outlet> ");
@@ -340,7 +342,7 @@ public class MainApp {
                     }
                 }
                 if (!modelExists) {
-                    throw new ModelExistException();
+                    throw new ModelNotFoundException();
                 }
                 
                 //check if model is available
@@ -359,14 +361,14 @@ public class MainApp {
                 makeReservation(reservation);
             } else if (response == 2) {
                 
-                int counters = 1;
+                counter = 1;
                 List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
                     
                 //prints list of categories, get all categories, and see which are available or booking
                 System.out.println("All categories available:");
                 for (CategoryEntity category: categories) {
                     System.out.println(counter + ") " + category.getCategoryName());
-                    counters++;
+                    counter++;
                 }
                 
                 System.out.println("Please indicate the car category you want\n>");
@@ -374,18 +376,18 @@ public class MainApp {
                 
                 //check if category is available
                 boolean categoryAvailable = false;
-                /* for (ModelEntity model: availableModels) {
-                    if (model.getCategory() == categories.get(categoryChoice-1)) {
+                for (ModelEntity model: availableModels) {
+                    if (model.getCategoryEntity() == categories.get(categoryChoice-1)) {
                         categoryAvailable = true;
                         break;
                     }
-                } */
+                } 
                 if (!categoryAvailable) {
                     throw new ModelNotAvailable();
                 }
                     
-                //reservation.addCategory(categories.get(categoryChoice-1));
-                //makeReservation(reservation);
+                reservation.setCategory(categories.get(categoryChoice-1));
+                makeReservation(reservation);
             } else if (response == 3) {
                 break;
             } else {
@@ -405,6 +407,7 @@ public class MainApp {
         System.out.println("1.Immediate rental fee payment");
         System.out.println("2.Deferred rental fee payment");
         int response = 0;
+        
         //for immediate, take in credit card details
         //for deferred, also need to be guranteed by credit card
             
@@ -416,9 +419,9 @@ public class MainApp {
             response = scanner.nextInt();
                 
             if (response == 1) {
-                //reservation.setStatus();
+                reservation.setIsPaid(true);
             } else if (response == 2) {
-                //reservation.setStatus();
+                reservation.setIsPaid(false);
             } else {
                 System.out.println("Invalid option, please try again!\n");
             }
@@ -426,14 +429,19 @@ public class MainApp {
             
         System.out.println("Please input your credit card number");
         String ccNum = scanner.nextLine().trim();
+        System.out.println("Please input your credit card expiry date (dd/MM)");
+        //String ccExpiryDate = scanner.nextLine().trim();
         System.out.println("Please input your credit card expiry date");
-        String ccExpiryDate = scanner.nextLine().trim();
-        System.out.println("Please input your credit card expiry date");
-        int cvv = scanner.nextInt();
+        int ccCVV = scanner.nextInt();
         
-        //reservation.set();
-        
-        //reservationSessionBeanRemote.createNewReservation();
+        reservation.setCcNum(ccNum);
+        //reservation.setCcExpiryDate();
+        reservation.setCcCVV(ccCVV);
+        try {
+            reservationSessionBeanRemote.createReservationEntity(reservation);
+        } catch (Exception ex) {
+            //
+        }
     }
 
     private void viewAllMyReservations() {

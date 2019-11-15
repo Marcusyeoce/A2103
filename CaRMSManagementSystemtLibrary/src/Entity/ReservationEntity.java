@@ -81,6 +81,40 @@ public class ReservationEntity implements Serializable {
         
     }
 
+    public boolean isIsPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(boolean isPaid) {
+        this.isPaid = isPaid;
+    }
+
+    public String getCcNum() {
+        return ccNum;
+    }
+
+    public void setCcNum(String ccNum) {
+        this.ccNum = ccNum;
+    }
+
+    public Date getCcExpiryDate() {
+        return ccExpiryDate;
+    }
+
+    public void setCcExpiryDate(Date ccExpiryDate) {
+        this.ccExpiryDate = ccExpiryDate;
+    }
+
+    public int getCcCVV() {
+        return ccCVV;
+    }
+
+    public void setCcCVV(int ccCVV) {
+        this.ccCVV = ccCVV;
+    }
+    
+    
+
     public CustomerEntity getCustomer() {
         return customer;
     }

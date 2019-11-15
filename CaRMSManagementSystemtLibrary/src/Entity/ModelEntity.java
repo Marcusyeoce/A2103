@@ -45,6 +45,8 @@ public class ModelEntity implements Serializable {
         this.model = model;
     }
 
+    
+    
     public List<ReservationEntity> getReservationList() {
         return reservationList;
     }
