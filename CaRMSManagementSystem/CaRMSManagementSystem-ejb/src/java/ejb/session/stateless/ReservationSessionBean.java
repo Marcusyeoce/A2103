@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import Entity.CustomerEntity;
+import Entity.RentalDayEntity;
 import Entity.ReservationEntity;
 import java.util.Set;
 import javax.ejb.Local;
@@ -73,6 +74,25 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         em.flush();
         
         return newReservationEntity.getReservationId();
+    }
+    
+    public void generateRentalDays(Long reservationId) {
+        
+        Query query = em.createQuery("SELECT r from ReservationEntity r WHERE r.reservationId = :inReservationId");
+        query.setParameter("inReservationId", reservationId);
+        ReservationEntity reservation = (ReservationEntity) query.getSingleResult();
+        
+        //go through how many days, while date != endDate keep adding?
+        //for first day, take into account the pickuptime
+        //for the other days, default start from 00:00
+        
+        //create and persist rental days
+        //RentalDayEntity rentalDay = new RentalDayEntity(dateTime);
+        //em.persist;
+        //reservation.getRentalDays().add(rentalDay);
+        //rentalDay.setReservation(reservation);
+                
+        em.flush();
     }
     
     public ReservationEntity retrieveReservationById(Long reservationId) {

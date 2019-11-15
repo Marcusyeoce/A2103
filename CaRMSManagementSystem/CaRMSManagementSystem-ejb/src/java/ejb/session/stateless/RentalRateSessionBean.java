@@ -2,6 +2,8 @@ package ejb.session.stateless;
 
 import Entity.CategoryEntity;
 import Entity.RentalRateEntity;
+import Entity.ReservationEntity;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -147,18 +149,36 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         return query.getResultList();
     }
     
-    /* public RentalRateEntity getPrevailingRentalRate(Date dateTime) {
+    @Override
+    public RentalRateEntity getPrevailingRentalRate(Date dateTime) {
         
-        double prevailingRentalRate = ;
+        List<RentalRateEntity> applicableRentalRates = new ArrayList<RentalRateEntity>();
         
-        for (RentalRateEntity rentalRates: retrieveAllRentalRates()) {
-            //check if rental rate is applicable for day
-            //check if time is applicable 
-            //check if it is lower than the last rate
+        for (RentalRateEntity rentalRate: retrieveAllRentalRates()) {
+            
+            //if null, just include (default rate)
+            //if date is in between the validity period of rental rate
+            if (rentalRate.getStartDateTime() == null ||(dateTime.compareTo(rentalRate.getStartDateTime()) >= 0 && dateTime.compareTo(rentalRate.getEndDateTime()) <= 0)) {
+                //check if they are the type, monday applies for monday etc
+                //have to change implementation of rental rate
+                //implement rentalrate.getApplicableDay or sth
+                if (dateTime.getDay() == 1) {
+                   applicableRentalRates.add(rentalRate); 
+                }
+            }
         }
+        
+        RentalRateEntity prevailingRentalRate = applicableRentalRates.get(0);
+        
+        for(RentalRateEntity rentalRate: applicableRentalRates) {
+            if (rentalRate.getRatePerDay() < prevailingRentalRate.getRatePerDay()) {
+                prevailingRentalRate = rentalRate;
+            }
+        }
+        
         return prevailingRentalRate;
-    } */
-    
+    } 
+       
     @Override
     public RentalRateEntity retreiveRentalRateEntityById(long rentalRateId) {
         RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, rentalRateId);

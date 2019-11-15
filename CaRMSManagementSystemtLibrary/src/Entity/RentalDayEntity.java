@@ -21,6 +21,7 @@ public class RentalDayEntity implements Serializable {
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date rentalStartDate;
+    //no need endDateTime, does not affect
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date rentalEndDate;
