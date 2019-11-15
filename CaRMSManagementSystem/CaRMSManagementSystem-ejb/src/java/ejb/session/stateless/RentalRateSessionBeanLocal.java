@@ -15,5 +15,13 @@ public interface RentalRateSessionBeanLocal {
     public RentalRateEntity createRentalRate(RentalRateEntity rentalRateEntity) throws InputDataValidationException, UnknownPersistenceException;
 
     public List<RentalRateEntity> retrieveAllRentalRates();
+
+    public RentalRateEntity retreiveRentalRateEntityById(long rentalRateId);
+
+    public String retrieveCategoryNameOfCategoryId(long categoryEntityId);
+
+    public RentalRateEntity updateName(long id, String name);
+
+    public RentalRateEntity updateCategory(long recordId, long catId);
     
 }

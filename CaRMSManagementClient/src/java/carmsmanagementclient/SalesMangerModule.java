@@ -11,6 +11,7 @@ import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -63,7 +64,7 @@ public class SalesMangerModule {
             System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
             System.out.println("You are logged in as Sales Manager\n");
             System.out.println("1: Create rental rate");
-            System.out.println("3: View all rental rate");
+            System.out.println("2: View all rental rate");
             System.out.println("3: View rental details");
             System.out.println("4: Logout");
             response = 0;
@@ -80,7 +81,7 @@ public class SalesMangerModule {
                 } else if (response == 2) {
                     viewAllRentalRates();
                 } else if (response == 3) {
-                    //viewRentalDetails();
+                    viewRentalDetails();
                 } else if (response == 4) {
                     break;
                 } else {
@@ -172,66 +173,65 @@ public class SalesMangerModule {
         
         List<RentalRateEntity> list = rentalRateSessionBean.retrieveAllRentalRates();
         
+        System.out.printf("%35s%20s%35s\n", "Rental Rate Name", "Car Category", "Validity Period");
         //not sort by category yet
         for (RentalRateEntity rentalRate: list) {
-            System.out.println(counter + ". Rental Rate Name: " + rentalRate.getRentalRateName()+ "\n" +
-            "Rental Rate Car Category: " + rentalRate.getCategory().getCategoryName() + "\n" +
-            "Rental Rate validity Period: " + rentalRate.getStartDateTime()+ " to " + rentalRate.getEndDateTime() + "\n");
+            System.out.print(counter + ") ");
+            if (rentalRate.getStartDateTime().compareTo(new Date(0, 0, 0, 0, 0)) == 0) {
+                System.out.printf("%35s%20s%35s\n", rentalRate.getRentalRateName(), rentalRate.getCategory().getCategoryName(), "always valid");
+            } else {
+                String pattern = "dd/MM/yy HH:mm";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+                String startDate = simpleDateFormat.format(rentalRate.getStartDateTime());
+                String endDate = simpleDateFormat.format(rentalRate.getEndDateTime());
+                System.out.printf("%35s%20s%35s\n", rentalRate.getRentalRateName(), rentalRate.getCategory().getCategoryName(), startDate + " to " + endDate);
+            }
             counter++;
-        }
-        
-        Scanner scanner = new Scanner(System.in);
-        Integer response = 0;
-        
-        System.out.println("\n***More Options***\n");
-        System.out.println("1: View rental rate details");
-        System.out.println("2: Exit");
-        response = 0;
-        
-        while (true) {
-                
-            while(response < 1 || response > 2) {
-            
-                System.out.print("> ");
-
-                response = scanner.nextInt();
-
-                if (response == 1) {
-                    System.out.println("Input which rental rate to view details");
-                    int num = scanner.nextInt();
-                    //viewRentalDetails(rentalRates[num-1]);
-                } else if (response == 2) {
-                    break;
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
-                }
-            }
-            if (response == 2) {
-                break;
-            }
         }
     }
 
-    private void viewRentalDetails(RentalRateEntity rentalRateEntity) {
+    private void viewRentalDetails() {
         
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
         System.out.println("\n***Welcome To CaRMS Management System :: View Rental Rate Details***");
         
-        //print all details
+        System.out.print("Enter rental rate id to view details> ");
+        int num = scanner.nextInt();
         
-        System.out.println("\n***More Options***\n");
-        System.out.println("1: Update rental rate");
-        System.out.println("2: Delete rental rate");
-        System.out.println("3: Exit");
-        response = 0;
+        RentalRateEntity rentalRateEntity = rentalRateSessionBean.retreiveRentalRateEntityById(num);
+        
+        String pattern = "dd/MM/yy HH:mm";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+        String startDate = simpleDateFormat.format(rentalRateEntity.getStartDateTime());
+        String endDate = simpleDateFormat.format(rentalRateEntity.getEndDateTime());
+        
+        long id = rentalRateEntity.getCategory().getCategoryId();
+        
+        System.out.printf("%35s%20s%15s%35s\n", "Rental Rate Name", "Car Category", "Rate Per Day", "Validity");
+        if (rentalRateEntity.getStartDateTime().compareTo(new Date(0, 0, 0, 0, 0)) == 0) {
+                System.out.printf("%35s%20s%15s%35s\n", rentalRateEntity.getRentalRateName(), rentalRateSessionBean.retrieveCategoryNameOfCategoryId(id), "$" + rentalRateEntity.getRatePerDay(), "always valid");
+        } else {
+            System.out.printf("%35s%20s%15s%35s\n", rentalRateEntity.getRentalRateName(), rentalRateSessionBean.retrieveCategoryNameOfCategoryId(id), "$" + rentalRateEntity.getRatePerDay(), startDate + " to " + endDate);
+        }
+        System.out.println(".................................");
+        
+        
         
         while (true) {
+            
+            System.out.println("***More Options***\n");
+            System.out.println("1) Update rental rate");
+            System.out.println("2) Delete rental rate");
+            System.out.println("3) Exit");
+            response = 0;
                 
             while(response < 1 || response > 3) {
             
-                System.out.print("> ");
+                System.out.print("Enter a number> ");
 
                 response = scanner.nextInt();
 
@@ -252,10 +252,77 @@ public class SalesMangerModule {
     }
 
     private void updateRentalRate(RentalRateEntity rentalRateEntity) {
-        System.out.println("\n***Welcome To CaRMS Management System :: Update Rental Rate***");
-        System.out.println("Select the field to update");
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
         
-        //present all the fields and set new attribute accordingly
+        while (true) {
+            
+            System.out.println("\n***Welcome To CaRMS Management System :: Update Rental Rate***");
+            System.out.println("Select the field to update");
+            System.out.println("1) Rental Rate Name");
+            System.out.println("2) Rental Rate Car Category");
+            System.out.println("3) Rental Rate Per Day");
+            System.out.println("4) Rental Rate Start Time");
+            System.out.println("5) Rental Rate End Time");
+            System.out.println("6) Exit");
+            response = 0;
+                
+            while(response < 1 || response > 6) {
+            
+                System.out.print("Enter a number> ");
+
+                response = scanner.nextInt();
+
+                if (response == 1) {
+                    Scanner scan = new Scanner(System.in);
+                    System.out.print("\nEnter new rental rate name> ");
+                    String newName = scan.nextLine();
+                    //merge to DB
+                    RentalRateEntity r = rentalRateSessionBean.updateName(rentalRateEntity.getRentalRateId(), newName);
+                    System.out.println("Car name changed successfully: " + r.getRentalRateName());
+                } else if (response == 2) {
+                    List<CategoryEntity> list = categorySessionBean.retrieveCategoryEntities();
+                    System.out.println("\nAvailable car catergories");
+                    for (int i = 0; i < list.size(); i++) {
+                        System.out.println((i + 1) + ") " + list.get(i).getCategoryName());
+                    }
+                    int status;
+                    while (true) {
+                        try {
+                            Scanner sc = new Scanner(System.in);
+                            System.out.print("Enter new rental category number> ");
+                            status = sc.nextInt();
+                            if (status < 1 || status > list.size()) {
+                                System.out.println("Please enter a valid option");
+                            } else {
+                                break;
+                            }
+                        } catch (Exception ex) {
+                            System.out.println("Please enter either 1 or 2!");
+                        }
+                    }
+                    //merge to DB
+                    RentalRateEntity re = rentalRateSessionBean.updateCategory(rentalRateEntity.getRentalRateId(), list.get(status - 1).getCategoryId());
+                    System.out.println("Car category changed successfully: " + rentalRateSessionBean.retrieveCategoryNameOfCategoryId(re.getCategory().getCategoryId()));
+                } else if (response == 3) {
+                    System.out.print("\nEnter new rental rate> ");
+                    Double newRate = scanner.nextDouble();
+                    //merge to DB
+                    System.out.println("Car rental rate changed successfully: " + newRate);
+                } else if (response == 4) {
+                    
+                } else if (response == 5) {
+                    
+                } else if (response == 6) {
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+            if (response == 6) {
+                break;
+            }
+        }
     }
 
     private void deleteRentalRate(RentalRateEntity rentalRateEntity) {

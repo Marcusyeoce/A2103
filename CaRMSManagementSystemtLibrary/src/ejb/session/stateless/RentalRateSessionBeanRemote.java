@@ -11,4 +11,11 @@ public interface RentalRateSessionBeanRemote {
     
     public List<RentalRateEntity> retrieveAllRentalRates();
     
+    public RentalRateEntity retreiveRentalRateEntityById(long rentalRateId);
+    
+    public String retrieveCategoryNameOfCategoryId(long categoryEntityId);
+    
+    public RentalRateEntity updateName(long id, String name);
+    
+    public RentalRateEntity updateCategory(long recordId, long catId);
 }

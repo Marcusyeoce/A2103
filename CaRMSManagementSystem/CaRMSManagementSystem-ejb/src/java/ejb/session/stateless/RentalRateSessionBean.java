@@ -1,5 +1,6 @@
 package ejb.session.stateless;
 
+import Entity.CategoryEntity;
 import Entity.RentalRateEntity;
 import java.util.Date;
 import java.util.List;
@@ -72,6 +73,36 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         }
     }
     
+    @Override
+    public String retrieveCategoryNameOfCategoryId(long categoryEntityId) {
+        return em.find(CategoryEntity.class, categoryEntityId).getCategoryName();
+    }
+    
+    @Override
+    public RentalRateEntity updateName(long id, String name) {
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id);
+        rentalRateEntity.setRentalRateName(name);
+        em.merge(rentalRateEntity);
+        em.flush();
+        return rentalRateEntity;
+    }
+    
+    @Override
+    public RentalRateEntity updateCategory(long recordId, long catId) {
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, recordId);
+        CategoryEntity categoryEntity = em.find(CategoryEntity.class, catId);
+        
+        //update category
+        categoryEntity.getRentalRates().remove(rentalRateEntity);
+        rentalRateEntity.setCategory(categoryEntity);
+        categoryEntity.getRentalRates().add(rentalRateEntity);
+        em.merge(categoryEntity);
+        em.merge(rentalRateEntity);
+        em.flush();
+        return rentalRateEntity;
+    }
+    
+    @Override
     public List<RentalRateEntity> retrieveAllRentalRates() {
         Query query = em.createQuery("SELECT r from RentalRateEntity r");
         return query.getResultList();
@@ -88,6 +119,12 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         }
         return prevailingRentalRate;
     } */
+    
+    @Override
+    public RentalRateEntity retreiveRentalRateEntityById(long rentalRateId) {
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, rentalRateId);
+        return rentalRateEntity;
+    }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<RentalRateEntity>>constraintViolations)
     {

@@ -306,8 +306,6 @@ public class MainApp {
         System.out.print("Enter your choice of return outlet> ");
         OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
         
-        
-        
         //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
         List<ModelEntity> availableModels = modelSessionBeanRemote.getAvailableModels(pickUpDateByCust, returnDateByCust, pickupOutlet, returnOutlet);
  
@@ -326,7 +324,7 @@ public class MainApp {
         
         ReservationEntity reservation = new ReservationEntity();
             
-        while(response < 1 || response > 2) {
+        while(response < 1 || response > 3) {
             if (response == 1) {
                 System.out.print("Enter car make \n>");
                 String reservationMake = scanner.nextLine().trim();
@@ -361,14 +359,14 @@ public class MainApp {
                 makeReservation(reservation);
             } else if (response == 2) {
                 
-                //int counter = 1;
+                int counters = 1;
                 List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
                     
                 //prints list of categories, get all categories, and see which are available or booking
                 System.out.println("All categories available:");
                 for (CategoryEntity category: categories) {
-                    System.out.println(counter + ". " + category.getCategoryName());
-                    counter++;
+                    System.out.println(counter + ") " + category.getCategoryName());
+                    counters++;
                 }
                 
                 System.out.println("Please indicate the car category you want\n>");
