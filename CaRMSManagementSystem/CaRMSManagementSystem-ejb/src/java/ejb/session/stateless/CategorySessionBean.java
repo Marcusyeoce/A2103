@@ -16,6 +16,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.CategoryExistException;
+import util.exception.CategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;
 
@@ -77,6 +78,20 @@ public class CategorySessionBean implements CategorySessionBeanRemote, CategoryS
         Query query = em.createQuery("SELECT c FROM CategoryEntity c");
         
         return query.getResultList();
+    }
+    
+    @Override
+    public CategoryEntity retrieveCategoryByName(String categoryName) throws CategoryNotFoundException {
+        Query query = em.createQuery("SELECT c from CategoryEntity c WHERE c.categoryName = :inCategoryName");
+        query.setParameter("inCategoryName", categoryName);
+        
+        CategoryEntity category = (CategoryEntity) query.getSingleResult();
+        
+        if (category != null) {
+            return category; 
+        } else {
+            throw new CategoryNotFoundException();
+        }
     }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CategoryEntity>>constraintViolations)

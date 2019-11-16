@@ -20,10 +20,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import util.exception.CategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.ModelExistException;
-import util.exception.ModelNotAvailable;
+import util.exception.ModelNotAvailableException;
 import util.exception.ModelNotFoundException;
 import util.exception.NoAvailableCarsException;
 
@@ -157,6 +158,11 @@ public class MainApp {
         
         System.out.print("Enter name of category> ");
         String categoryName = scanner.nextLine().trim();
+        try {
+            CategoryEntity category = categorySessionBeanRemote.retrieveCategoryByName(categoryName);
+        } catch (CategoryNotFoundException ex) {
+            //
+        }
         
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         
@@ -227,7 +233,7 @@ public class MainApp {
         OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
         
         //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
-        List<ModelEntity> availableModels = modelSessionBeanRemote.getAvailableModels(pickupDate, returnDate, pickupOutlet, returnOutlet);
+        List<ModelEntity> availableModels = modelSessionBeanRemote.getAvailableModels(category, pickupDate, returnDate, pickupOutlet, returnOutlet);
  
         System.out.println("\n***All available models:***");
         System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
@@ -282,7 +288,7 @@ public class MainApp {
         }
     }
     
-    private void reserveCar() throws NoAvailableCarsException, ModelExistException, ModelNotAvailable, ModelNotFoundException {
+    private void reserveCar() throws NoAvailableCarsException, ModelExistException, ModelNotAvailableException, ModelNotFoundException {
         
         Scanner scanner = new Scanner(System.in);
         
@@ -388,7 +394,7 @@ public class MainApp {
                     }
                 }
                 if (!modelAvailable) {
-                    throw new ModelNotAvailable();
+                    throw new ModelNotAvailableException();
                 } */
                 
                 makePayment(reservation);
@@ -416,7 +422,7 @@ public class MainApp {
                     }
                 } 
                 if (!categoryAvailable) {
-                    throw new ModelNotAvailable();
+                    throw new ModelNotAvailableException();
                 } */
                     
                 reservation.setCategory(categories.get(categoryChoice-1));

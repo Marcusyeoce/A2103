@@ -1,10 +1,12 @@
 package ejb.session.stateless;
 
+import Entity.CategoryEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.CategoryNotAvailableException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelExistException;
 import util.exception.UnknownPersistenceException;
@@ -18,7 +20,7 @@ public interface ModelSessionBeanRemote {
     
     public List<ModelEntity> retrieveAllModels();
     
-    public List<ModelEntity> getAvailableModels(Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet);
+    public List<ModelEntity> getAvailableModels(CategoryEntity category, Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) throws CategoryNotAvailableException;    
     
     public ModelEntity updateManufacturerName(long id, String name);
     
