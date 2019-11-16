@@ -415,9 +415,9 @@ public class OperationManagerModule {
     private void viewAllCar() {
         System.out.println("\n***CaRMS Management System :: View all Cars***");
         List<CarEntity> list = carSessionBean.retrieveAllCars();
-        System.out.printf("%15s%15s%15s\n", "License Plate Number", "Status", "Outlet");
+        System.out.printf("%20s%15s%15s\n", "License Plate Number", "Status", "Outlet");
         for (int i = 0; i < list.size(); i++) {
-            System.out.printf("%3s%15s%15s%15s\n", (i + 1) + ")",  list.get(i).getLicensePlateNumber(), list.get(i).getStatus(), outletSessionBean.retrieveOutletEntityByOutletId(list.get(i).getOutlet().getOutletId()).getOutletName());
+            System.out.printf("%3s%17s%15s%15s\n", (i + 1) + ")",  list.get(i).getLicensePlateNumber(), list.get(i).getStatus(), outletSessionBean.retrieveOutletEntityByOutletId(list.get(i).getOutlet().getOutletId()).getOutletName());
         }
         
         Scanner r = new Scanner(System.in);
