@@ -516,6 +516,7 @@ public class MainApp {
         reservation.setCcNum(ccNum);
         reservation.setCcExpiryDate(ccExpiryDate);
         reservation.setCcCVV(ccCVV);
+        
         /* try {
             reservationSessionBeanRemote.createReservationEntity(reservation);
             System.out.println("Your reservation has been confirmed! Thank you!");
@@ -524,6 +525,12 @@ public class MainApp {
         } */
         
         Long reservationId = reservationSessionBeanRemote.createReservationEntity(reservation, currentCustomerEntity.getCustomerId());
+        
+        if (reservation.getModel() != null) {
+            
+        } else {
+            
+        }
         
         System.out.println("Your reservation has been confirmed! Thank you!");
     }
