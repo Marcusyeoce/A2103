@@ -185,26 +185,27 @@ public class SalesMangerModule {
         
         List<RentalRateEntity> list = rentalRateSessionBean.retrieveAllRentalRates();
         
-        System.out.printf("%35s%20s%35s\n", "Rental Rate Name", "Car Category", "Validity Period");
+        System.out.printf("%38s%20s%35s\n", "Rental Rate Name", "Car Category", "Validity Period");
         //not sort by category yet
         for (RentalRateEntity rentalRate: list) {
-            System.out.print(counter + ") ");
-            if (rentalRate.getStartDateTime().compareTo(new Date(0, 0, 0, 0, 0)) == 0) {
-                System.out.printf("%35s%20s%35s\n", rentalRate.getRentalRateName(), rentalRate.getCategory().getCategoryName(), "always valid");
-            } else {
-                String pattern = "dd/MM/yy HH:mm";
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            if (!rentalRate.isIsDeleted()) {
+                if (rentalRate.getStartDateTime().compareTo(new Date(0, 0, 0, 0, 0)) == 0) {
+                    System.out.printf("%3s%35s%20s%35s\n", counter + ") ", rentalRate.getRentalRateName(), rentalRate.getCategory().getCategoryName(), "always valid");
+                } else {
+                    String pattern = "dd/MM/yy HH:mm";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-                String startDate = simpleDateFormat.format(rentalRate.getStartDateTime());
-                String endDate = simpleDateFormat.format(rentalRate.getEndDateTime());
-                System.out.printf("%35s%20s%35s\n", rentalRate.getRentalRateName(), rentalRate.getCategory().getCategoryName(), startDate + " to " + endDate);
+                    String startDate = simpleDateFormat.format(rentalRate.getStartDateTime());
+                    String endDate = simpleDateFormat.format(rentalRate.getEndDateTime());
+                    System.out.printf("%3s%35s%20s%35s\n", counter + ") ", rentalRate.getRentalRateName(), rentalRate.getCategory().getCategoryName(), startDate + " to " + endDate);
+                }
+                counter++;
             }
-            counter++;
         }
         
         Scanner r = new Scanner(System.in);
-        System.out.println("Press any key to continue...");
-        r.next();
+        System.out.print("Press any key to continue...");
+        r.nextLine();
     }
 
     private void viewRentalDetails() {
@@ -217,12 +218,12 @@ public class SalesMangerModule {
         System.out.print("Enter rental rate name to view details> ");
         String name = scanner.nextLine();
         RentalRateEntity rentalRateEntity = new RentalRateEntity();
-        /*try {
-            //RentalRateEntity rentalRateEntity = rentalRateSessionBean.retreiveRentalRateEntityById(name);
+        try {
+            rentalRateEntity = rentalRateSessionBean.retreiveRentalRateByName(name);
         } catch(RentalRateException ex) {
             System.out.println("No such rental rate exist");
             return;
-        }*/
+        }
         
         String pattern = "dd/MM/yy HH:mm";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -378,8 +379,12 @@ public class SalesMangerModule {
 
     private void deleteRentalRate(RentalRateEntity rentalRateEntity) {
         System.out.println("\n***CaRMS Management System :: Delete Rental Rate***");
-        //rentalRateSessionBean.deleteRentalRateEntity(rentalRateEntity);
+        rentalRateSessionBean.deleteRentalRate(rentalRateEntity.getRentalRateId());
         
-        //check if used/not used & print out the results accordingly
+        System.out.println("Rental rate delete successfully!");
+        System.out.print("Press any key to continue...");
+        
+        Scanner tt = new Scanner(System.in);
+        tt.nextLine();
     }
 }

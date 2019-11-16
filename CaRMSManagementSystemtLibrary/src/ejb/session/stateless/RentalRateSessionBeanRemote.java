@@ -4,6 +4,7 @@ import Entity.RentalRateEntity;
 import java.util.Date;
 import java.util.List;
 import util.exception.InputDataValidationException;
+import util.exception.RentalRateException;
 import util.exception.UnknownPersistenceException;
 
 public interface RentalRateSessionBeanRemote {
@@ -31,4 +32,8 @@ public interface RentalRateSessionBeanRemote {
     public RentalRateEntity getPrevailingRentalRate(Long categoryId, Date dateTime);
     
     public double calculateAmountForReservation(Long categoryId, Date startDateTime, Date endDateTime);
+    
+    public RentalRateEntity retreiveRentalRateByName(String name) throws RentalRateException;
+    
+    public void deleteRentalRate(long id);
 }

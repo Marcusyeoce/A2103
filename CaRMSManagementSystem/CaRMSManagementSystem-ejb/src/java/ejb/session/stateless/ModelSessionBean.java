@@ -450,8 +450,11 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         
         if (!list.isEmpty()) {
             modelEntity.setIsDeleted(true);
+            em.merge(modelEntity);
+            em.flush();
         } else {
             em.remove(modelEntity);
+            em.flush();
         }
         
         

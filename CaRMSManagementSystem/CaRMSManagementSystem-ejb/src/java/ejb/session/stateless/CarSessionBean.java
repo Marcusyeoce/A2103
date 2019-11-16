@@ -177,6 +177,8 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
             em.flush();
         } else {
             carEntity.setStatus("Deleted");
+            em.merge(carEntity);
+            em.flush();
         }
     }
     
