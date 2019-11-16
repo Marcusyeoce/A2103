@@ -4,11 +4,17 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/HolidayReservationSystem/HolidayReservationWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="partnerSearchCar">
-<part name="parameters" element="tns:partnerSearchCar"/>
+<message name="retrieveAllOutlets">
+<part name="parameters" element="tns:retrieveAllOutlets"/>
 </message>
-<message name="partnerSearchCarResponse">
-<part name="parameters" element="tns:partnerSearchCarResponse"/>
+<message name="retrieveAllOutletsResponse">
+<part name="parameters" element="tns:retrieveAllOutletsResponse"/>
+</message>
+<message name="retrieveAllCategory">
+<part name="parameters" element="tns:retrieveAllCategory"/>
+</message>
+<message name="retrieveAllCategoryResponse">
+<part name="parameters" element="tns:retrieveAllCategoryResponse"/>
 </message>
 <message name="partnerLogin">
 <part name="parameters" element="tns:partnerLogin"/>
@@ -20,9 +26,13 @@
 <part name="fault" element="tns:InvalidLoginCredentialException"/>
 </message>
 <portType name="HolidayReservationWebService">
-<operation name="partnerSearchCar">
-<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerSearchCarRequest" message="tns:partnerSearchCar"/>
-<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerSearchCarResponse" message="tns:partnerSearchCarResponse"/>
+<operation name="retrieveAllOutlets">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllOutletsRequest" message="tns:retrieveAllOutlets"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllOutletsResponse" message="tns:retrieveAllOutletsResponse"/>
+</operation>
+<operation name="retrieveAllCategory">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllCategoryRequest" message="tns:retrieveAllCategory"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllCategoryResponse" message="tns:retrieveAllCategoryResponse"/>
 </operation>
 <operation name="partnerLogin">
 <input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
@@ -32,7 +42,16 @@
 </portType>
 <binding name="HolidayReservationWebServicePortBinding" type="tns:HolidayReservationWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="partnerSearchCar">
+<operation name="retrieveAllOutlets">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="retrieveAllCategory">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

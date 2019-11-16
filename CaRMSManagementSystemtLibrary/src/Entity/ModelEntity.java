@@ -23,6 +23,8 @@ public class ModelEntity implements Serializable {
     private String make;
     @Column(nullable = false, unique = true)
     private String model;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
     
     @OneToMany(mappedBy = "modelEntity")
     private List<CarEntity> cars;
@@ -45,7 +47,13 @@ public class ModelEntity implements Serializable {
         this.model = model;
     }
 
-    
+    public boolean isIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
     
     public List<ReservationEntity> getReservationList() {
         return reservationList;

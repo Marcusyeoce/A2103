@@ -5,6 +5,7 @@ import Entity.CustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,6 +163,21 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         em.merge(outletEntity);
         em.flush();
         return carEntity;
+    }
+    
+    @Override
+    public void deleteCar(long id) {
+        CarEntity carEntity = em.find(CarEntity.class, id);
+        
+        if (carEntity.getReservationEntity() == null) {
+            em.remove(carEntity);
+            em.flush();
+        } else if (carEntity.getReservationEntity().getEndDateTime().before(new Date(System.currentTimeMillis()))) {
+            em.remove(carEntity);
+            em.flush();
+        } else {
+            carEntity.setStatus("Deleted");
+        }
     }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CarEntity>>constraintViolations)

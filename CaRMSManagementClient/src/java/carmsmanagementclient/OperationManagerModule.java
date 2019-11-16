@@ -195,9 +195,12 @@ public class OperationManagerModule {
     private void viewAllCarModels() {
         System.out.println("\n***CaRMS Management System :: View all car Models***");
         List<ModelEntity> list = modelSessionBean.retrieveAllModels();
-        
+        int counter = 0;
         for (int i = 0; i < list.size(); i++) {
-            System.out.println((i + 1) + ") " + list.get(i).getModel());
+            if (!list.get(i).isIsDeleted()) {
+                counter++;
+                System.out.println(counter + ") " + list.get(i).getModel());
+            }
         }
         
         Scanner r = new Scanner(System.in);
@@ -293,7 +296,13 @@ public class OperationManagerModule {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***CaRMS Management System :: Delete car Model***");
         System.out.println("Enter car model name> ");
-        String name = scanner.nextLine();
+        try {
+            ModelEntity modelEntity = modelSessionBean.retrieveModelByName(scanner.nextLine());
+            modelSessionBean.deleteModel(modelEntity.getModelId());
+            System.out.println("Car model is deleted successfully!");
+        } catch (ModelExistException ex) {
+            System.out.println("Car Model does not exist!");
+        }
     }
 
     private void createNewCar() {
@@ -321,9 +330,14 @@ public class OperationManagerModule {
         
         
         List<ModelEntity> list = modelSessionBean.retrieveAllModels();
-        
+        List<ModelEntity> newModelList = new ArrayList<>();
+        int counter = 0;
         for (int i = 0; i < list.size(); i++) {
-            System.out.println((i + 1) + ")" + list.get(i).getModel());
+            if (!list.get(i).isIsDeleted()) {
+                counter++;
+                System.out.println(counter + ") " + list.get(i).getModel());
+                newModelList.add(list.get(i));
+            }
         }
         int modelNum;
         while (true) {
@@ -331,7 +345,7 @@ public class OperationManagerModule {
                 Scanner sc = new Scanner(System.in);
                 System.out.print("Select a car model(Enter the number)> ");
                 modelNum = sc.nextInt();
-                if (modelNum < 1 || modelNum > list.size()) {
+                if (modelNum < 1 || modelNum > counter) {
                     System.out.println("\nPlease enter a valid option");
                 } else {
                     break;
@@ -347,7 +361,7 @@ public class OperationManagerModule {
         } else {
             car.setStatus("Repair");
         }
-        car.setModelEntity(list.get(modelNum - 1));
+        car.setModelEntity(newModelList.get(modelNum - 1));
         
         List<OutletEntity> olist = outletSessionBean.retrieveOutletEntities();
         
@@ -448,8 +462,8 @@ public class OperationManagerModule {
                 if (response == 1) {
                     updateCar(carEntity);
                 } else if (response == 2) {
-                    if (deleteCar()) 
-                        response = 3;
+                    deleteCar(carEntity);
+                    response = 3;
                 } else if (response == 3) {
                     break;
                 } else {
@@ -564,15 +578,13 @@ public class OperationManagerModule {
         }
     }
 
-    private boolean deleteCar() {
-        if (true) {
-            System.out.println("Car deleted successfully!");
-            return true;
-        } else {
-            System.out.println("Unable to delete car");
-            return false;
-        }
+    private void deleteCar(CarEntity carEntity) {
+        carSessionBean.deleteCar(carEntity.getCarId());
+        System.out.println("Car deleted successfully!");
         
+        Scanner f = new Scanner(System.in);
+        System.out.print("Press any key to continue...");
+        f.nextLine();
     }
 
     //show how many is required and status

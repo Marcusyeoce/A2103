@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -31,12 +32,23 @@ public class RentalRateEntity implements Serializable {
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDateTime;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
     
     //private int status; //0 for active, 1 for deleted
     
-    @ManyToOne
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = false)
     private CategoryEntity category;
 
+    public boolean isIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+    
     public CategoryEntity getCategory() {
         return category;
     }

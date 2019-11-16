@@ -23,5 +23,7 @@ public interface CarSessionBeanLocal {
     public CarEntity updateCarStatus(long id, String status);
 
     public CarEntity updateCarOutlet(long id, long outletId);
+
+    public void deleteCar(long id);
     
 }
