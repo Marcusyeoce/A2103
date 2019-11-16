@@ -26,10 +26,10 @@ public class RentalRateEntity implements Serializable {
     private String rentalRateName;
     @Column(nullable = false)
     private double ratePerDay;
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date startDateTime;
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDateTime;
     @Column(nullable = false)

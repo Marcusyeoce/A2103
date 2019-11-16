@@ -237,7 +237,7 @@ public class DataInitSessionBean {
         em.flush();
         
         
-        RentalRateEntity rentalRateEntity = new RentalRateEntity("Standard Sedan - Default", 100, new Date(0, 0, 0, 0, 0), new Date(999, 0, 0, 0, 0));
+        RentalRateEntity rentalRateEntity = new RentalRateEntity("Standard Sedan - Default", 100, null, null);
         rentalRateEntity.setCategory(standard);
         em.persist(rentalRateEntity);
         em.flush();
@@ -247,7 +247,7 @@ public class DataInitSessionBean {
         em.persist(rentalRateEntity);
         em.flush();
         
-        rentalRateEntity = new RentalRateEntity("Family Sedan - Default", 200, new Date(0, 0, 0, 0, 0), new Date(999, 0, 0, 0, 0));
+        rentalRateEntity = new RentalRateEntity("Family Sedan - Default", 200, null, null);
         rentalRateEntity.setCategory(family);
         em.persist(rentalRateEntity);
         em.flush();

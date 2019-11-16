@@ -12,6 +12,7 @@ import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
+import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +39,7 @@ public class MainApp {
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
     private CategorySessionBeanRemote categorySessionBeanRemote;
     private OutletSessionBeanRemote outletSessionBeanRemote;
+    private RentalRateSessionBeanRemote rentalRateSessionBeanRemote;
     
     private CustomerEntity currentCustomerEntity;
     
@@ -45,12 +47,13 @@ public class MainApp {
     public MainApp() {
     }
 
-    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote, CategorySessionBeanRemote categorySessionBeanRemote, OutletSessionBeanRemote outletSessionBeanRemote) {
+    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote, CategorySessionBeanRemote categorySessionBeanRemote, OutletSessionBeanRemote outletSessionBeanRemote, RentalRateSessionBeanRemote rentalRateSessionBeanRemote) {
         this.customerSessionBeanRemote = customerSessionBeanRemote;
         this.modelSessionBeanRemote = modelSessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
         this.categorySessionBeanRemote = categorySessionBeanRemote;
         this.outletSessionBeanRemote = outletSessionBeanRemote;
+        this.rentalRateSessionBeanRemote = rentalRateSessionBeanRemote;
     }
     
     public void runApp()
@@ -156,20 +159,10 @@ public class MainApp {
     }
 
     private void searchCar() {
+        
         Scanner scanner = new Scanner(System.in);
+        
         System.out.println("\n***Welcome to CaRMS Reservation System :: Search car***\n");
-        
-        System.out.println("All categories");
-        List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
-        int counter = 1;
-        for (CategoryEntity category: categories) {
-            System.out.println((counter) + ") " + category.getCategoryName());
-            counter++;
-        }
-        
-        System.out.print("Enter your choice of category> ");
-        CategoryEntity category = categories.get(scanner.nextInt() - 1);
-        scanner.nextLine();
         
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         
@@ -181,21 +174,10 @@ public class MainApp {
         } catch (ParseException ex) {
             //
         }
-        
-        /* System.out.print("Enter pickup date(dd/mm/yy)> ");
-        String pickupDate = scanner.nextLine();
-        System.out.print("Enter pickup time(hh:mm)> ");
-        String pickupTime = scanner.nextLine(); 
-        System.out.println();
-        
-        String[] dateArray = pickupDate.split("/");
-        String[] timeArray = pickupTime.split(":");
-        
-        Date pickUpDateByCust = new Date(Integer.parseInt(dateArray[2]), Integer.parseInt(dateArray[1]), Integer.parseInt(dateArray[0]), Integer.parseInt(timeArray[0]), Integer.parseInt(timeArray[1])); */
-        
+
         System.out.println("Available Outlets");
         List<OutletEntity> outlets = outletSessionBeanRemote.retrieveOutletEntities();
-        counter = 0;
+        int counter = 0;
         for (int i = 0; i < outlets.size(); i++) {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
@@ -216,18 +198,7 @@ public class MainApp {
         } catch (ParseException ex) {
             //
         }
-        
-        /* System.out.print("Enter return date(dd/mm/yy)> ");
-        String returnDate = scanner.nextLine();
-        System.out.print("Enter return time(hh:mm)> ");
-        String returnTime = scanner.nextLine();
-        System.out.println();
-        
-        String[] rdateArray = returnDate.split("/");
-        String[] rtimeArray = returnTime.split(":");
-        
-        Date returnDateByCust = new Date(Integer.parseInt(rdateArray[2]), Integer.parseInt(rdateArray[1]), Integer.parseInt(rdateArray[0]), Integer.parseInt(rtimeArray[0]), Integer.parseInt(rtimeArray[1])); */
-        
+
         System.out.println("Available Outlets");
         counter = 0;
         for (int i = 0; i < outlets.size(); i++) {
@@ -239,23 +210,74 @@ public class MainApp {
         System.out.print("Enter your choice of return outlet> ");
         OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
         
-        //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
-        List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
+        System.out.println("***More Options***");
+        System.out.println("1) Search by categories");
+        System.out.println("2) Search by model");
+        int response = 0;
+                
+            while(response < 1 || response > 2)
+            {
+            
+                System.out.print("> ");
+                response = scanner.nextInt();
+                
+                if (response == 1) {
+                    System.out.println("All categories:");
+                    List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
+                    counter = 1;
+                    for (CategoryEntity category: categories) {
+                        System.out.println((counter) + ") " + category.getCategoryName());
+                        counter++;
+                    }
         
-        try {
-            availableModels = modelSessionBeanRemote.getAvailableModels(category.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
-        } catch (CategoryNotAvailableException ex) {
-            //Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
- 
-        System.out.println("\n***All available models:***");
-        System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
+                    System.out.print("Enter your choice of category> ");
+                    CategoryEntity category = categories.get(scanner.nextInt() - 1);
+                    scanner.nextLine();
+                    
+                    //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
+                    List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
         
-        for (int i = 0; i < availableModels.size(); i++) {
-            System.out.print((i + 1) + ") ");
-            System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), "$15"); //availableModels.get(i).getCategoryEntity().getRentalRates();
+                    try {
+                        availableModels = modelSessionBeanRemote.getAvailableModelsCategory(category.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                    } catch (CategoryNotAvailableException ex) {
+                        //Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    System.out.println("\n***All available models:***");
+                    System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
+        
+                    double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(category.getCategoryId(), pickupDate, returnDate);
+        
+                    for (int i = 0; i < availableModels.size(); i++) {
+                        System.out.print((i + 1) + ") ");
+                        System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), totalSumReservation); 
+                    }
+                } else if(response == 2) {
+                    
+                    Scanner sc = new Scanner(System.in);
+                    
+                    System.out.println("Please input make\n>");
+                    String make = sc.nextLine().trim();
+                    
+                    System.out.println("Please input model\n>");
+                    String model = sc.nextLine().trim();
+                    try {
+                        ModelEntity modelEntity = modelSessionBeanRemote.retrieveModelByName(model);
+                        if (modelSessionBeanRemote.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId())) {
+                            System.out.println(modelEntity.getMake() + " " + modelEntity.getModel() + " is available!");
+                            
+                            double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(modelEntity.getCategoryEntity().getCategoryId(), pickupDate, returnDate);
+                            System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
+                            System.out.printf("%15s%20s%15s\n" , model, modelEntity.getMake(), totalSumReservation);
+                        }    
+                    } catch (ModelNotFoundException ex) {
+                        //
+                    }
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
         }
-    }
 
     private void mainMenu() {
         Scanner scanner = new Scanner(System.in);
@@ -377,7 +399,7 @@ public class MainApp {
         OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
         
         //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
-        //List<ModelEntity> availableModels = modelSessionBeanRemote.getAvailableModels(category, pickUpDateByCust, returnDateByCust, pickupOutlet, returnOutlet);
+        //List<ModelEntity> availableModels = modelSessionBeanRemote.getAvailableModelsCategory(category, pickUpDateByCust, returnDateByCust, pickupOutlet, returnOutlet);
         
         //if there are cars
         ReservationEntity reservation = new ReservationEntity();

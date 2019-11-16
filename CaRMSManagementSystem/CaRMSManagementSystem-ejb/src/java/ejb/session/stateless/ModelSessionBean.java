@@ -29,6 +29,7 @@ import util.exception.CategoryNotAvailableException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelExistException;
 import util.exception.ModelNotAvailableException;
+import util.exception.ModelNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 @Stateless
@@ -95,7 +96,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     
     //assumed enough employees, will be settled in transit dispatch, allocate earlier timing to ensure that car will be available
     @Override
-    public List<ModelEntity> getAvailableModels(Long categoryId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CategoryNotAvailableException {
+    public List<ModelEntity> getAvailableModelsCategory(Long categoryId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CategoryNotAvailableException {
         
         CategoryEntity category = em.find(CategoryEntity.class, categoryId);
         OutletEntity pickupOutlet = em.find(OutletEntity.class, pickupOutletId);
@@ -119,7 +120,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
             int numCarsAvail = model.getCars().size();
             
             for (CarEntity car: model.getCars()) {
-                if (car.getStatus().equals("Repair")) {
+                if (car.getStatus().equals("Repair") || car.getStatus().equals("Deleted")) {
                     numCarsAvail--;
                 }
             }
@@ -223,6 +224,143 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         }
     }
     
+    public boolean checkModelAvailability(Long modelId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) {
+        
+        ModelEntity model = em.find(ModelEntity.class, modelId);
+        CategoryEntity category = em.find(CategoryEntity.class, model.getCategoryEntity().getCategoryId());
+        OutletEntity pickupOutlet = em.find(OutletEntity.class, pickupOutletId);
+        OutletEntity returnOutlet = em.find(OutletEntity.class, returnOutletId);
+        
+        List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
+        //System.out.println("Running getAvailableModel method : " + retrieveAllModels().size());
+        
+        List<ModelEntity> modelList = category.getModels();
+        
+        //assume each car only has 1 reservation
+        // check if model list is empty
+        // if model list is not empty, go through the num of cars of model in store, and check if available
+        // if there are reservations, check if other store such model that are available
+        // else, not available
+        int totalNumCarsAvail = 0;
+                
+        for (ModelEntity modelEntity: modelList) {
+            
+            //initialize all cars of the model
+            int numCarsAvail = model.getCars().size();
+            
+            for (CarEntity car: model.getCars()) {
+                if (car.getStatus().equals("Repair") || car.getStatus().equals("Deleted")) {
+                    numCarsAvail--;
+                }
+            }
+            
+            //go through if there are reservations by model first
+            for (ReservationEntity existingReservation : model.getReservationList()) {
+                
+                boolean isConflicting = false;
+                
+                //retrieve only existing reservations, ignore cancelled and successful ones
+                if (existingReservation.getStatus() == 0) {
+                    
+                    Calendar reservationStartCalendar = Calendar.getInstance();
+                    reservationStartCalendar.setTime(pickupDateTime);
+                    
+                    Calendar reservationEndCalendar = Calendar.getInstance();
+                    reservationEndCalendar.setTime(returnDateTime);
+                    
+                    Calendar exisitingRerservationStartCalendar = Calendar.getInstance();
+                    exisitingRerservationStartCalendar.setTime(existingReservation.getStartDateTime());
+                    
+                    Calendar exisitingRerservationEndCalendar = Calendar.getInstance();
+                    exisitingRerservationEndCalendar.setTime(existingReservation.getEndDateTime());
+                    //check if pickup timing conflicts with previous reservation
+                    //check if new reservation pickup outlet is same with previous reservation return outlet
+                    if (existingReservation.getReturnOutlet() != pickupOutlet) {
+                        reservationStartCalendar.add(Calendar.HOUR, -2);
+                    }
+                    if (reservationStartCalendar.before(exisitingRerservationEndCalendar)) {
+                        isConflicting = true;
+                    }
+                    
+                    //check if return timing conflicts with previous reservation
+                    //check if new reservation return outlet is same with previous reservation pickup outlet
+                    if (existingReservation.getPickupOutlet() != returnOutlet) {
+                        reservationEndCalendar.add(Calendar.HOUR, 2);
+                    }
+                    if (reservationEndCalendar.after(exisitingRerservationStartCalendar)) {
+                        isConflicting = true;
+                    }
+                }
+                
+                if (isConflicting) {
+                    numCarsAvail--;
+                }
+            }
+            if (numCarsAvail > 0) {
+                availableModels.add(model);
+                totalNumCarsAvail += numCarsAvail;
+            }
+        }
+    
+        //go through if there are reservations by category
+        int reservationByCategory = 0;
+        
+        for (ReservationEntity existingReservation : category.getReservations()) {
+            
+            boolean isConflicting = false;
+            
+            if (existingReservation.getStatus() == 0) {
+                    
+                Calendar reservationStartCalendar = Calendar.getInstance();
+                reservationStartCalendar.setTime(pickupDateTime);
+                    
+                Calendar reservationEndCalendar = Calendar.getInstance();
+                reservationEndCalendar.setTime(returnDateTime);
+                    
+                Calendar exisitingRerservationStartCalendar = Calendar.getInstance();
+                exisitingRerservationStartCalendar.setTime(existingReservation.getStartDateTime());
+                    
+                Calendar exisitingRerservationEndCalendar = Calendar.getInstance();
+                exisitingRerservationEndCalendar.setTime(existingReservation.getEndDateTime());
+                //check if pickup timing conflicts with previous reservation
+                //check if new reservation pickup outlet is same with previous reservation return outlet
+                if (existingReservation.getReturnOutlet() != pickupOutlet) {
+                    reservationStartCalendar.add(Calendar.HOUR, -2);
+                }
+                if (reservationStartCalendar.before(exisitingRerservationEndCalendar)) {
+                    isConflicting = true;
+                }
+                    
+                //check if return timing conflicts with previous reservation
+                //check if new reservation return outlet is same with previous reservation pickup outlet
+                if (existingReservation.getPickupOutlet() != returnOutlet) {
+                    reservationEndCalendar.add(Calendar.HOUR, 2);
+                }
+                if (reservationEndCalendar.after(exisitingRerservationStartCalendar)) {
+                    isConflicting = true;
+                }
+            }
+                
+            if (isConflicting) {
+                reservationByCategory++;
+            }
+        }
+        
+        boolean modelAvailable = false;
+        
+        for (ModelEntity availModel: modelList) {
+            if (availModel.equals(model)) {
+                modelAvailable = true;
+            }
+        }
+        
+        if (totalNumCarsAvail > reservationByCategory && modelAvailable) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     public double calculateRentalRate(Date pickupDateTime, Date returnDateTime, CategoryEntity categoryEntity) {
         List<RentalRateEntity> rentalRateList = categoryEntity.getRentalRates();
         for (int i = 0; i < rentalRateList.size(); i++) {
@@ -253,7 +391,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     }
     
     @Override
-    public ModelEntity retrieveModelByName(String name) throws ModelExistException {
+    public ModelEntity retrieveModelByName(String name) throws ModelNotFoundException {
         try {
             Query query = em.createQuery("SELECT m FROM ModelEntity m WHERE m.model = :inModel");
             query.setParameter("inModel", name);
@@ -261,7 +399,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
             ModelEntity modelEntity = (ModelEntity) query.getSingleResult();
             return modelEntity;
         } catch (NoResultException ex) {
-            throw new ModelExistException("");
+            throw new ModelNotFoundException();
         }
     }
     
