@@ -20,7 +20,7 @@ public interface ModelSessionBeanLocal {
 
     public List<ModelEntity> retrieveAllModels();
 
-    public List<ModelEntity> getAvailableModels(CategoryEntity category, Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) throws CategoryNotAvailableException;    
+    public List<ModelEntity> getAvailableModels(Long categoryId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CategoryNotAvailableException;    
 
     public ModelEntity updateManufacturerName(long id, String name);
 

@@ -92,21 +92,18 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         return query.getResultList();
     }
     
-    public List<ModelEntity> retrieveAllModelsByCategory(Long categoryId) {
-        Query query = em.createQuery("SELECT m from ModelEntity m WHERE m.categoryEntity.categoryId = categoryId");
-        
-        return query.getResultList();
-    }
-    
-    
     //assumed enough employees, will be settled in transit dispatch, allocate earlier timing to ensure that car will be available
     @Override
-    public List<ModelEntity> getAvailableModels(CategoryEntity category, Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) throws CategoryNotAvailableException {
+    public List<ModelEntity> getAvailableModels(Long categoryId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CategoryNotAvailableException {
         
-        List<ModelEntity> availableModels = new ArrayList<>();
+        CategoryEntity category = em.find(CategoryEntity.class, categoryId);
+        OutletEntity pickupOutlet = em.find(OutletEntity.class, pickupOutletId);
+        OutletEntity returnOutlet = em.find(OutletEntity.class, returnOutletId);
+        
+        List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
         //System.out.println("Running getAvailableModel method : " + retrieveAllModels().size());
         
-        List<ModelEntity> modelList = retrieveAllModelsByCategory(category.getCategoryId());
+        List<ModelEntity> modelList = category.getModels();
         
         //assume each car only has 1 reservation
         // check if model list is empty
@@ -129,7 +126,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
             //go through if there are reservations by model first
             for (ReservationEntity existingReservation : model.getReservationList()) {
                 
-                boolean isConflicting = false; 
+                boolean isConflicting = false;
                 
                 //retrieve only existing reservations, ignore cancelled and successful ones
                 if (existingReservation.getStatus() == 0) {

@@ -243,7 +243,7 @@ public class MainApp {
         List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
         
         try {
-            availableModels = modelSessionBeanRemote.getAvailableModels(category, pickupDate, returnDate, pickupOutlet, returnOutlet);
+            availableModels = modelSessionBeanRemote.getAvailableModels(category.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
         } catch (CategoryNotAvailableException ex) {
             //Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
         }
