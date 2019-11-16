@@ -27,6 +27,8 @@ public interface RentalRateSessionBeanRemote {
     public RentalRateEntity updateEndDateTime(long id, Date date);
     
     public void updateRentalRateEntity(RentalRateEntity rentalRateEntity);
+
+    public RentalRateEntity getPrevailingRentalRate(Long categoryId, Date dateTime);
     
-    public RentalRateEntity getPrevailingRentalRate(Date dateTime);
+    public double calculateAmountForReservation(Long categoryId, Date startDateTime, Date endDateTime);
 }

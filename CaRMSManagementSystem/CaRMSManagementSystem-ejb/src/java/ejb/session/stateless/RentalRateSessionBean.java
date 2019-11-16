@@ -5,10 +5,12 @@ import Entity.RentalDayEntity;
 import Entity.RentalRateEntity;
 import Entity.ReservationEntity;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -97,6 +99,39 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         return rentalRateEntity;
     }
     
+    public double calculateAmountForReservation(Long categoryId, Date startDateTime, Date endDateTime) {
+        
+        Scanner sc = new Scanner(System.in);
+        
+        double totalSum = 0.0;
+        
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDateTime);
+        
+        Calendar d = Calendar.getInstance();
+        d.setTime(endDateTime);
+        
+        System.out.println(c.getTime());
+        System.out.println(d.getTime());
+        
+        //for first day, take into account the pickuptime
+        while (!c.after(d)) {
+            
+            System.out.println(c);
+            
+            totalSum += getPrevailingRentalRate(categoryId, c.getTime()).getRatePerDay(); 
+
+            //increment date, and reset it to 00:00
+            c.add(Calendar.DATE, 1);
+            c.set(Calendar.MILLISECOND, 0);
+            c.set(Calendar.SECOND, 0);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.HOUR, 0);
+        }
+        
+        return totalSum;
+    }
+    
     @Override
     public RentalRateEntity updateCategory(long recordId, long catId) {
         
@@ -150,22 +185,18 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         return query.getResultList();
     }
     
-    @Override
-    public RentalRateEntity getPrevailingRentalRate(Date dateTime) {
+    public RentalRateEntity getPrevailingRentalRate(Long categoryId, Date dateTime) {
+        
+        CategoryEntity category = em.find(CategoryEntity.class, categoryId);
         
         List<RentalRateEntity> applicableRentalRates = new ArrayList<RentalRateEntity>();
         
-        for (RentalRateEntity rentalRate: retrieveAllRentalRates()) {
+        for (RentalRateEntity rentalRate: category.getRentalRates()) {
             
             //if null, just include (default rate)
-            //if date is in between the validity period of rental rate
-            if (rentalRate.getStartDateTime() == null ||(dateTime.compareTo(rentalRate.getStartDateTime()) >= 0 && dateTime.compareTo(rentalRate.getEndDateTime()) <= 0)) {
-                //check if they are the type, monday applies for monday etc
-                //have to change implementation of rental rate
-                //implement rentalrate.getApplicableDay or sth
-                if (dateTime.getDay() == 1) {
-                   applicableRentalRates.add(rentalRate); 
-                }
+            //check if date is in between the validity period of rental rate
+            if (rentalRate.getStartDateTime() == null || (dateTime.after(rentalRate.getStartDateTime()) && dateTime.before(rentalRate.getEndDateTime()))) {
+                applicableRentalRates.add(rentalRate);                
             }
         }
         
@@ -178,7 +209,7 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         }
         
         return prevailingRentalRate;
-    }  
+    }
        
     @Override
     public RentalRateEntity retreiveRentalRateEntityById(long rentalRateId) {

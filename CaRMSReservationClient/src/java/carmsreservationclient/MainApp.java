@@ -12,6 +12,7 @@ import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
+import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +39,7 @@ public class MainApp {
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
     private CategorySessionBeanRemote categorySessionBeanRemote;
     private OutletSessionBeanRemote outletSessionBeanRemote;
+    private RentalRateSessionBeanRemote rentalRateSessionBeanRemote;
     
     private CustomerEntity currentCustomerEntity;
     
@@ -45,12 +47,13 @@ public class MainApp {
     public MainApp() {
     }
 
-    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote, CategorySessionBeanRemote categorySessionBeanRemote, OutletSessionBeanRemote outletSessionBeanRemote) {
+    public MainApp(CustomerSessionBeanRemote customerSessionBeanRemote, ModelSessionBeanRemote modelSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote, CategorySessionBeanRemote categorySessionBeanRemote, OutletSessionBeanRemote outletSessionBeanRemote, RentalRateSessionBeanRemote rentalRateSessionBeanRemote) {
         this.customerSessionBeanRemote = customerSessionBeanRemote;
         this.modelSessionBeanRemote = modelSessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
         this.categorySessionBeanRemote = categorySessionBeanRemote;
         this.outletSessionBeanRemote = outletSessionBeanRemote;
+        this.rentalRateSessionBeanRemote = rentalRateSessionBeanRemote;
     }
     
     public void runApp()
@@ -251,9 +254,11 @@ public class MainApp {
         System.out.println("\n***All available models:***");
         System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
         
+        double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(category.getCategoryId(), pickupDate, returnDate);
+        
         for (int i = 0; i < availableModels.size(); i++) {
             System.out.print((i + 1) + ") ");
-            System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), "$15"); //availableModels.get(i).getCategoryEntity().getRentalRates();
+            System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), totalSumReservation); 
         }
     }
 
