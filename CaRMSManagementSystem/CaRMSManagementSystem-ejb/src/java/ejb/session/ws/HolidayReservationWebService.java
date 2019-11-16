@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb.session.ws;
 
 import Entity.PartnerEntity;
@@ -23,7 +18,7 @@ public class HolidayReservationWebService {
     private PartnerSessionBeanLocal partnerSessionBean;
     
     @WebMethod(operationName = "partnerLogin")
-    public Long partnerLoginWeb(String username, String password) throws InvalidLoginCredentialException {
+    public Long partnerLoginWeb(@WebParam String username,@WebParam String password) throws InvalidLoginCredentialException {
         
         if (username.length() > 0 && password.length() > 0) {
             return partnerSessionBean.partnerLogin(username, password);

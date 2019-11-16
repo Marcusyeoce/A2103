@@ -11,6 +11,7 @@ import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -56,8 +57,7 @@ public class CustomerServiceModule {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Management System :: Employee Panel***");
-            System.out.println("You are logged in as Customer Service Relations\n");
+            System.out.println("\n***Welcome To CaRMS Management System :: Customer Service Panel***");
             System.out.println("1: Pickup car");
             System.out.println("2: Return car");
             System.out.println("3: Logout");
@@ -66,9 +66,20 @@ public class CustomerServiceModule {
             while(response < 1 || response > 3)
             {
             
-                System.out.print("> ");
-                
-                response = scanner.nextInt();
+                while (true) {
+                    try {
+                        Scanner r = new Scanner(System.in);
+                        System.out.print("> ");
+                        response = r.nextInt();
+                        if (response < 1 || response > 11) {
+                            System.out.println("Please enter a valid option");
+                        } else {
+                            break;
+                        }
+                    } catch(InputMismatchException ex) {
+                        System.out.println("Please enter a number");
+                    }
+                }
                 
                 if (response == 1) {
                     pickupCar();
@@ -94,7 +105,7 @@ public class CustomerServiceModule {
         CustomerEntity customer = null;
         
         while (true) {
-            System.out.println("\n***Welcome To CaRMS Management System :: Pickup Car***");
+            System.out.println("\n***CaRMS Management System :: Pickup Car***");
             System.out.println("1.Identify customer by mobile number");
             System.out.println("2.Identify customer by passport number");
             System.out.println("3.Exit");
@@ -143,7 +154,7 @@ public class CustomerServiceModule {
         Integer response = 0;
         
         while (true) {
-            System.out.println("\n***Welcome To CaRMS Management System :: Return Car***");
+            System.out.println("\n***CaRMS Management System :: Return Car***");
             System.out.println("Input car plate number of returning car");
             
             String carplateNum = scanner.nextLine();

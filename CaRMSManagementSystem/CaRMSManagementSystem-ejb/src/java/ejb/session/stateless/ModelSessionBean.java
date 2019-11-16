@@ -17,6 +17,7 @@ import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
@@ -254,13 +255,16 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     }
     
     @Override
-    public ModelEntity retrieveModelByName(String name) {
-        Query query = em.createQuery("SELECT m FROM ModelEntity m WHERE m.model = :inModel");
-        query.setParameter("inModel", name);
-        
-        ModelEntity modelEntity = (ModelEntity) query.getSingleResult();
-        
-        return modelEntity;
+    public ModelEntity retrieveModelByName(String name) throws ModelExistException {
+        try {
+            Query query = em.createQuery("SELECT m FROM ModelEntity m WHERE m.model = :inModel");
+            query.setParameter("inModel", name);
+
+            ModelEntity modelEntity = (ModelEntity) query.getSingleResult();
+            return modelEntity;
+        } catch (NoResultException ex) {
+            throw new ModelExistException("");
+        }
     }
     
     @Override

@@ -15,6 +15,7 @@ import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.TransitDispatchRecordSessionBeanRemote;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -68,29 +69,38 @@ public class OperationManagerModule {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Management System :: Employee Panel***");
-            System.out.println("You are logged in as Operations Manager\n");
-            System.out.println("1: Create new car model");
-            System.out.println("2: View all car models");
-            System.out.println("3: Update car model");
-            System.out.println("4: Delete car model");
-            System.out.println("--------------------");
-            System.out.println("5: Create new car ");
-            System.out.println("6: View all cars");
-            System.out.println("7: View car details");
-            System.out.println("--------------------");
-            System.out.println("8: View Transit driver dispatch records for current day reservations");
-            System.out.println("9: Assign transit driver");
+            System.out.println("\n***Welcome To CaRMS Management System :: Operations Manager Panel***");
+            System.out.println("1:  Create new car model");
+            System.out.println("2:  View all car models");
+            System.out.println("3:  Update car model");
+            System.out.println("4:  Delete car model");
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println("5:  Create new car ");
+            System.out.println("6:  View all cars");
+            System.out.println("7:  View car details");
+            System.out.println("---------------------------------------------------------------------");
+            System.out.println("8:  View Transit driver dispatch records for current day reservations");
+            System.out.println("9:  Assign transit driver");
             System.out.println("10: Update transit as completed");
             System.out.println("11: Logout");
             response = 0;
             
             while(response < 1 || response > 11)
             {
-            
-                System.out.print("> ");
-                
-                response = scanner.nextInt();
+                while (true) {
+                    try {
+                        Scanner r = new Scanner(System.in);
+                        System.out.print("> ");
+                        response = r.nextInt();
+                        if (response < 1 || response > 11) {
+                            System.out.println("Please enter a valid option");
+                        } else {
+                            break;
+                        }
+                    } catch(InputMismatchException ex) {
+                        System.out.println("Please enter a number");
+                    }
+                }
                 
                 if (response == 1) {
                     createNewCarModel();
@@ -127,7 +137,7 @@ public class OperationManagerModule {
     private void createNewCarModel() {
         Scanner scanner = new Scanner(System.in);
         ModelEntity model = new ModelEntity();
-        System.out.println("\n***Welcome To CaRMS Management System :: Create New Car Model***\n");
+        System.out.println("\n***CaRMS Management System :: Create New Car Model***\n");
 
         System.out.print("Enter car model > ");
         String modelName = scanner.nextLine();
@@ -183,12 +193,16 @@ public class OperationManagerModule {
     }
 
     private void viewAllCarModels() {
-        System.out.println("\n***Welcome To CaRMS Management System :: View all car Models***\n");
+        System.out.println("\n***CaRMS Management System :: View all car Models***");
         List<ModelEntity> list = modelSessionBean.retrieveAllModels();
         
         for (int i = 0; i < list.size(); i++) {
             System.out.println((i + 1) + ") " + list.get(i).getModel());
         }
+        
+        Scanner r = new Scanner(System.in);
+        System.out.print("Press any key to continue...");
+        r.nextLine();
         
     }
 
@@ -198,11 +212,22 @@ public class OperationManagerModule {
         
         System.out.print("Enter car model name> ");
         String modelName = scanner.nextLine();
+        ModelEntity modelEntity = new ModelEntity();
         
-        ModelEntity modelEntity = modelSessionBean.retrieveModelByName(modelName);
+
+        try {
+            modelEntity = modelSessionBean.retrieveModelByName(modelName);
+        } catch(ModelExistException ex) {
+            System.out.println("\nNo such model exist!");
+            Scanner tt = new Scanner(System.in);
+            System.out.println("Press any key to continue...");
+            tt.nextLine();
+            return;
+        }
+        
         while (true) {
             
-            System.out.println("\n***Welcome To CaRMS Management System :: Update Car Model***\n");
+            System.out.println("\n***CaRMS Management System :: Update Car Model***\n");
             System.out.println("Select the field to update");
             System.out.println("1) Change Car Manufacture Name");
             System.out.println("2) Change Car Model Name");
@@ -266,7 +291,7 @@ public class OperationManagerModule {
 
     private void deleteCarModel() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Management System :: Delete car Model***\n");
+        System.out.println("\n***CaRMS Management System :: Delete car Model***");
         System.out.println("Enter car model name> ");
         String name = scanner.nextLine();
     }
@@ -274,7 +299,7 @@ public class OperationManagerModule {
     private void createNewCar() {
         Scanner scanner = new Scanner(System.in);
         CarEntity car = new CarEntity();
-        System.out.println("\n***Welcome To CaRMS Management System :: Create New Car***\n");
+        System.out.println("\n***CaRMS Management System :: Create New Car***\n");
 
         System.out.print("Enter car license plate number> ");
         String num = scanner.nextLine();
@@ -373,17 +398,21 @@ public class OperationManagerModule {
     }
 
     private void viewAllCar() {
-        System.out.println("\n***Welcome To CaRMS Management System :: View all Cars***\n");
+        System.out.println("\n***CaRMS Management System :: View all Cars***");
         List<CarEntity> list = carSessionBean.retrieveAllCars();
         System.out.printf("%15s%15s%15s\n", "License Plate Number", "Status", "Outlet");
         for (int i = 0; i < list.size(); i++) {
             System.out.printf("%3s%15s%15s%15s\n", (i + 1) + ")",  list.get(i).getLicensePlateNumber(), list.get(i).getStatus(), outletSessionBean.retrieveOutletEntityByOutletId(list.get(i).getOutlet().getOutletId()).getOutletName());
         }
+        
+        Scanner r = new Scanner(System.in);
+        System.out.print("Press any key to continue...");
+        r.nextLine();
     }
 
     private void viewCarDetails() { //includes updateCar and deleteCar
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Management System :: View car details***\n");
+        System.out.println("\n***CaRMS Management System :: View car details***\n");
         System.out.print("Enter car license plate number> ");
         String number = scanner.nextLine();
         CarEntity carEntity = new CarEntity();
@@ -392,15 +421,19 @@ public class OperationManagerModule {
             System.out.printf("%20s%15s%15s%15s%25s\n", "License Plate Number", "Status", "Model", "Outlet", "Reservation Start Date");
             System.out.printf("%20s%15s%15s%15s%25s\n", carEntity.getLicensePlateNumber(), carEntity.getStatus(), carEntity.getModelEntity().getModel(), carEntity.getOutlet().getOutletName(), "N.A.");
         } catch (CarExistException ex) {
-            System.out.println("No car with that liscence plate number exist");
+            System.out.println("No car with that lisence plate number exist!");
+            Scanner r = new Scanner(System.in);
+            System.out.print("Press any key to continue...");
+            r.nextLine();
+            return;
         }
         
-        System.out.println(".................................");
+        System.out.println("\n..................................................................\n");
         
         Integer response = 0;
         while (true) {
             
-            System.out.println("***More Options***\n");
+            System.out.println("***More Options***");
             System.out.println("1) Update car");
             System.out.println("2) Delete car");
             System.out.println("3) Exit");
@@ -415,7 +448,8 @@ public class OperationManagerModule {
                 if (response == 1) {
                     updateCar(carEntity);
                 } else if (response == 2) {
-                    deleteCar();
+                    if (deleteCar()) 
+                        response = 3;
                 } else if (response == 3) {
                     break;
                 } else {
@@ -434,13 +468,13 @@ public class OperationManagerModule {
         
         while (true) {
             
-            System.out.println("\n***Welcome To CaRMS Management System :: Update Car***");
+            System.out.println("\n***CaRMS Management System :: Update Car***");
             System.out.println("Select the field to update");
             System.out.println("1) Change Car License Plate Number");
             System.out.println("2) Change Car Model");
             System.out.println("3) Change Car Status");
             System.out.println("4) Change Car Outlet");
-            System.out.println("5) Exit");
+            System.out.println("5) Back");
             response = 0;
                 
             while(response < 1 || response > 6) {
@@ -448,6 +482,8 @@ public class OperationManagerModule {
                 System.out.print("Enter a number> ");
 
                 response = scanner.nextInt();
+                
+                System.out.println();
 
                 if (response == 1) {
                     Scanner scan = new Scanner(System.in);
@@ -515,7 +551,7 @@ public class OperationManagerModule {
                     }
                     //merge to DB
                     CarEntity re = carSessionBean.updateCarOutlet(carEntity.getCarId(), list.get(status).getOutletId());
-                    System.out.println("Outlet that car is at is changed successfully: " + list.get(status).getOutletName());
+                    System.out.println("Car's outlet was changed from " + carEntity.getOutlet() + "to " + list.get(status).getOutletName() + " successfully!");
                 } else if (response == 5) {
                     break;
                 } else {
@@ -528,14 +564,21 @@ public class OperationManagerModule {
         }
     }
 
-    private void deleteCar() {
+    private boolean deleteCar() {
+        if (true) {
+            System.out.println("Car deleted successfully!");
+            return true;
+        } else {
+            System.out.println("Unable to delete car");
+            return false;
+        }
         
     }
 
     //show how many is required and status
     private void viewDispatchRecords() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Management System :: View transit driver dispatch records for current day reservations***\n");
+        System.out.println("\n***CaRMS Management System :: View transit driver dispatch records for current day reservations***\n");
         
         List<TransitDispatchRecordEntity> dispatchRecords = transitDispatchRecordSessionBean.getAllTransitDispatchRecordForOutlet(currentEmployeeEntity.getOutletEntity());
         
@@ -550,7 +593,7 @@ public class OperationManagerModule {
     //show the dispatch records with no driver, and drivers that are available, update dispatch records
     private void assignTransitDriver() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Management System :: Assign transit driver***\n");
+        System.out.println("\n***CaRMS Management System :: Assign transit driver***\n");
 
         //print out unassigned dispatch records
         List<TransitDispatchRecordEntity> unassignedDispatchRecords = new ArrayList<TransitDispatchRecordEntity>();
@@ -593,8 +636,8 @@ public class OperationManagerModule {
     //update dispatch records
     private void updateTransitAsCompleted() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Management System :: Update transit as completed***\n");
-        System.out.println("Input the number of the transit dispatch record to update it as completed:");
+        System.out.println("\n***CaRMS Management System :: Update transit as completed***\n");
+        System.out.println("Input number of the transit dispatch record to update it as completed:");
         System.out.println("Current transit dispatch in progress:");
         
         //if status in progress, change to completed

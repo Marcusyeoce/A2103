@@ -3,13 +3,16 @@ package carmsmanagementclient;
 import Entity.CategoryEntity;
 import Entity.EmployeeEntity;
 import Entity.OutletEntity;
+import Entity.PartnerEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
+import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -21,6 +24,8 @@ import util.enumeration.AccessRightEnum;
 import util.exception.CategoryExistException;
 import util.exception.InputDataValidationException;
 import util.exception.OutletExistException;
+import util.exception.PartnerExistException;
+import util.exception.PartnerNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UsernameExistException;
 
@@ -33,6 +38,7 @@ public class SystemAdminModule {
     private OutletSessionBeanRemote outletSessionBean;
     private EmployeeSessionBeanRemote employeeSessionBean;
     private CategorySessionBeanRemote categorySessionBean;
+    private PartnerSessionBeanRemote partnerSessionBean;
     
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
@@ -42,7 +48,7 @@ public class SystemAdminModule {
         validator = validatorFactory.getValidator();
     }
 
-    public SystemAdminModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean) {
+    public SystemAdminModule(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean, PartnerSessionBeanRemote partnerSessionBean) {
         this();
         this.employeeSessionBean = employeeSessionBean;
         this.outletSessionBean = outletSessionBean;
@@ -51,6 +57,7 @@ public class SystemAdminModule {
         this.modelSessionBean = modelSessionBean;
         this.rentalRateSessionBean = rentalRateSessionBean;
         this.categorySessionBean = categorySessionBean;
+        this.partnerSessionBean = partnerSessionBean;
     }
     
     public void mainMenuAdmin() {
@@ -59,40 +66,49 @@ public class SystemAdminModule {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Management System :: Admin Panel***");
-            System.out.println("You are logged in as System Admin\n");
-            System.out.println("1: Create new outlet");
-            System.out.println("2: Create new employee");
-            System.out.println("3: Create new partner");
-            System.out.println("4: Create new category");
-            System.out.println("5: Logout\n");
-            response = 0;
-            
-            while(response < 1 || response > 5)
-            {
-            
-                System.out.print("> ");
-                
-                response = scanner.nextInt();
-                
-                if (response == 1) {
-                    createNewOutlet();
-                } else if (response == 2) {
-                    createNewEmployee();
-                } else if (response == 3) {
-                    createNewPartner();
-                } else if (response == 4) {
-                    createNewCategory();
-                } else if (response == 5) {
-                    break;
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
+                System.out.println("\n***Welcome To CaRMS Management System :: System Admin Panel***");
+                System.out.println("1: Create new outlet");
+                System.out.println("2: Create new employee");
+                System.out.println("3: Create new partner");
+                System.out.println("4: Create new category");
+                System.out.println("5: Logout\n");
+                response = 0;
+
+                while(response < 1 || response > 5)
+                {
+                    while (true) {
+                        try {
+                            Scanner e = new Scanner(System.in);
+                            System.out.print("> ");
+                            response = e.nextInt();
+                            if (response < 1 || response > 5) {
+                                System.out.println("Please enter a valid option");
+                            } else {
+                                break;
+                            }
+                        } catch(InputMismatchException ex) {
+                            System.out.println("Please enter a number");
+                        }
+                    }
+
+                    if (response == 1) {
+                        createNewOutlet();
+                    } else if (response == 2) {
+                        createNewEmployee();
+                    } else if (response == 3) {
+                        createNewPartner();
+                    } else if (response == 4) {
+                        createNewCategory();
+                    } else if (response == 5) {
+                        break;
+                    } else {
+                        System.out.println("Invalid option, please try again!\n");
+                    }
                 }
-            }
-            if (response == 5) {
-                System.out.println();
-                break;
-            }
+                if (response == 5) {
+                    System.out.println();
+                    break;
+                }
         }
     }
     
@@ -215,9 +231,37 @@ public class SystemAdminModule {
 
         System.out.print("Enter partner name> ");
         String name = sc3.nextLine();
-        System.out.print("Enter partner number> ");
-        String number = sc3.nextLine();
+        System.out.println("Enter partner username> ");
+        String username = sc3.nextLine();
+        System.out.print("Enter partner password> ");
+        String password = sc3.nextLine();
 
+        
+        PartnerEntity partnerEntity = new PartnerEntity(name, username, password);
+        
+        Set<ConstraintViolation<PartnerEntity>>constraintViolations = validator.validate(partnerEntity);
+        
+        if (constraintViolations.isEmpty()) {
+            try {
+                partnerSessionBean.createNewPartner(partnerEntity);
+                System.out.println("New partner created successfully! Partner is " + name + ".\n");
+            } catch(PartnerExistException ex)
+            {
+                System.out.println("An error has occurred while creating the new employee!: The username already exist\n");
+            }
+            catch(UnknownPersistenceException ex)
+            {
+                System.out.println("An unknown error has occurred while creating the new employee!: " + ex.getMessage() + "\n");
+            }
+            catch(InputDataValidationException ex)
+            {
+                System.out.println(ex.getMessage() + "\n");
+            }
+        } else
+        {
+            showInputDataValidationErrorsForPartnerEntity(constraintViolations);
+        }
+        
         System.out.println("New partner created successfully! Partner is " + name + ".\n");
         
     }
@@ -267,6 +311,17 @@ public class SystemAdminModule {
     }
     
     private void showInputDataValidationErrorsForCategoryEntity(Set<ConstraintViolation<CategoryEntity>>constraintViolations) {
+        System.out.println("\nInput data validation error!:");
+            
+        for(ConstraintViolation constraintViolation:constraintViolations)
+        {
+            System.out.println("\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage());
+        }
+
+        System.out.println("\nPlease try again......\n");
+    }
+    
+    private void showInputDataValidationErrorsForPartnerEntity(Set<ConstraintViolation<PartnerEntity>>constraintViolations) {
         System.out.println("\nInput data validation error!:");
             
         for(ConstraintViolation constraintViolation:constraintViolations)

@@ -62,7 +62,7 @@ public class MainApp {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Reservation System***\n");
+            System.out.println("\n***CaRMS Reservation System***\n");
             System.out.println("1: Register as customer");
             System.out.println("2: Customer login");
             System.out.println("3: Search car");
@@ -110,7 +110,7 @@ public class MainApp {
             
             CustomerEntity newCustomerEntity = new CustomerEntity();
             
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Register**\n*");
+            System.out.println("\n***CaRMS Registeration page***\n");
             
             System.out.print("Enter First Name> ");
             newCustomerEntity.setFirstName(scanner.nextLine().trim());
@@ -135,7 +135,7 @@ public class MainApp {
     }
 
     private void loginCustomer() throws InvalidLoginCredentialException {
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Login***\n");
+        System.out.println("\n***Login to CaRMS Reservation System***\n");
         Scanner scanner = new Scanner(System.in);
         String username;
         String password;
@@ -157,7 +157,7 @@ public class MainApp {
 
     private void searchCar() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Search car***\n");
+        System.out.println("\n***Welcome to CaRMS Reservation System :: Search car***\n");
         
         System.out.println("All categories");
         List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();

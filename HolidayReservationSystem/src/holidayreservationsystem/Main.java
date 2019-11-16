@@ -57,8 +57,11 @@ public class Main {
         String password = scanner.nextLine().trim();
         try {
             partnerId = partnerLogin(username, password);
+            System.out.println("Login in successfully");
         } catch (InvalidLoginCredentialException_Exception ex) {
             //
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
     
@@ -71,4 +74,7 @@ public class Main {
         ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
         return port.partnerLogin(arg0, arg1);
     }
+    
+    
+    
 }
