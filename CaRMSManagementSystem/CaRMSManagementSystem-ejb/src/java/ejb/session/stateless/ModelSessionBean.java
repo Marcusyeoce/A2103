@@ -125,7 +125,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
             }
             
             //go through if there are reservations by model first
-            for (ReservationEntity existingReservation : model.getReservationList()) {
+            for (ReservationEntity existingReservation : model.getReservations()) {
                 
                 boolean isConflicting = false;
                 
@@ -254,7 +254,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
             }
             
             //go through if there are reservations by model first
-            for (ReservationEntity existingReservation : model.getReservationList()) {
+            for (ReservationEntity existingReservation : model.getReservations()) {
                 
                 boolean isConflicting = false;
                 

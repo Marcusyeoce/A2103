@@ -41,6 +41,12 @@ public class OutletEntity implements Serializable {
     
     @OneToMany//(mappedBy = "")
     private List<CarEntity> car;
+    
+    @OneToMany
+    private List<ReservationEntity> pickupPointReservations;
+    
+    @OneToMany
+    private List<ReservationEntity> returnPointReservations;
 
     public OutletEntity() {
     }
@@ -59,9 +65,7 @@ public class OutletEntity implements Serializable {
 
     public void setCar(List<CarEntity> car) {
         this.car = car;
-    }
-    
-    
+    } 
 
     public List<EmployeeEntity> getEmployeeEntities() {
         return employeeEntities;
@@ -134,5 +138,21 @@ public class OutletEntity implements Serializable {
     @Override
     public String toString() {
         return "Entity.OutletEntity[ id=" + outletId + " ]";
+    }
+
+    public List<ReservationEntity> getPickupPointReservations() {
+        return pickupPointReservations;
+    }
+
+    public void setPickupPointReservations(List<ReservationEntity> pickupPointReservations) {
+        this.pickupPointReservations = pickupPointReservations;
+    }
+
+    public List<ReservationEntity> getReturnPointReservations() {
+        return returnPointReservations;
+    }
+
+    public void setReturnPointReservations(List<ReservationEntity> returnPointReservations) {
+        this.returnPointReservations = returnPointReservations;
     }
 }

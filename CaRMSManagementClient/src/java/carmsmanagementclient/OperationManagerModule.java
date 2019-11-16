@@ -26,6 +26,7 @@ import javax.validation.ValidatorFactory;
 import util.exception.CarExistException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelExistException;
+import util.exception.ModelNotFoundException;
 import util.exception.OutletExistException;
 import util.exception.UnknownPersistenceException;
 
@@ -217,7 +218,7 @@ public class OperationManagerModule {
 
         try {
             modelEntity = modelSessionBean.retrieveModelByName(modelName);
-        } catch(ModelExistException ex) {
+        } catch (ModelNotFoundException ex) {
             System.out.println("\nNo such model exist!");
             Scanner tt = new Scanner(System.in);
             System.out.println("Press any key to continue...");

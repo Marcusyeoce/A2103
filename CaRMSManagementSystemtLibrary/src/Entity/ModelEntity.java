@@ -32,11 +32,11 @@ public class ModelEntity implements Serializable {
     private CategoryEntity categoryEntity;
     
     @OneToMany//(mappedBy = "")
-    private List<ReservationEntity> reservationList;
+    private List<ReservationEntity> reservations;
 
     public ModelEntity() {
         cars = new ArrayList<>();
-        reservationList = new ArrayList<>();
+        reservations = new ArrayList<>();
     }
 
     public ModelEntity(String make, String model) {
@@ -45,17 +45,13 @@ public class ModelEntity implements Serializable {
         this.model = model;
     }
 
-    
-    
-    public List<ReservationEntity> getReservationList() {
-        return reservationList;
+    public List<ReservationEntity> getReservations() {
+        return reservations;
     }
 
-    public void setReservationList(List<ReservationEntity> reservationList) {
-        this.reservationList = reservationList;
+    public void setReservations(List<ReservationEntity> reservations) {
+        this.reservations = reservations;
     }
-    
-    
 
     public String getMake() {
         return make;

@@ -32,4 +32,5 @@ public interface ModelSessionBeanRemote {
     public ModelEntity updateModelName(long id, String name);
     
     public boolean checkModelAvailability(Long modelId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId);
+    
 }
