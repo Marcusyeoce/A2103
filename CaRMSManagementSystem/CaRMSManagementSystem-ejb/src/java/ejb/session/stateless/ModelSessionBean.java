@@ -1,5 +1,6 @@
 package ejb.session.stateless;
 
+import Entity.CarEntity;
 import Entity.CategoryEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
@@ -24,8 +25,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.CategoryNotAvailableException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelExistException;
+import util.exception.ModelNotAvailableException;
 import util.exception.UnknownPersistenceException;
 
 @Stateless
@@ -89,50 +92,103 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         return query.getResultList();
     }
     
+    public List<ModelEntity> retrieveAllModelsByCategory(Long categoryId) {
+        Query query = em.createQuery("SELECT m from ModelEntity m WHERE m.categoryEntity.categoryId = categoryId");
+        
+        return query.getResultList();
+    }
+    
+    
+    //assumed enough employees, will be settled in transit dispatch, allocate earlier timing to ensure that car will be available
     @Override
-    public List<ModelEntity> getAvailableModels(Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) {
+    public List<ModelEntity> getAvailableModels(CategoryEntity category, Date pickupDateTime, Date returnDateTime, OutletEntity pickupOutlet, OutletEntity returnOutlet) throws CategoryNotAvailableException {
+        
         List<ModelEntity> availableModels = new ArrayList<>();
-        System.out.println("Running getAvailableModel method : " + retrieveAllModels().size());
+        //System.out.println("Running getAvailableModel method : " + retrieveAllModels().size());
         
-        List<ModelEntity> modelList = retrieveAllModels();
+        List<ModelEntity> modelList = retrieveAllModelsByCategory(category.getCategoryId());
         
+        //assume each car only has 1 reservation
+        // check if model list is empty
+        // if model list is not empty, go through the num of cars of model in store, and check if available
+        // if there are reservations, check if other store such model that are available
+        // else, not available
+        int totalNumCarsAvail = 0;
+                
         for (ModelEntity model: modelList) {
-            System.out.println("looping");
-            //check if model got car
-            if (!model.getCars().isEmpty()) {
-                //check the reservations for the model
-                List<ReservationEntity> list = model.getReservationList();
-                if (list.isEmpty()) {
-                    availableModels.add(model);
+            
+            //initialize all cars of the model
+            int numCarsAvail = model.getCars().size();
+            
+            for (CarEntity car: model.getCars()) {
+                if (car.getStatus().equals("Repair")) {
+                    numCarsAvail--;
                 }
-                for (int i = 0; i < list.size(); i++) {
-                    Date startDateTime = list.get(i).getStartDateTime();
-                    Date endDateTime = list.get(i).getEndDateTime();
-
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(startDateTime);
-                    c.add(Calendar.HOUR, -2);
-
-                    Calendar d = Calendar.getInstance();
-                    d.setTime(endDateTime);
-                    d.add(Calendar.HOUR, 2);
-
-                    //the model is available
-                    if (returnDateTime.compareTo(startDateTime) < 0) {
-                        availableModels.add(model);
-                        break;
-                    } else if (endDateTime.compareTo(pickupDateTime) < 0) {
-                        availableModels.add(model);
-                        break;
-                    } else {
-                        System.out.println("Compare nothing!!!!!!!!!!");
+<<<<<<< HEAD
+            }
+            
+            //go through if there are reservations by model first
+            for (ReservationEntity reservation : model.getReservationList()) {
+                
+                boolean isConflicting = false; 
+                
+                //retrieve only existing reservations, ignore cancelled and successful ones
+                if (reservation.getStatus() == 0) {
+                    
+                    Calendar reservationStartCalendar = Calendar.getInstance();
+                    reservationStartCalendar.setTime(pickupDateTime);
+                    
+                    Calendar reservationEndCalendar = Calendar.getInstance();
+                    reservationEndCalendar.setTime(returnDateTime);
+                    
+                    Calendar exisitingRerservationStartCalendar = Calendar.getInstance();
+                    exisitingRerservationStartCalendar.setTime(reservation.getStartDateTime());
+                    
+                    Calendar exisitingRerservationEndCalendar = Calendar.getInstance();
+                    exisitingRerservationEndCalendar.setTime(reservation.getEndDateTime());
+                    //check if pickup timing conflicts with previous reservation
+                    //check if new reservation pickup outlet is same with previous reservation return outlet
+                    if (reservation.getReturnOutlet() != pickupOutlet) {
+                        reservationEndCalendar.add(Cal, numCarsAvail);
                     }
+                    if () {
+                        isConflicting = true;
+                    } 
+                    
+                    //check if return timing conflicts with previous reservation
+                    //check if new reservation return outlet is same with previous reservation pickup outlet
+                    if (reservation.getPickupOutlet() != returnOutlet) {
+                        reservationEndCalendar.add(Calendar.HOUR, numCarsAvail);
+                    }
+                    if () {
+                        isConflicting = true;
+                    }
+                    
                 }
-            } else {
-                System.out.println("Empty list of cars!!!!");
+                
+                if (isConflicting) {
+                    numCarsAvail--;
+                }
+            }
+            if (numCarsAvail > 0) {
+                availableModels.add(model);
+                totalNumCarsAvail += numCarsAvail;
             }
         }
-        return availableModels;
+    
+        //go through if there are reservations by category
+        int reservationByCategory = 0;
+        for () {
+            if () {
+                reservationByCategory++;
+            }
+        }
+        
+        if (totalNumCarsAvail > reservationByCategory) {
+            return availableModels;
+        } else {
+            throw new CategoryNotAvailableException();
+        }
     }
     
     public double calculateRentalRate(Date pickupDateTime, Date returnDateTime, CategoryEntity categoryEntity) {
