@@ -53,6 +53,16 @@ public class CarEntity implements Serializable {
         this.status = status;
     }
 
+    public ReservationEntity getReservationEntity() {
+        return reservationEntity;
+    }
+
+    public void setReservationEntity(ReservationEntity reservationEntity) {
+        this.reservationEntity = reservationEntity;
+    }
+    
+    
+
     public String getLicensePlateNumber() {
         return licensePlateNumber;
     }

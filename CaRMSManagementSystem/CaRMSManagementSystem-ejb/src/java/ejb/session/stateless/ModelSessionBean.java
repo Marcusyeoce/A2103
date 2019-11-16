@@ -48,6 +48,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         validator = validatorFactory.getValidator();
     }
     
+    @Override
     public ModelEntity createNewModel(ModelEntity modelEntity) throws UnknownPersistenceException, ModelExistException, InputDataValidationException {
         
         try
@@ -412,6 +413,7 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     }
     
     
+    @Override
     public ModelEntity updateModelName(long id, String name) {
         ModelEntity modelEntity = em.find(ModelEntity.class, id);
         modelEntity.setModel(name);
@@ -420,8 +422,9 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         return modelEntity;
     }
     
+    @Override
     public ModelEntity updateCategory(long id, long catId) {
-        Map<String, Object> props = new HashMap<String, Object>();
+        Map<String, Object> props = new HashMap<>();
         props.put("javax.persistence.cache.retrieveMode", "BYPASS");
         
         ModelEntity modelEntity = em.find(ModelEntity.class, id, props);
@@ -436,6 +439,25 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
         em.merge(modelEntity);
         em.flush();
         return modelEntity;
+    }
+    
+    @Override
+    public void deleteModel(long id) {
+        Map<String, Object> props = new HashMap<>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        ModelEntity modelEntity = em.find(ModelEntity.class, id, props);
+        List<CarEntity> list = modelEntity.getCars();
+        
+        if (!list.isEmpty()) {
+            modelEntity.setIsDeleted(true);
+            em.merge(modelEntity);
+            em.flush();
+        } else {
+            em.remove(modelEntity);
+            em.flush();
+        }
+        
+        
     }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<ModelEntity>>constraintViolations)

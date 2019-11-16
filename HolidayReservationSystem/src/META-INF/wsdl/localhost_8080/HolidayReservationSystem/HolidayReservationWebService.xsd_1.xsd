@@ -6,16 +6,32 @@
 
 <xs:element name="partnerLoginResponse" type="tns:partnerLoginResponse"/>
 
-<xs:element name="partnerSearchCar" type="tns:partnerSearchCar"/>
+<xs:element name="retrieveAllCategory" type="tns:retrieveAllCategory"/>
 
-<xs:element name="partnerSearchCarResponse" type="tns:partnerSearchCarResponse"/>
+<xs:element name="retrieveAllCategoryResponse" type="tns:retrieveAllCategoryResponse"/>
 
-<xs:complexType name="partnerSearchCar">
+<xs:element name="retrieveAllOutlets" type="tns:retrieveAllOutlets"/>
+
+<xs:element name="retrieveAllOutletsResponse" type="tns:retrieveAllOutletsResponse"/>
+
+<xs:complexType name="retrieveAllOutlets">
 <xs:sequence/>
 </xs:complexType>
 
-<xs:complexType name="partnerSearchCarResponse">
+<xs:complexType name="retrieveAllOutletsResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllCategory">
 <xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllCategoryResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="partnerLogin">

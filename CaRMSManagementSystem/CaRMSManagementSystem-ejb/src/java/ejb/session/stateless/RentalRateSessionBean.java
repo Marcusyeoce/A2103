@@ -1,5 +1,6 @@
 package ejb.session.stateless;
 
+import Entity.CarEntity;
 import Entity.CategoryEntity;
 import Entity.RentalDayEntity;
 import Entity.RentalRateEntity;
@@ -15,7 +16,10 @@ import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.persistence.CacheRetrieveMode;
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
@@ -24,6 +28,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.InputDataValidationException;
+import util.exception.RentalRateException;
 import util.exception.UnknownPersistenceException;
 
 @Stateless
@@ -82,17 +87,22 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     
     @Override
     public String retrieveCategoryNameOfCategoryId(long categoryEntityId) {
-        return em.find(CategoryEntity.class, categoryEntityId).getCategoryName();
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        return em.find(CategoryEntity.class, categoryEntityId, props).getCategoryName();
     }
     
     @Override
     public void updateRentalRateEntity(RentalRateEntity rentalRateEntity) {
         em.merge(rentalRateEntity);
+        em.flush();
     }
     
     @Override
     public RentalRateEntity updateName(long id, String name) {
-        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id);
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id, props);
         rentalRateEntity.setRentalRateName(name);
         em.merge(rentalRateEntity);
         em.flush();
@@ -154,7 +164,9 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     
     @Override
     public RentalRateEntity updateRentalRate(long id, double rate) {
-        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id);
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id, props);
         rentalRateEntity.setRatePerDay(rate);
         em.merge(rentalRateEntity);
         em.flush();
@@ -163,7 +175,9 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     
     @Override
     public RentalRateEntity updateStartDateTime(long id, Date date) {
-        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id);
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, id, props);
         rentalRateEntity.setStartDateTime(date);
         em.merge(rentalRateEntity);
         em.flush();
@@ -181,7 +195,11 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     
     @Override
     public List<RentalRateEntity> retrieveAllRentalRates() {
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        
         Query query = em.createQuery("SELECT r from RentalRateEntity r");
+        query.setHint("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
         return query.getResultList();
     }
     
@@ -213,16 +231,38 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
        
     @Override
     public RentalRateEntity retreiveRentalRateEntityById(long rentalRateId) {
-        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, rentalRateId);
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, rentalRateId, props);
         return rentalRateEntity;
     }
     
-    public void deleteRentalRate(RentalRateEntity rentalRate) {
-        if (true) { //if there are no records tied to it, if not used, if no rental days/reservations
-            em.remove(rentalRate);
+    @Override
+    public RentalRateEntity retreiveRentalRateByName(String name) throws RentalRateException {
+        Query query = em.createQuery("SELECT r FROM RentalRateEntity r WHERE r.rentalRateName = :inname");
+        query.setParameter("inname", name);
+        
+        try {
+            RentalRateEntity r = (RentalRateEntity) query.getSingleResult();
+            return r;
+        } catch(NoResultException ex) {
+            throw new RentalRateException();
+        }
+    }
+    
+    public void deleteRentalRate(long id) {
+        Map<String, Object> props = new HashMap<String, Object>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        
+        RentalRateEntity r = em.find(RentalRateEntity.class, id, props);
+        
+        if (r.getCategory() == null) { 
+            em.remove(r);
+            em.flush();
         } else {
-            //rentalRate.setStatus(1);
-            updateRentalRateEntity(rentalRate);
+            r.setIsDeleted(true);
+            em.merge(r);
+            em.flush();
         }
     }
     

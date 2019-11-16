@@ -166,7 +166,7 @@ public class MainApp {
         
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         
-        System.out.print("Enter pickup date and time (dd/MM/yyyy HH:mm)> ");
+        System.out.print("Enter pickup date and time (dd/mm/yyyy hh:mm)> ");
         String pickupDateString = scanner.nextLine().trim();
         Date pickupDate = new Date();
         try {
@@ -190,7 +190,7 @@ public class MainApp {
         scanner.nextLine();
         System.out.println(".................................");
         
-        System.out.print("Enter return date and time (dd/MM/yyyy HH:mm)> ");
+        System.out.print("Enter return date and time (dd/mm/yyyy hh:mm)> ");
         String returnDateString = scanner.nextLine().trim();
         Date returnDate = new Date();
         try {
