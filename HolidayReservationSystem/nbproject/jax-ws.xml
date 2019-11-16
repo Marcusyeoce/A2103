@@ -3,8 +3,8 @@
   <services/>
   <clients>
     <client name="HolidayReservationWebService">
-      <wsdl-url>http://desktop-b15lska:8080/HolidayReservationSystem/HolidayReservationWebService?wsdl</wsdl-url>
-      <local-wsdl-file>desktop-b15lska_8080/HolidayReservationSystem/HolidayReservationWebService.wsdl</local-wsdl-file>
+      <wsdl-url>http://localhost:8080/HolidayReservationSystem/HolidayReservationWebService?wsdl</wsdl-url>
+      <local-wsdl-file>localhost_8080/HolidayReservationSystem/HolidayReservationWebService.wsdl</local-wsdl-file>
       <package-name forceReplace="true">ws.client</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <wsimport-options>
@@ -22,7 +22,7 @@
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>wsdlLocation</wsimport-option-name>
-          <wsimport-option-value>http://desktop-b15lska:8080/HolidayReservationSystem/HolidayReservationWebService?wsdl</wsimport-option-value>
+          <wsimport-option-value>http://localhost:8080/HolidayReservationSystem/HolidayReservationWebService?wsdl</wsimport-option-value>
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>xnocompile</wsimport-option-name>

@@ -14,13 +14,13 @@
         <mkdir dir="${build.generated.sources.dir}/jax-ws"/>
         <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
             <classpath path="${libs.jaxws21.classpath}"/>
-            <classpath path="${libs.jaxb.classpath}" />
+            <classpath path="${libs.jaxb.classpath}"/>
         </taskdef>
     </target>
     <target name="wsimport-client-HolidayReservationWebService" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/HolidayReservationWebService"/>
-        <property name="wsdl-HolidayReservationWebService" location="xml-resources/web-service-references/HolidayReservationWebService/wsdl/desktop-b15lska_8080/HolidayReservationSystem/HolidayReservationWebService.wsdl"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/HolidayReservationWebService" destdir="${build.generated.dir}/jax-wsCache/HolidayReservationWebService" wsdl="${wsdl-HolidayReservationWebService}" catalog="catalog.xml" extension="true" verbose="true" fork="false" wsdlLocation="http://desktop-b15lska:8080/HolidayReservationSystem/HolidayReservationWebService?wsdl" xnocompile="true" xendorsed="true" package="ws.client">
+        <property name="wsdl-HolidayReservationWebService" location="xml-resources/web-service-references/HolidayReservationWebService/wsdl/localhost_8080/HolidayReservationSystem/HolidayReservationWebService.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/HolidayReservationWebService" destdir="${build.generated.dir}/jax-wsCache/HolidayReservationWebService" wsdl="${wsdl-HolidayReservationWebService}" catalog="catalog.xml" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/HolidayReservationSystem/HolidayReservationWebService?wsdl" xnocompile="true" xendorsed="true" package="ws.client">
             <depends file="${wsdl-HolidayReservationWebService}"/>
             <produces dir="${build.generated.dir}/jax-wsCache/HolidayReservationWebService"/>
         </wsimport>
