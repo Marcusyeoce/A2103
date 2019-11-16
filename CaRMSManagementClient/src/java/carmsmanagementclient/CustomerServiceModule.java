@@ -143,7 +143,7 @@ public class CustomerServiceModule {
         Integer response = 0;
         
         while (true) {
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Return Car***");
+            System.out.println("\n***Welcome To CaRMS Management System :: Return Car***");
             System.out.println("Input car plate number of returning car");
             
             String carplateNum = scanner.nextLine();

@@ -61,7 +61,7 @@ public class SalesMangerModule {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
+            System.out.println("\n***Welcome To CaRMS Management System :: Employee Panel***");
             System.out.println("You are logged in as Sales Manager\n");
             System.out.println("1: Create rental rate");
             System.out.println("2: View all rental rate");

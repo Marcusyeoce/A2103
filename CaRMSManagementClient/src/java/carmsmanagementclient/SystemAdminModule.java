@@ -59,7 +59,7 @@ public class SystemAdminModule {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Admin Panel***");
+            System.out.println("\n***Welcome To CaRMS Management System :: Admin Panel***");
             System.out.println("You are logged in as System Admin\n");
             System.out.println("1: Create new outlet");
             System.out.println("2: Create new employee");
@@ -100,7 +100,7 @@ public class SystemAdminModule {
         
         Scanner sc4 = new Scanner(System.in);
         OutletEntity outletEntity = new OutletEntity();
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Outlet***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: Create New Outlet***\n");
 
         System.out.print("Enter Outlet name> ");
         String name = sc4.nextLine();
@@ -141,7 +141,7 @@ public class SystemAdminModule {
         
         Scanner sc1 = new Scanner(System.in);
         EmployeeEntity employeeEntity = new EmployeeEntity();
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Employee***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: Create New Employee***\n");
 
         System.out.print("Enter employee name> ");
         String firstName = sc1.nextLine();
@@ -211,7 +211,7 @@ public class SystemAdminModule {
     private void createNewPartner() {
         Scanner sc3 = new Scanner(System.in);
 
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Partner***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: Create New Partner***\n");
 
         System.out.print("Enter partner name> ");
         String name = sc3.nextLine();
@@ -225,7 +225,7 @@ public class SystemAdminModule {
     private void createNewCategory() {
         Scanner sc2 = new Scanner(System.in);
         CategoryEntity newCategoryEntity = new CategoryEntity();
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Category***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: Create New Category***\n");
 
         System.out.print("Enter category name> ");
         String name = sc2.nextLine();

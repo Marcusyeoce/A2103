@@ -107,15 +107,15 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
                 for (int i = 0; i < list.size(); i++) {
                     Date startDateTime = list.get(i).getStartDateTime();
                     Date endDateTime = list.get(i).getEndDateTime();
-                    
+
                     Calendar c = Calendar.getInstance();
                     c.setTime(startDateTime);
                     c.add(Calendar.HOUR, -2);
-                    
+
                     Calendar d = Calendar.getInstance();
                     d.setTime(endDateTime);
                     d.add(Calendar.HOUR, 2);
-                    
+
                     //the model is available
                     if (returnDateTime.compareTo(startDateTime) < 0) {
                         availableModels.add(model);

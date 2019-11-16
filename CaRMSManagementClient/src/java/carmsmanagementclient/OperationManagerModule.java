@@ -68,7 +68,7 @@ public class OperationManagerModule {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Employee Panel***");
+            System.out.println("\n***Welcome To CaRMS Management System :: Employee Panel***");
             System.out.println("You are logged in as Operations Manager\n");
             System.out.println("1: Create new car model");
             System.out.println("2: View all car models");
@@ -127,7 +127,7 @@ public class OperationManagerModule {
     private void createNewCarModel() {
         Scanner scanner = new Scanner(System.in);
         ModelEntity model = new ModelEntity();
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Car Model***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: Create New Car Model***\n");
 
         System.out.print("Enter car model > ");
         String modelName = scanner.nextLine();
@@ -183,7 +183,7 @@ public class OperationManagerModule {
     }
 
     private void viewAllCarModels() {
-        System.out.println("\n***Welcome To CaRMS Reservation System :: View all car Models***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: View all car Models***\n");
         List<ModelEntity> list = modelSessionBean.retrieveAllModels();
         
         for (int i = 0; i < list.size(); i++) {
@@ -202,7 +202,7 @@ public class OperationManagerModule {
         ModelEntity modelEntity = modelSessionBean.retrieveModelByName(modelName);
         while (true) {
             
-            System.out.println("\n***Welcome To CaRMS Reservation System :: Update Car Model***\n");
+            System.out.println("\n***Welcome To CaRMS Management System :: Update Car Model***\n");
             System.out.println("Select the field to update");
             System.out.println("1) Change Car Manufacture Name");
             System.out.println("2) Change Car Model Name");
@@ -266,7 +266,7 @@ public class OperationManagerModule {
 
     private void deleteCarModel() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Delete car Model***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: Delete car Model***\n");
         System.out.println("Enter car model name> ");
         String name = scanner.nextLine();
     }
@@ -274,7 +274,7 @@ public class OperationManagerModule {
     private void createNewCar() {
         Scanner scanner = new Scanner(System.in);
         CarEntity car = new CarEntity();
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Create New Car***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: Create New Car***\n");
 
         System.out.print("Enter car license plate number> ");
         String num = scanner.nextLine();
@@ -326,7 +326,30 @@ public class OperationManagerModule {
         
         List<OutletEntity> olist = outletSessionBean.retrieveOutletEntities();
         
-        car.setOutlet(olist.get(1));
+        int outletCounter = 0;
+        for (int i = 0; i < olist.size(); i++) {
+            if (!olist.get(i).getOutletName().equals("Outlet Admin")) {
+                outletCounter++;
+                System.out.println(outletCounter + ")" + olist.get(i).getOutletName());
+            }
+        }
+        int outletNum;
+        while (true) {
+            try {
+                Scanner scs = new Scanner(System.in);
+                System.out.print("Select a outlet(Enter the number)> ");
+                outletNum = scs.nextInt();
+                if (outletNum < 1 || outletNum > list.size()) {
+                    System.out.println("\nPlease enter a valid option");
+                } else {
+                    break;
+                }
+            } catch(Exception ex) {
+                System.out.println("\nPlease enter numbers!");
+            }
+        }
+        car.setOutlet(olist.get(outletNum));
+        
         Set<ConstraintViolation<CarEntity>>constraintViolations = validator.validate(car);
         
         if (constraintViolations.isEmpty()) {
@@ -350,18 +373,17 @@ public class OperationManagerModule {
     }
 
     private void viewAllCar() {
-        System.out.println("\n***Welcome To CaRMS Reservation System :: View all Cars***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: View all Cars***\n");
         List<CarEntity> list = carSessionBean.retrieveAllCars();
         System.out.printf("%15s%15s%15s\n", "License Plate Number", "Status", "Outlet");
         for (int i = 0; i < list.size(); i++) {
-            System.out.print((i + 1) + ")");
-            System.out.printf("%15s%15s%15s\n", list.get(i).getLicensePlateNumber(), list.get(i).getStatus(), outletSessionBean.retrieveOutletEntityByOutletId(list.get(i).getOutlet().getOutletId()).getOutletName());
+            System.out.printf("%3s%15s%15s%15s\n", (i + 1) + ")",  list.get(i).getLicensePlateNumber(), list.get(i).getStatus(), outletSessionBean.retrieveOutletEntityByOutletId(list.get(i).getOutlet().getOutletId()).getOutletName());
         }
     }
 
     private void viewCarDetails() { //includes updateCar and deleteCar
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: View car details***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: View car details***\n");
         System.out.print("Enter car license plate number> ");
         String number = scanner.nextLine();
         CarEntity carEntity = new CarEntity();
@@ -513,7 +535,7 @@ public class OperationManagerModule {
     //show how many is required and status
     private void viewDispatchRecords() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: View transit driver dispatch records for current day reservations***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: View transit driver dispatch records for current day reservations***\n");
         
         List<TransitDispatchRecordEntity> dispatchRecords = transitDispatchRecordSessionBean.getAllTransitDispatchRecordForOutlet(currentEmployeeEntity.getOutletEntity());
         
@@ -528,7 +550,7 @@ public class OperationManagerModule {
     //show the dispatch records with no driver, and drivers that are available, update dispatch records
     private void assignTransitDriver() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Assign transit driver***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: Assign transit driver***\n");
 
         //print out unassigned dispatch records
         List<TransitDispatchRecordEntity> unassignedDispatchRecords = new ArrayList<TransitDispatchRecordEntity>();
@@ -571,7 +593,7 @@ public class OperationManagerModule {
     //update dispatch records
     private void updateTransitAsCompleted() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome To CaRMS Reservation System :: Update transit as completed***\n");
+        System.out.println("\n***Welcome To CaRMS Management System :: Update transit as completed***\n");
         System.out.println("Input the number of the transit dispatch record to update it as completed:");
         System.out.println("Current transit dispatch in progress:");
         
