@@ -7,6 +7,7 @@ import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
+import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.TransitDispatchRecordSessionBeanRemote;
 import java.util.InputMismatchException;
@@ -24,6 +25,7 @@ public class MainApp {
     private EmployeeSessionBeanRemote employeeSessionBean;
     private CategorySessionBeanRemote categorySessionBean;
     private TransitDispatchRecordSessionBeanRemote transitDispatchRecordSessionBean;
+    private PartnerSessionBeanRemote partnerSessionBean;
     
     private SystemAdminModule systemAdminModule;
     private SalesMangerModule salesMangerModule;
@@ -37,7 +39,7 @@ public class MainApp {
     {
     }
     
-    public MainApp(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean, TransitDispatchRecordSessionBeanRemote transitDispatchRecordSessionBean) {
+    public MainApp(EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean, TransitDispatchRecordSessionBeanRemote transitDispatchRecordSessionBean, PartnerSessionBeanRemote partnerSessionBean) {
         this();
         this.employeeSessionBean = employeeSessionBean;
         this.outletSessionBean = outletSessionBean;
@@ -47,6 +49,7 @@ public class MainApp {
         this.rentalRateSessionBean = rentalRateSessionBean;
         this.categorySessionBean = categorySessionBean;
         this.transitDispatchRecordSessionBean = transitDispatchRecordSessionBean;
+        this.partnerSessionBean = partnerSessionBean;
     }
     
     public void runApp()
@@ -57,7 +60,7 @@ public class MainApp {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Management System***");
+            System.out.println("\n***CaRMS Management System Login Page***");
             System.out.println("1: Login as System Admin");
             System.out.println("2: Login as Employee");
             System.out.println("3: Exit\n");
@@ -85,10 +88,10 @@ public class MainApp {
                 if (response == 1) {
                     try {
                         loginAsAdmin();
-                        systemAdminModule = new SystemAdminModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
+                        systemAdminModule = new SystemAdminModule(employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean, partnerSessionBean);
                         systemAdminModule.mainMenuAdmin();
                     } catch(InvalidLoginCredentialException ex) {
-                        System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
+                        System.out.println("Invalid login credential: " + ex.getMessage());
                     }
                 } else if(response == 2) {
                     try {
@@ -127,7 +130,7 @@ public class MainApp {
     private void loginAsAdmin() throws InvalidLoginCredentialException {
         Scanner scanner = new Scanner(System.in);
         
-        System.out.println("\n***Welcome To CaRMS Management System :: System Admin Login***\n");
+        System.out.println("\n***System Admin Login***\n");
         
         System.out.print("Enter username> ");
         String username = scanner.nextLine().trim();
@@ -147,7 +150,7 @@ public class MainApp {
     private AccessRightEnum loginAsEmployee() throws InvalidLoginCredentialException {
         Scanner scanner = new Scanner(System.in);
         
-        System.out.println("\n***Welcome To CaRMS Management System :: Employee Login***\n");
+        System.out.println("\n***Employee Login***");
         
         System.out.print("Enter username> ");
         String username = scanner.nextLine().trim();

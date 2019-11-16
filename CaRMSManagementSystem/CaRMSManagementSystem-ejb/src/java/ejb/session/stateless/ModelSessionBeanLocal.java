@@ -22,7 +22,7 @@ public interface ModelSessionBeanLocal {
 
     public ModelEntity updateManufacturerName(long id, String name);
 
-    public ModelEntity retrieveModelByName(String name);
+    public ModelEntity retrieveModelByName(String name) throws ModelExistException;
 
     public ModelEntity updateCategory(long id, long catId);
 

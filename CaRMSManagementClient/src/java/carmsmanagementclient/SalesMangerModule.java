@@ -13,6 +13,7 @@ import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -21,6 +22,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.InputDataValidationException;
+import util.exception.RentalRateException;
 import util.exception.UnknownPersistenceException;
 
 public class SalesMangerModule {
@@ -61,8 +63,7 @@ public class SalesMangerModule {
         
         while(true)
         {
-            System.out.println("\n***Welcome To CaRMS Management System :: Employee Panel***");
-            System.out.println("You are logged in as Sales Manager\n");
+            System.out.println("\n***Welcome To CaRMS Management System :: Sales Manager Panel***");
             System.out.println("1: Create rental rate");
             System.out.println("2: View all rental rate");
             System.out.println("3: View rental details");
@@ -72,9 +73,20 @@ public class SalesMangerModule {
             while(response < 1 || response > 4)
             {
             
-                System.out.print("> ");
-                
-                response = scanner.nextInt();
+                while (true) {
+                    try {
+                        Scanner r = new Scanner(System.in);
+                        System.out.print("> ");
+                        response = r.nextInt();
+                        if (response < 1 || response > 4) {
+                            System.out.println("Please enter a valid option");
+                        } else {
+                            break;
+                        }
+                    } catch(InputMismatchException ex) {
+                        System.out.println("Please enter a number");
+                    }
+                }
                 
                 if (response == 1) {
                    createRentalRate();
@@ -95,7 +107,7 @@ public class SalesMangerModule {
     }
 
     private void createRentalRate() {
-        System.out.println("\n***Welcome To CaRMS Management System :: Create Rental Rates***");
+        System.out.println("\n***CaRMS Management System :: Create Rental Rates***");
         RentalRateEntity rentalRateEntity = new RentalRateEntity();
         Scanner scanner = new Scanner(System.in);
         
@@ -168,7 +180,7 @@ public class SalesMangerModule {
     }
 
     private void viewAllRentalRates() {
-        System.out.println("\n***Welcome To CaRMS Management System :: View All Rental Rates***");
+        System.out.println("\n***CaRMS Management System :: View All Rental Rates***");
         int counter = 1;
         
         List<RentalRateEntity> list = rentalRateSessionBean.retrieveAllRentalRates();
@@ -189,6 +201,10 @@ public class SalesMangerModule {
             }
             counter++;
         }
+        
+        Scanner r = new Scanner(System.in);
+        System.out.println("Press any key to continue...");
+        r.next();
     }
 
     private void viewRentalDetails() {
@@ -196,12 +212,17 @@ public class SalesMangerModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        System.out.println("\n***Welcome To CaRMS Management System :: View Rental Rate Details***");
+        System.out.println("\n***CaRMS Management System :: View Rental Rate Details***");
         
-        System.out.print("Enter rental rate id to view details> ");
-        int num = scanner.nextInt();
-        
-        RentalRateEntity rentalRateEntity = rentalRateSessionBean.retreiveRentalRateEntityById(num);
+        System.out.print("Enter rental rate name to view details> ");
+        String name = scanner.nextLine();
+        RentalRateEntity rentalRateEntity = new RentalRateEntity();
+        /*try {
+            //RentalRateEntity rentalRateEntity = rentalRateSessionBean.retreiveRentalRateEntityById(name);
+        } catch(RentalRateException ex) {
+            System.out.println("No such rental rate exist");
+            return;
+        }*/
         
         String pattern = "dd/MM/yy HH:mm";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -213,7 +234,7 @@ public class SalesMangerModule {
         
         System.out.printf("%35s%20s%15s%35s\n", "Rental Rate Name", "Car Category", "Rate Per Day", "Validity");
         if (rentalRateEntity.getStartDateTime().compareTo(new Date(0, 0, 0, 0, 0)) == 0) {
-                System.out.printf("%35s%20s%15s%35s\n", rentalRateEntity.getRentalRateName(), rentalRateSessionBean.retrieveCategoryNameOfCategoryId(id), "$" + rentalRateEntity.getRatePerDay(), "always valid");
+            System.out.printf("%35s%20s%15s%35s\n", rentalRateEntity.getRentalRateName(), rentalRateSessionBean.retrieveCategoryNameOfCategoryId(id), "$" + rentalRateEntity.getRatePerDay(), "always valid");
         } else {
             System.out.printf("%35s%20s%15s%35s\n", rentalRateEntity.getRentalRateName(), rentalRateSessionBean.retrieveCategoryNameOfCategoryId(id), "$" + rentalRateEntity.getRatePerDay(), startDate + " to " + endDate);
         }
@@ -255,7 +276,7 @@ public class SalesMangerModule {
         
         while (true) {
             
-            System.out.println("\n***Welcome To CaRMS Management System :: Update Rental Rate***");
+            System.out.println("\n***CaRMS Management System :: Update Rental Rate***");
             System.out.println("Select the field to update");
             System.out.println("1) Rental Rate Name");
             System.out.println("2) Rental Rate Car Category");
@@ -356,7 +377,7 @@ public class SalesMangerModule {
     }
 
     private void deleteRentalRate(RentalRateEntity rentalRateEntity) {
-        System.out.println("\n***Welcome To CaRMS Management System :: Delete Rental Rate***");
+        System.out.println("\n***CaRMS Management System :: Delete Rental Rate***");
         //rentalRateSessionBean.deleteRentalRateEntity(rentalRateEntity);
         
         //check if used/not used & print out the results accordingly

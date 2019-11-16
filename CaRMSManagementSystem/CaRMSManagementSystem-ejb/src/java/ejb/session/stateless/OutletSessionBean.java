@@ -1,7 +1,9 @@
 package ejb.session.stateless;
 
 import Entity.OutletEntity;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -85,7 +87,10 @@ public class OutletSessionBean implements OutletSessionBeanRemote, OutletSession
     @Override
     public OutletEntity retrieveOutletEntityByOutletId(Long outletId) {
         
-        OutletEntity outletEntity = em.find(OutletEntity.class, outletId);
+        Map<String, Object> props = new HashMap<>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        
+        OutletEntity outletEntity = em.find(OutletEntity.class, outletId, props);
         
         return outletEntity; 
     }
