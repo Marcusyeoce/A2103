@@ -216,5 +216,19 @@ public class ReservationEntity implements Serializable {
     public String toString() {
         return "Entity.ReservationEntity[ id=" + reservationId + " ]";
     }
+
+    /**
+     * @return the rentalDays
+     */
+    public List<RentalDayEntity> getRentalDays() {
+        return rentalDays;
+    }
+
+    /**
+     * @param rentalDays the rentalDays to set
+     */
+    public void setRentalDays(List<RentalDayEntity> rentalDays) {
+        this.rentalDays = rentalDays;
+    }
     
 }

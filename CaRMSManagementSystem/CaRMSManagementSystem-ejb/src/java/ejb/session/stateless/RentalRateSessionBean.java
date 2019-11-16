@@ -1,6 +1,7 @@
 package ejb.session.stateless;
 
 import Entity.CategoryEntity;
+import Entity.RentalDayEntity;
 import Entity.RentalRateEntity;
 import Entity.ReservationEntity;
 import java.util.ArrayList;
@@ -177,7 +178,7 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         }
         
         return prevailingRentalRate;
-    } 
+    }  
        
     @Override
     public RentalRateEntity retreiveRentalRateEntityById(long rentalRateId) {

@@ -7,7 +7,12 @@ package ejb.session.stateless;
 
 import Entity.CustomerEntity;
 import Entity.RentalDayEntity;
+import Entity.RentalRateEntity;
 import Entity.ReservationEntity;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -82,17 +87,29 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         query.setParameter("inReservationId", reservationId);
         ReservationEntity reservation = (ReservationEntity) query.getSingleResult();
         
-        //go through how many days, while date != endDate keep adding?
-        //for first day, take into account the pickuptime
-        //for the other days, default start from 00:00
+        Calendar c = Calendar.getInstance();
+        c.setTime(reservation.getStartDateTime());
         
-        //create and persist rental days
-        //RentalDayEntity rentalDay = new RentalDayEntity(dateTime);
-        //em.persist;
-        //reservation.getRentalDays().add(rentalDay);
-        //rentalDay.setReservation(reservation);
-                
-        em.flush();
+        Calendar d = Calendar.getInstance();
+        d.setTime(reservation.getEndDateTime());
+        
+        //for first day, take into account the pickuptime
+        while (c.before(d)) {
+            RentalDayEntity rentalDay = new RentalDayEntity(c.getTime());
+            em.persist(rentalDay);
+            
+            reservation.getRentalDays().add(rentalDay);
+            rentalDay.setReservation(reservation);
+            
+            em.flush();
+            
+            //increment date, and reset it to 00:00
+            c.add(Calendar.DATE, 1);
+            c.set(Calendar.MILLISECOND, 0);
+            c.set(Calendar.SECOND, 0);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.HOUR, 0);
+        }
     }
     
     public ReservationEntity retrieveReservationById(Long reservationId) {

@@ -18,13 +18,11 @@ public class RentalDayEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rentalDayId;
+    //0 = Sunday, 1 = Monday...
+    private int dayOfWeek;
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date rentalStartDate;
-    //no need endDateTime, does not affect
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date rentalEndDate;
     
     @ManyToOne
     private RentalRateEntity prevailingRentalRate;
@@ -47,9 +45,9 @@ public class RentalDayEntity implements Serializable {
     public RentalDayEntity() {
     }
 
-    public RentalDayEntity(Date rentalStartDate, Date rentalEndDate) {
+    public RentalDayEntity(Date rentalStartDate) {
         this.rentalStartDate = rentalStartDate;
-        this.rentalEndDate = rentalEndDate;
+        dayOfWeek = rentalStartDate.getDay();
     }
 
     public Long getRentalDayId() {
@@ -83,6 +81,38 @@ public class RentalDayEntity implements Serializable {
     @Override
     public String toString() {
         return "entity.RentalDayEntity[ id=" + rentalDayId + " ]";
+    }
+
+    public int getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(int dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    public Date getRentalStartDate() {
+        return rentalStartDate;
+    }
+
+    public void setRentalStartDate(Date rentalStartDate) {
+        this.rentalStartDate = rentalStartDate;
+    }
+
+    public RentalRateEntity getPrevailingRentalRate() {
+        return prevailingRentalRate;
+    }
+
+    public void setPrevailingRentalRate(RentalRateEntity prevailingRentalRate) {
+        this.prevailingRentalRate = prevailingRentalRate;
+    }
+
+    public ReservationEntity getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(ReservationEntity reservation) {
+        this.reservation = reservation;
     }
     
 }
