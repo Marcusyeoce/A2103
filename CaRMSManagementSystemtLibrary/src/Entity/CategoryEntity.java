@@ -97,5 +97,13 @@ public class CategoryEntity implements Serializable {
     public String toString() {
         return "Entity.CategoryEntity[ id=" + categoryId + " ]";
     }
+
+    public List<ReservationEntity> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<ReservationEntity> reservations) {
+        this.reservations = reservations;
+    }
     
 }
