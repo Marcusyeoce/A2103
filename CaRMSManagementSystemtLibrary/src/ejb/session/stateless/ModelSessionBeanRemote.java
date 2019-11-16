@@ -9,6 +9,7 @@ import javax.ejb.Remote;
 import util.exception.CategoryNotAvailableException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelExistException;
+import util.exception.ModelNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 @Remote
@@ -20,13 +21,15 @@ public interface ModelSessionBeanRemote {
     
     public List<ModelEntity> retrieveAllModels();
     
-    public List<ModelEntity> getAvailableModels(Long categoryId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CategoryNotAvailableException;    
+    public List<ModelEntity> getAvailableModelsCategory(Long categoryId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId) throws CategoryNotAvailableException;    
     
     public ModelEntity updateManufacturerName(long id, String name);
     
-    public ModelEntity retrieveModelByName(String name) throws ModelExistException;
+    public ModelEntity retrieveModelByName(String name) throws ModelNotFoundException;
     
     public ModelEntity updateCategory(long id, long catId);
     
     public ModelEntity updateModelName(long id, String name);
+    
+    public boolean checkModelAvailability(Long modelId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId);
 }
