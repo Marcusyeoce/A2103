@@ -124,7 +124,6 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
                 if (car.getStatus().equals("Repair")) {
                     numCarsAvail--;
                 }
-<<<<<<< HEAD
             }
             
             //go through if there are reservations by model first
