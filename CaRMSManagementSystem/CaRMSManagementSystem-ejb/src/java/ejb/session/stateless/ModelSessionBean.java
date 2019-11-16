@@ -123,16 +123,15 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
                 if (car.getStatus().equals("Repair")) {
                     numCarsAvail--;
                 }
-<<<<<<< HEAD
             }
             
             //go through if there are reservations by model first
-            for (ReservationEntity reservation : model.getReservationList()) {
+            for (ReservationEntity existingReservation : model.getReservationList()) {
                 
                 boolean isConflicting = false; 
                 
                 //retrieve only existing reservations, ignore cancelled and successful ones
-                if (reservation.getStatus() == 0) {
+                if (existingReservation.getStatus() == 0) {
                     
                     Calendar reservationStartCalendar = Calendar.getInstance();
                     reservationStartCalendar.setTime(pickupDateTime);
@@ -141,28 +140,27 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
                     reservationEndCalendar.setTime(returnDateTime);
                     
                     Calendar exisitingRerservationStartCalendar = Calendar.getInstance();
-                    exisitingRerservationStartCalendar.setTime(reservation.getStartDateTime());
+                    exisitingRerservationStartCalendar.setTime(existingReservation.getStartDateTime());
                     
                     Calendar exisitingRerservationEndCalendar = Calendar.getInstance();
-                    exisitingRerservationEndCalendar.setTime(reservation.getEndDateTime());
+                    exisitingRerservationEndCalendar.setTime(existingReservation.getEndDateTime());
                     //check if pickup timing conflicts with previous reservation
                     //check if new reservation pickup outlet is same with previous reservation return outlet
-                    if (reservation.getReturnOutlet() != pickupOutlet) {
-                        reservationEndCalendar.add(Cal, numCarsAvail);
+                    if (existingReservation.getReturnOutlet() != pickupOutlet) {
+                        reservationStartCalendar.add(Calendar.HOUR, -2);
                     }
-                    if () {
+                    if (reservationStartCalendar.before(exisitingRerservationEndCalendar)) {
                         isConflicting = true;
-                    } 
+                    }
                     
                     //check if return timing conflicts with previous reservation
                     //check if new reservation return outlet is same with previous reservation pickup outlet
-                    if (reservation.getPickupOutlet() != returnOutlet) {
-                        reservationEndCalendar.add(Calendar.HOUR, numCarsAvail);
+                    if (existingReservation.getPickupOutlet() != returnOutlet) {
+                        reservationEndCalendar.add(Calendar.HOUR, 2);
                     }
-                    if () {
+                    if (reservationEndCalendar.after(exisitingRerservationStartCalendar)) {
                         isConflicting = true;
                     }
-                    
                 }
                 
                 if (isConflicting) {
@@ -177,8 +175,44 @@ public class ModelSessionBean implements ModelSessionBeanRemote, ModelSessionBea
     
         //go through if there are reservations by category
         int reservationByCategory = 0;
-        for () {
-            if () {
+        
+        for (ReservationEntity existingReservation : category.getReservations()) {
+            
+            boolean isConflicting = false;
+            
+            if (existingReservation.getStatus() == 0) {
+                    
+                Calendar reservationStartCalendar = Calendar.getInstance();
+                reservationStartCalendar.setTime(pickupDateTime);
+                    
+                Calendar reservationEndCalendar = Calendar.getInstance();
+                reservationEndCalendar.setTime(returnDateTime);
+                    
+                Calendar exisitingRerservationStartCalendar = Calendar.getInstance();
+                exisitingRerservationStartCalendar.setTime(existingReservation.getStartDateTime());
+                    
+                Calendar exisitingRerservationEndCalendar = Calendar.getInstance();
+                exisitingRerservationEndCalendar.setTime(existingReservation.getEndDateTime());
+                //check if pickup timing conflicts with previous reservation
+                //check if new reservation pickup outlet is same with previous reservation return outlet
+                if (existingReservation.getReturnOutlet() != pickupOutlet) {
+                    reservationStartCalendar.add(Calendar.HOUR, -2);
+                }
+                if (reservationStartCalendar.before(exisitingRerservationEndCalendar)) {
+                    isConflicting = true;
+                }
+                    
+                //check if return timing conflicts with previous reservation
+                //check if new reservation return outlet is same with previous reservation pickup outlet
+                if (existingReservation.getPickupOutlet() != returnOutlet) {
+                    reservationEndCalendar.add(Calendar.HOUR, 2);
+                }
+                if (reservationEndCalendar.after(exisitingRerservationStartCalendar)) {
+                    isConflicting = true;
+                }
+            }
+                
+            if (isConflicting) {
                 reservationByCategory++;
             }
         }
