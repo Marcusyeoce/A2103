@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class CustomerEntity implements Serializable {
@@ -41,7 +42,8 @@ public class CustomerEntity implements Serializable {
     private List<PartnerEntity> partner;
 
     public CustomerEntity() {
-        partner = new ArrayList<PartnerEntity>();
+        partner = new ArrayList<>();
+        reservations = new ArrayList<>();
     }
 
     public CustomerEntity(String firstName, String lastName, long mobileNum, String email, String passportNum, String password) {
@@ -101,6 +103,7 @@ public class CustomerEntity implements Serializable {
         this.password = password;
     }
 
+    @XmlTransient
     public List<ReservationEntity> getReservations() {
         return reservations;
     }

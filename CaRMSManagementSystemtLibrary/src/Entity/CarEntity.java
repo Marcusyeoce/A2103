@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class CarEntity implements Serializable {
@@ -36,14 +37,6 @@ public class CarEntity implements Serializable {
     @OneToOne
     private ReservationEntity reservationEntity;
 
-    public OutletEntity getOutlet() {
-        return outlet;
-    }
-
-    public void setOutlet(OutletEntity outlet) {
-        this.outlet = outlet;
-    }
-
     public CarEntity() {
     }
 
@@ -52,7 +45,17 @@ public class CarEntity implements Serializable {
         this.licensePlateNumber = licensePlateNumber;
         this.status = status;
     }
+    
+    @XmlTransient
+    public OutletEntity getOutlet() {
+        return outlet;
+    }
 
+    public void setOutlet(OutletEntity outlet) {
+        this.outlet = outlet;
+    }
+
+    @XmlTransient
     public ReservationEntity getReservationEntity() {
         return reservationEntity;
     }
@@ -61,8 +64,6 @@ public class CarEntity implements Serializable {
         this.reservationEntity = reservationEntity;
     }
     
-    
-
     public String getLicensePlateNumber() {
         return licensePlateNumber;
     }
@@ -79,6 +80,7 @@ public class CarEntity implements Serializable {
         this.status = status;
     }
 
+    @XmlTransient
     public ModelEntity getModelEntity() {
         return modelEntity;
     }
@@ -86,8 +88,6 @@ public class CarEntity implements Serializable {
     public void setModelEntity(ModelEntity modelEntity) {
         this.modelEntity = modelEntity;
     }
-    
-    
 
     public Long getCarId() {
         return carId;

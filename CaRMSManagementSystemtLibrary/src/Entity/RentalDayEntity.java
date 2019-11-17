@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class RentalDayEntity implements Serializable {
@@ -28,19 +29,6 @@ public class RentalDayEntity implements Serializable {
     private RentalRateEntity prevailingRentalRate;
     @ManyToOne
     private ReservationEntity reservation;
-    
-    /*
-    DEFAULT
-    MONDAY,
-    TUESDAY,
-    WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
-    SATURDAY,
-    SUNDAY,
-    WEEKDAY,
-    WEEKEND
-    */
 
     public RentalDayEntity() {
     }
@@ -99,6 +87,7 @@ public class RentalDayEntity implements Serializable {
         this.rentalStartDate = rentalStartDate;
     }
 
+    @XmlTransient
     public RentalRateEntity getPrevailingRentalRate() {
         return prevailingRentalRate;
     }
@@ -107,6 +96,7 @@ public class RentalDayEntity implements Serializable {
         this.prevailingRentalRate = prevailingRentalRate;
     }
 
+    @XmlTransient
     public ReservationEntity getReservation() {
         return reservation;
     }

@@ -226,11 +226,11 @@ public class MainApp {
                     
                     Scanner sc = new Scanner(System.in);
                     
-                    System.out.println("Please input make\n>");
-                    String make = sc.nextLine().trim();
+                    System.out.println("Please input make> ");
+                    String make = sc.nextLine();
                     
-                    System.out.println("Please input model\n>");
-                    String model = sc.nextLine().trim();
+                    System.out.println("Please input model> ");
+                    String model = sc.nextLine();
                     try {
                         ModelEntity modelEntity = modelSessionBeanRemote.retrieveModelByName(model);
                         if (modelSessionBeanRemote.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId())) {

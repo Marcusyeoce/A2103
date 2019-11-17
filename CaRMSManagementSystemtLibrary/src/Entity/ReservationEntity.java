@@ -16,6 +16,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 @Entity
@@ -120,7 +121,7 @@ public class ReservationEntity implements Serializable {
     public void setCcCVV(int ccCVV) {
         this.ccCVV = ccCVV;
     }
-
+    
     public double getTotalAmount() {
         return totalAmount;
     }
@@ -137,8 +138,7 @@ public class ReservationEntity implements Serializable {
         this.amountPaid = amountPaid;
     }
     
-    
-
+    @XmlTransient
     public CustomerEntity getCustomer() {
         return customer;
     }
@@ -147,6 +147,7 @@ public class ReservationEntity implements Serializable {
         this.customer = customer;
     }
 
+    @XmlTransient
     public CategoryEntity getCategory() {
         return category;
     }
@@ -155,6 +156,7 @@ public class ReservationEntity implements Serializable {
         this.category = category;
     }
 
+    @XmlTransient
     public ModelEntity getModel() {
         return model;
     }
@@ -163,6 +165,7 @@ public class ReservationEntity implements Serializable {
         this.model = model;
     }
     
+    @XmlTransient
     public PartnerEntity getPartner() {
         return partner;
     }
@@ -187,6 +190,7 @@ public class ReservationEntity implements Serializable {
         this.endDateTime = endDateTime;
     }
 
+    @XmlTransient
     public OutletEntity getPickupOutlet() {
         return pickupOutlet;
     }
@@ -195,6 +199,7 @@ public class ReservationEntity implements Serializable {
         this.pickupOutlet = pickupOutlet;
     }
 
+    @XmlTransient
     public OutletEntity getReturnOutlet() {
         return returnOutlet;
     }
@@ -205,6 +210,15 @@ public class ReservationEntity implements Serializable {
     
     public Long getReservationId() {
         return reservationId;
+    }
+    
+    @XmlTransient
+    public List<RentalDayEntity> getRentalDays() {
+        return rentalDays;
+    }
+
+    public void setRentalDays(List<RentalDayEntity> rentalDays) {
+        this.rentalDays = rentalDays;
     }
 
     @Override
@@ -231,19 +245,4 @@ public class ReservationEntity implements Serializable {
     public String toString() {
         return "Entity.ReservationEntity[ id=" + reservationId + " ]";
     }
-
-    /**
-     * @return the rentalDays
-     */
-    public List<RentalDayEntity> getRentalDays() {
-        return rentalDays;
-    }
-
-    /**
-     * @param rentalDays the rentalDays to set
-     */
-    public void setRentalDays(List<RentalDayEntity> rentalDays) {
-        this.rentalDays = rentalDays;
-    }
-    
 }

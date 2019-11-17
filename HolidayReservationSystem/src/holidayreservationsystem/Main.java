@@ -1,12 +1,25 @@
 package holidayreservationsystem;
 
-import java.text.ParseException;
+/*import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+ import ws.client.CategoryEntity;
+import ws.client.CategoryNotAvailableException_Exception;
 import ws.client.InvalidLoginCredentialException_Exception;
+import ws.client.ModelEntity;
+import ws.client.ModelNotAvailableException_Exception;
+import ws.client.ModelNotFoundException;
+import ws.client.ModelNotFoundException_Exception;
+import ws.client.OutletEntity; */
 
 public class Main {
 
@@ -14,7 +27,7 @@ public class Main {
 
     public static void main(String[] args) {
         
-        Scanner sc = new Scanner(System.in);
+        /*Scanner sc = new Scanner(System.in);
         
         Integer response = 0;
         
@@ -54,9 +67,9 @@ public class Main {
             if (response == 3) {
                     break;
             }
-        }
+        }*/
     }
-    
+    /*
     public static void login() throws InvalidLoginCredentialException_Exception {
         
         Scanner scanner = new Scanner(System.in);
@@ -72,22 +85,7 @@ public class Main {
 
     private static void searchCar() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n***Welcome to CaRMS Reservation System :: Search car***\n");
-        
-        System.out.println("All categories");
-        List<String> list = retrieveAllCategory();
-        List<String> ids = new ArrayList<>();
-        int counter = 0;
-        for (String ans : list) {
-            counter++;
-            String[] split = ans.split("*&*");
-            System.out.println(counter + ") "+ split[0]);
-            ids.add(split[1]);
-        }
-        
-        System.out.print("Enter your choice of category> ");
-        String categoryId = ids.get(scanner.nextInt() - 1);
-        scanner.nextLine();
+        System.out.println("\n***Holiday Reservation System :: Search car***\n");
         
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         
@@ -101,19 +99,13 @@ public class Main {
         }
         
         System.out.println("Available Outlets");
-        
-        List<String> list1 = retrieveAllOutlets();
-        List<String> ids1 = new ArrayList<>();
-        counter = 0;
-        for (String ans : list1) {
-            counter++;
-            String[] split = ans.split("*&*");
-            System.out.println(counter + ") "+ split[0]);
-            ids1.add(split[1]);
+        List<OutletEntity> outlets = retrieveAllOutlets();
+        for (int i = 0; i < outlets.size(); i++) {
+            System.out.println((i + 1) + ") " + outlets.get(i).getOutletName());
         }
         
         System.out.print("Enter your choice of pickup outlet(enter number)> ");
-        String outletId = ids1.get(scanner.nextInt() - 1);
+        OutletEntity pickupOutlet = outlets.get(scanner.nextInt());
         scanner.nextLine();
         System.out.println(".................................");
         
@@ -125,6 +117,80 @@ public class Main {
         } catch (ParseException ex) {
             //
         }
+        
+        System.out.println("Available Outlets");
+        for (int i = 0; i < outlets.size(); i++) {
+            System.out.println((i + 1) + ") " + outlets.get(i).getOutletName());
+        }
+        
+        System.out.print("Enter your choice of return outlet> ");
+        OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
+        
+        System.out.println("***More Options***");
+        System.out.println("1) Search by make & model");
+        System.out.println("2) Search by category");
+        
+        int response = 0;
+                
+        while(response < 1 || response > 2)
+        {
+
+            System.out.print("> ");
+            response = scanner.nextInt();
+
+            if (response == 1) {
+                Scanner sc = new Scanner(System.in);
+                    
+                System.out.println("Please input make> ");
+                String make = sc.nextLine();
+
+                System.out.println("Please input model> ");
+                String model = sc.nextLine();
+
+                try {
+                    ModelEntity modelEntity = retrieveModelByName(model);
+                    String ans = calulateRentalRate(modelEntity, toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                } catch (ModelNotFoundException_Exception ex) {
+                    System.out.println("Model is not found!");
+                } catch(ModelNotAvailableException_Exception ex) {
+                    System.out.println("Model is not available!");
+                }
+            } else if(response == 2) {
+
+                System.out.println("All categories:");
+                List<CategoryEntity> categories = retrieveAllCategory();
+                int counter = 1;
+                for (CategoryEntity category: categories) {
+                    System.out.println((counter) + ") " + category.getCategoryName());
+                    counter++;
+                }
+                
+                System.out.print("Enter your choice of category> ");
+                CategoryEntity category = categories.get(scanner.nextInt() - 1);
+                scanner.nextLine();
+                
+                //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
+                List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
+                
+                try {
+                    availableModels = getAvailableModelsCategory(category.getCategoryId(), toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                } catch (CategoryNotAvailableException_Exception ex) {
+                    System.out.println("Out of cars for this category!");
+                }
+                
+                System.out.println("\n***All available models:***");
+                System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
+
+                double totalSumReservation = calculateAmountForReservation(category.getCategoryId(), toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate));
+
+                for (int i = 0; i < availableModels.size(); i++) {
+                    System.out.print((i + 1) + ") ");
+                    System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), totalSumReservation); 
+                }
+            } else {
+                System.out.println("Invalid option, please try again!\n");
+            }
+        }
     }
 
     private static void mainMenu() {
@@ -133,7 +199,7 @@ public class Main {
         
         while(true)
         {
-            System.out.println("\nHello Holiday.com!\nWelcome to Holiday Reservation System***");
+            System.out.println("\nHello Holiday.com!\nWelcome to Holiday Reservation System");
             System.out.println("1: Reserve Car");
             System.out.println("2: View Reservation Details");
             System.out.println("3: View all my reservations");
@@ -188,15 +254,51 @@ public class Main {
         return port.partnerLogin(arg0, arg1);
     }
 
-    private static java.util.List<java.lang.String> retrieveAllCategory() {
+    private static java.util.List<ws.client.CategoryEntity> retrieveAllCategory() {
         ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
         ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
         return port.retrieveAllCategory();
     }
 
-    private static java.util.List<java.lang.String> retrieveAllOutlets() {
+    private static java.util.List<ws.client.OutletEntity> retrieveAllOutlets() {
         ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
         ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
         return port.retrieveAllOutlets();
     }
+
+    private static ModelEntity retrieveModelByName(java.lang.String arg0) throws ModelNotFoundException_Exception {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.retrieveModelByName(arg0);
+    }
+
+    private static String calulateRentalRate(ws.client.ModelEntity arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2, java.lang.Long arg3, java.lang.Long arg4) throws ModelNotFoundException_Exception, ModelNotAvailableException_Exception {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.calulateRentalRate(arg0, arg1, arg2, arg3, arg4);
+    }
+
+    private static double calculateAmountForReservation(java.lang.Long arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2) {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.calculateAmountForReservation(arg0, arg1, arg2);
+    }
+
+    private static java.util.List<ws.client.ModelEntity> getAvailableModelsCategory(java.lang.Long arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2, java.lang.Long arg3, java.lang.Long arg4) throws CategoryNotAvailableException_Exception {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.getAvailableModelsCategory(arg0, arg1, arg2, arg3, arg4);
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date){
+        GregorianCalendar gCalendar = new GregorianCalendar();
+        gCalendar.setTime(date);
+        XMLGregorianCalendar xmlCalendar = null;
+        try {
+            xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
+        } catch (DatatypeConfigurationException ex) {
+            //Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return xmlCalendar;
+    } */
 }

@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 @Entity
@@ -62,6 +63,7 @@ public class OutletEntity implements Serializable {
         this.closingHour = closingTime;
     }
 
+    @XmlTransient
     public List<CarEntity> getCar() {
         return car;
     }
@@ -70,6 +72,7 @@ public class OutletEntity implements Serializable {
         this.car = car;
     } 
 
+    @XmlTransient
     public List<EmployeeEntity> getEmployeeEntities() {
         return employeeEntities;
     }
@@ -80,6 +83,10 @@ public class OutletEntity implements Serializable {
     
     public Long getOutletId() {
         return outletId;
+    }
+
+    public void setOutletId(Long outletId) {
+        this.outletId = outletId;
     }
 
     public String getOutletName() {
@@ -139,7 +146,8 @@ public class OutletEntity implements Serializable {
         return "Entity.OutletEntity[ id=" + outletId + " ]";
     }
 
-    /* public List<ReservationEntity> getPickupPointReservations() {
+    /*@XmlTransient
+    public List<ReservationEntity> getPickupPointReservations() {
         return pickupPointReservations;
     }
 
@@ -147,11 +155,12 @@ public class OutletEntity implements Serializable {
         this.pickupPointReservations = pickupPointReservations;
     }
 
+    @XmlTransient
     public List<ReservationEntity> getReturnPointReservations() {
         return returnPointReservations;
     }
 
     public void setReturnPointReservations(List<ReservationEntity> returnPointReservations) {
         this.returnPointReservations = returnPointReservations;
-    } */
+    }*/
 }

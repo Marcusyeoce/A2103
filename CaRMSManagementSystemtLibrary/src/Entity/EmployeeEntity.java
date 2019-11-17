@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import util.enumeration.AccessRightEnum;
 
 @Entity
@@ -72,6 +73,7 @@ public class EmployeeEntity implements Serializable {
         this.name = name;
     }
 
+    @XmlTransient
     public OutletEntity getOutletEntity() {
         return outletEntity;
     }

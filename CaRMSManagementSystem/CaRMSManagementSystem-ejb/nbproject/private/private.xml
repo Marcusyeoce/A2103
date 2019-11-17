@@ -3,9 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
+            <file>file:/D:/NUS_Study/IS2103/Pair_Project/A2103/CaRMSManagementSystem/CaRMSManagementSystem-ejb/src/java/ejb/session/ws/HolidayReservationWebService.java</file>
+=======
             <file>file:/C:/MarcusPairProject/A2103/CaRMSManagementSystem/CaRMSManagementSystem-ejb/src/java/ejb/session/stateless/ReservationSessionBeanLocal.java</file>
             <file>file:/C:/MarcusPairProject/A2103/CaRMSManagementSystem/CaRMSManagementSystem-ejb/src/java/ejb/session/stateless/RentalRateSessionBean.java</file>
             <file>file:/C:/MarcusPairProject/A2103/CaRMSManagementSystem/CaRMSManagementSystem-ejb/src/java/ejb/session/stateless/ReservationSessionBean.java</file>
+>>>>>>> cc516e3a2386d2ee9e83071d47760914827ae7a5
         </group>
     </open-files>
 </project-private>

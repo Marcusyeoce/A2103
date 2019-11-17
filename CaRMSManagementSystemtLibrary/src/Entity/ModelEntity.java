@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class ModelEntity implements Serializable {
@@ -47,8 +48,13 @@ public class ModelEntity implements Serializable {
         this.model = model;
     }
 
+    @XmlTransient
     public List<ReservationEntity> getReservations() {
         return reservations;
+    }
+    
+    public void setReservations(List<ReservationEntity> reservations) {
+        this.reservations = reservations;
     }
 
     public boolean isIsDeleted() {
@@ -57,10 +63,6 @@ public class ModelEntity implements Serializable {
 
     public void setIsDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
-    }
-
-    public void setReservations(List<ReservationEntity> reservations) {
-        this.reservations = reservations;
     }
 
     public String getMake() {
@@ -87,6 +89,7 @@ public class ModelEntity implements Serializable {
         this.cars = cars;
     }
 
+    @XmlTransient
     public CategoryEntity getCategoryEntity() {
         return categoryEntity;
     }
