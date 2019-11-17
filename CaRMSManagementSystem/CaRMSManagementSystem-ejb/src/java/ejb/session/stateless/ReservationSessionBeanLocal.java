@@ -20,4 +20,6 @@ public interface ReservationSessionBeanLocal {
 
     public List<ReservationEntity> retrieveReservationByCustomerId(Long customerId);
 
+    public void updateReservation(ReservationEntity reservation);
+
 }

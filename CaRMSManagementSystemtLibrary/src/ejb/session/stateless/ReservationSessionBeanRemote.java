@@ -20,4 +20,5 @@ public interface ReservationSessionBeanRemote {
 
     public List<ReservationEntity> retrieveReservationByCustomerId(Long customerId);
 
+    public void updateReservation(ReservationEntity reservation);
 }
