@@ -27,6 +27,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import util.exception.CategoryNotAvailableException;
+import util.exception.CategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.RentalRateException;
 import util.exception.UnknownPersistenceException;
@@ -109,7 +111,8 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         return rentalRateEntity;
     }
     
-    public double calculateAmountForReservation(Long categoryId, Date startDateTime, Date endDateTime) {
+    @Override
+    public double calculateAmountForReservation(Long categoryId, Date startDateTime, Date endDateTime) throws CategoryNotAvailableException {
         
         Scanner sc = new Scanner(System.in);
         
@@ -128,6 +131,10 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         while (!c.after(d)) {
             
             System.out.println(c);
+            
+            if ((getPrevailingRentalRate(categoryId, c.getTime()) == null)) {
+                throw new CategoryNotAvailableException();
+            }
             
             totalSum += getPrevailingRentalRate(categoryId, c.getTime()).getRatePerDay(); 
 
@@ -217,7 +224,9 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
                 applicableRentalRates.add(rentalRate);                
             }
         }
-        
+        if (applicableRentalRates.isEmpty()) {
+            return null;
+        }
         RentalRateEntity prevailingRentalRate = applicableRentalRates.get(0);
         
         for(RentalRateEntity rentalRate: applicableRentalRates) {

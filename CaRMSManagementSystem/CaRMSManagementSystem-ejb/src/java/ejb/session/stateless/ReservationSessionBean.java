@@ -83,7 +83,13 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
         CustomerEntity customer = em.find(CustomerEntity.class, customerId);
         
-        return customer.getReservations();
+        if (customer != null) {
+            customer.getReservations().size();
+            return customer.getReservations();
+        } else {
+            return new ArrayList<>();
+        }
+        
     }
     
     public void generateRentalDays(Long reservationId) {

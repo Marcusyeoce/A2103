@@ -105,7 +105,7 @@ public class HolidayReservationWebService {
     }
     
     @WebMethod(operationName = "calulateRentalRate")
-    public double calulateRentalRate(@WebParam ModelEntity modelEntity, @WebParam Date pickupDate, @WebParam Date returnDate, @WebParam Long pickupId, @WebParam Long returnId) throws ModelNotFoundException, ModelNotAvailableException {
+    public double calulateRentalRate(@WebParam ModelEntity modelEntity, @WebParam Date pickupDate, @WebParam Date returnDate, @WebParam Long pickupId, @WebParam Long returnId) throws ModelNotFoundException, ModelNotAvailableException, CategoryNotAvailableException {
         if (modelSessionBean.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupId, returnId)) {
             double totalSumReservation = rentalRateSessionBean.calculateAmountForReservation(modelEntity.getCategoryEntity().getCategoryId(), pickupDate, returnDate);
             return totalSumReservation;
@@ -116,7 +116,7 @@ public class HolidayReservationWebService {
     
             
     @WebMethod(operationName = "calculateAmountForReservation")
-    public double calculateAmountForReservation(@WebParam Long categoryId,@WebParam Date startDateTime, @WebParam Date endDateTime) {
+    public double calculateAmountForReservation(@WebParam Long categoryId,@WebParam Date startDateTime, @WebParam Date endDateTime) throws CategoryNotAvailableException {
         return rentalRateSessionBean.calculateAmountForReservation(categoryId, startDateTime, endDateTime);
     }
     

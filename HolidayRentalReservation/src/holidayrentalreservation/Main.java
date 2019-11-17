@@ -102,10 +102,10 @@ public class Main {
             System.out.println((i + 1) + ") " + outlets.get(i).getOutletName());
         }
         
-        System.out.print("Enter your choice of pickup outlet(enter number)> ");
+        System.out.print("Enter your choice of pickup outlet> ");
         OutletEntity pickupOutlet = outlets.get(scanner.nextInt() - 1);
         scanner.nextLine();
-        System.out.println(".................................");
+        System.out.println("...............................................................");
         
         System.out.print("Enter return date and time (dd/mm/yyyy hh:mm)> ");
         String returnDateString = scanner.nextLine().trim();
@@ -118,7 +118,7 @@ public class Main {
             return;
         }
         
-        System.out.println("Available Outlets");
+        System.out.println("Available Return Outlets");
         for (int i = 0; i < outlets.size(); i++) {
             System.out.println((i + 1) + ") " + outlets.get(i).getOutletName());
         }
@@ -222,7 +222,7 @@ public class Main {
                     try {
                        reserveCar();
                     } catch (Exception ex) {
-                        System.out.println("exception = "+ ex.getMessage());
+                        System.out.println("exception = " + ex.getMessage());
                     }
                 } else if (response == 2) {
                     viewReservationDetails();
@@ -252,7 +252,7 @@ public class Main {
         try {
             pickupDate = format.parse(pickupDateString);
         } catch (ParseException ex) {
-            System.out.println(ex.getMessage() + "Please input the date and time in the correct format!");
+            System.out.println(ex.getMessage() + " - Please input the date and time in the correct format!");
         }
         
         System.out.println("Available Outlets");
@@ -264,7 +264,7 @@ public class Main {
         System.out.print("Enter your choice of pickup outlet> ");
         OutletEntity pickupOutlet = outlets.get(scanner.nextInt() - 1);
         scanner.nextLine();
-        System.out.println(".................................");
+        System.out.println("...............................................................");
         
         System.out.print("Enter return date and time (dd/mm/yyyy hh:mm)> ");
         String returnDateString = scanner.nextLine().trim();
@@ -273,10 +273,10 @@ public class Main {
         try {
             returnDate = format.parse(returnDateString);
         } catch (ParseException ex) {
-            System.out.println(ex.getMessage() + "Please input the date and time in the correct format!");
+            System.out.println(ex.getMessage() + " - Please input the date and time in the correct format!");
         }
         
-        System.out.println("Available Outlets");
+        System.out.println("Available Return Outlets");
         for (int i = 0; i < outlets.size(); i++) {
             System.out.println((i + 1) + ") " + outlets.get(i).getOutletName());
         }
@@ -335,6 +335,7 @@ public class Main {
                 for (CategoryEntity category: categories) {
                     try {
                         getAvailableModelsCategory(category.getCategoryId(), toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                        calculateAmountForReservation(category.getCategoryId(), toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate));
                         System.out.println((counter) + ") " + category.getCategoryName()); 
                     } catch(CategoryNotAvailableException_Exception ex) {
                         System.out.println((counter) + ") " + category.getCategoryName() + " (currently unavailable!)"); 
@@ -353,6 +354,8 @@ public class Main {
                 } catch (CategoryNotAvailableException_Exception ex) {
                     System.out.println("\nSorry, we are currently out of cars for this category!");
                     return;
+                } catch (IndexOutOfBoundsException ex) {
+                    
                 }
             } else {
                 System.out.println("Invalid option, please try again!\n");
@@ -371,7 +374,7 @@ public class Main {
             response = scanner.nextInt();
                 
             if (response == 1) {
-                System.out.println("***Please enter your credit card info to make payment***");
+                System.out.println("\n***Please enter your credit card info to make payment***");
                 reservation.setIsPaid(true);
                 reservation.setAmountPaid(totalAmount);
             } else if (response == 2) {
@@ -414,15 +417,21 @@ public class Main {
             reservationId = createReservationEntityCategory(reservation, partnerEntity.getPartnerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), categoryEntity.getCategoryId());
         }
         System.out.println("Your reservation (id: " + reservationId + ") has been confirmed! Thank you!");
-        
+        System.out.println("Press any key to continue...");
+        Scanner scc = new Scanner(System.in);
+        scc.nextLine();
     }
 
     private static void viewReservationDetails() {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Press any key to continue...");
+        Scanner scc = new Scanner(System.in);
+        scc.nextLine();
     }
 
     private static void viewAllMyReservations() {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Press any key to continue...");
+        Scanner scc = new Scanner(System.in);
+        scc.nextLine();
     }
 
     private static double calculateAmountForReservation(java.lang.Long arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2) {
