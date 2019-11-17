@@ -145,4 +145,6 @@ public class CustomerEntity implements Serializable {
         return "Entity.CustomerEntity[ id=" + customerId + " ]";
     }
     
+    
+    
 }

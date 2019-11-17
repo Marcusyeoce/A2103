@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class PartnerEntity implements Serializable {
@@ -37,6 +38,15 @@ public class PartnerEntity implements Serializable {
         this.name = name;
         this.username = username;
         this.password = password;
+    }
+
+    @XmlTransient
+    public List<ReservationEntity> getReservationEntitys() {
+        return reservationEntitys;
+    }
+
+    public void setReservationEntitys(List<ReservationEntity> reservationEntitys) {
+        this.reservationEntitys = reservationEntitys;
     }
     
     public String getPassword() {

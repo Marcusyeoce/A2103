@@ -166,7 +166,8 @@ public class MainApp {
         try {
             pickupDate = format.parse(pickupDateString);
         } catch (ParseException ex) {
-            System.out.println(ex.getMessage() + "Please input the date and time in the correct format!");
+            System.out.println(ex.getMessage() + " - Please input the date and time in the correct format!");
+            return;
         }
 
         System.out.println("Available Outlets");
@@ -186,11 +187,13 @@ public class MainApp {
         
         System.out.print("Enter return date and time (dd/mm/yyyy hh:mm)> ");
         String returnDateString = scanner.nextLine().trim();
+        System.out.println();
         Date returnDate = new Date();
         try {
             returnDate = format.parse(returnDateString);
         } catch (ParseException ex) {
-            System.out.println(ex.getMessage() + "Please input the date and time in the correct format!");
+            System.out.println(ex.getMessage() + " - Please input the date and time in the correct format!");
+            return;
         }
 
         System.out.println("Available Outlets");
@@ -204,7 +207,7 @@ public class MainApp {
         System.out.print("Enter your choice of return outlet> ");
         OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
         
-        System.out.println("***More Options***");
+        System.out.println("\n***More Options***");
         System.out.println("1) Search by make & model");
         System.out.println("2) Search by category");
         int response = 0;
@@ -219,10 +222,10 @@ public class MainApp {
                     
                     Scanner sc = new Scanner(System.in);
                     
-                    System.out.println("Please input make> ");
+                    System.out.println("\nEnter car make> ");
                     String make = sc.nextLine();
                     
-                    System.out.println("Please input model> ");
+                    System.out.println("\nEnter car model> ");
                     String model = sc.nextLine();
                     try {
                         ModelEntity modelEntity = modelSessionBeanRemote.retrieveModelByName(model);
@@ -239,10 +242,16 @@ public class MainApp {
                         System.out.println("Model is not found!");
                     }
                 } else if(response == 2) {
-                    System.out.println("All categories:");
+                    System.out.println("\nAll categories:");
                     List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
                     counter = 1;
                     for (CategoryEntity category: categories) {
+                        try {
+                            modelSessionBeanRemote.getAvailableModelsCategory(category.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                            System.out.println((counter) + ") " + category.getCategoryName());
+                        } catch (CategoryNotAvailableException ex) {
+                            System.out.println((counter) + ") " + category.getCategoryName() + " (currently unavailable!)");
+                        }
                         System.out.println((counter) + ") " + category.getCategoryName());
                         counter++;
                     }
@@ -256,18 +265,17 @@ public class MainApp {
         
                     try {
                         availableModels = modelSessionBeanRemote.getAvailableModelsCategory(category.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                        System.out.println("\n***All available models:***");
+                        System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
+
+                        double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(category.getCategoryId(), pickupDate, returnDate);
+
+                        for (int i = 0; i < availableModels.size(); i++) {
+                            System.out.print((i + 1) + ") ");
+                            System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), totalSumReservation); 
+                        }
                     } catch (CategoryNotAvailableException ex) {
-                        System.out.println("Out of cars for this category!");
-                    }
-                    
-                    System.out.println("\n***All available models:***");
-                    System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
-        
-                    double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(category.getCategoryId(), pickupDate, returnDate);
-        
-                    for (int i = 0; i < availableModels.size(); i++) {
-                        System.out.print((i + 1) + ") ");
-                        System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), totalSumReservation); 
+                        System.out.println("Sorry, we are currently out of cars for this category!");
                     }
                 } else {
                     System.out.println("Invalid option, please try again!\n");
@@ -328,13 +336,13 @@ public class MainApp {
         
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         
-        System.out.print("Enter pickup date and time (dd/MM/yyyy HH:mm)> ");
+        System.out.print("Enter pickup date and time (dd/m/yyyy hh:mm)> ");
         String pickupDateString = scanner.nextLine().trim();
         Date pickupDate = new Date();
         try {
             pickupDate = format.parse(pickupDateString);
         } catch (ParseException ex) {
-            //
+            System.out.println(ex.getMessage() + "Please input the date and time in the correct format!");
         }
 
         System.out.println("Available Pickup Outlets");
@@ -347,18 +355,19 @@ public class MainApp {
             }
         }
         
-        System.out.print("Enter your choice of pickup outlet(enter number)> ");
+        System.out.print("Enter your choice of pickup outlet> ");
         OutletEntity pickupOutlet = outlets.get(scanner.nextInt());
         scanner.nextLine();
         System.out.println(".................................");
         
-        System.out.print("Enter return date and time (dd/MM/yyyy HH:mm)> ");
+        System.out.print("Enter return date and time (dd/mm/yyyy hh:mm)> ");
         String returnDateString = scanner.nextLine().trim();
+        System.out.println();
         Date returnDate = new Date();
         try {
             returnDate = format.parse(returnDateString);
         } catch (ParseException ex) {
-            //
+            System.out.println(ex.getMessage() + "Please input the date and time in the correct format!");
         }
         
         System.out.println("Available Outlets");
@@ -371,6 +380,7 @@ public class MainApp {
         }
         System.out.print("Enter your choice of return outlet> ");
         OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
+        System.out.println();
         
         //if there are cars
         ReservationEntity reservation = new ReservationEntity();
@@ -380,8 +390,10 @@ public class MainApp {
         //reservation.setReturnOutlet(returnOutlet);
         
         System.out.println("\n****More Options:***");
-        System.out.println("1.Reserve car of specific model and make");
-        System.out.println("2.Reserve car of a particular category");
+        System.out.println("1) Reserve car of specific model and make");
+        System.out.println("2) Reserve car of a particular category");
+        System.out.print("> ");
+        
         Integer response = 0;
         int choice = 0;
         double totalAmount = 0;
@@ -398,9 +410,9 @@ public class MainApp {
                 choice = 1;
                 Scanner sc = new Scanner(System.in);
                         
-                System.out.print("Enter car make \n>");
+                System.out.print("\nEnter car make> ");
                 String reservationMake = sc.nextLine().trim();
-                System.out.print("Enter car model \n>");
+                System.out.print("\nEnter car model> ");
                 String reservationModel = sc.nextLine().trim();
                 
                 modelEntity = modelSessionBeanRemote.retrieveModelByName(reservationModel);
@@ -438,13 +450,18 @@ public class MainApp {
                 List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
                     
                 //prints list of categories, get all categories, and see which are available or booking
-                System.out.println("All categories available:");
+                System.out.println("\nAll categories available:");
                 for (CategoryEntity category: categories) {
-                    System.out.println(counter + ") " + category.getCategoryName());
-                    counter++;
+                     try {
+                        modelSessionBeanRemote.getAvailableModelsCategory(category.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                        System.out.println((counter) + ") " + category.getCategoryName()); 
+                    } catch(CategoryNotAvailableException ex) {
+                        System.out.println((counter) + ") " + category.getCategoryName() + " (currently unavailable!)"); 
+                    }
+                     counter++;
                 }
                 
-                System.out.print("Please indicate the car category you want\n>");
+                System.out.print("Please indicate your choice of car category> ");
                 int categoryChoice = scanner.nextInt();
                 
                 //check if category is available
@@ -458,18 +475,24 @@ public class MainApp {
                 if (!categoryAvailable) {
                     throw new ModelNotAvailableException();
                 } */
-                    
                 categoryEntity = categories.get(categoryChoice - 1);
-                totalAmount = rentalRateSessionBeanRemote.calculateAmountForReservation(categoryEntity.getCategoryId(), pickupDate, returnDate);
-
+                try {
+                    modelSessionBeanRemote.getAvailableModelsCategory(categoryEntity.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                    totalAmount = rentalRateSessionBeanRemote.calculateAmountForReservation(categoryEntity.getCategoryId(), pickupDate, returnDate);
+                    System.out.println("Total amount would be $" + totalAmount);
+                } catch (CategoryNotAvailableException ex) {
+                    System.out.println("\nSorry, we are currently out of cars for this category!");
+                    return;
+                }
+                
             } else {
                 System.out.println("Invalid option, please try again!\n");
             }
         }
         
-        System.out.println("\n***Choose payment option:***\n");
-        System.out.println("1.Immediate rental fee payment");
-        System.out.println("2.Deferred rental fee payment");
+        System.out.println("\n***Choose payment option***\n");
+        System.out.println("1) Immediate rental fee payment");
+        System.out.println("2) Deferred rental fee payment");
         response = 0;
             
         while(response < 1 || response > 2)
@@ -493,9 +516,9 @@ public class MainApp {
         }
         scanner.nextLine();
             
-        System.out.println("Please input your credit card number");
+        System.out.print("Please input your credit card number> ");
         String ccNum = scanner.nextLine().trim();
-        System.out.println("Please input your credit card expiry date (mm/yy)");
+        System.out.print("Please input your credit card expiry date (mm/yy)> ");
         
         SimpleDateFormat ccExpiryFormat = new SimpleDateFormat("MM/yy");
 
@@ -504,10 +527,10 @@ public class MainApp {
         try {
             ccExpiryDate = format.parse(pickupDateString);
         } catch (ParseException ex) {
-            //
+            System.out.println("Please enter the expiry date in the correct format!");
         }
 
-        System.out.println("Please input your credit card CVV");
+        System.out.print("Please input your credit card CVV > ");
         int ccCVV = scanner.nextInt();
         
         reservation.setTotalAmount(totalAmount);

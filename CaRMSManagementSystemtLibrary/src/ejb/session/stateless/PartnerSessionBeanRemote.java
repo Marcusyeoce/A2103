@@ -14,7 +14,7 @@ import util.exception.UnknownPersistenceException;
 
 public interface PartnerSessionBeanRemote {
     
-    public Long partnerLogin(String username, String password) throws InvalidLoginCredentialException;
+    public PartnerEntity partnerLogin(String username, String password) throws InvalidLoginCredentialException;
 
     public PartnerEntity retrievePartnerByUsername(String username) throws PartnerNotFoundException;
     

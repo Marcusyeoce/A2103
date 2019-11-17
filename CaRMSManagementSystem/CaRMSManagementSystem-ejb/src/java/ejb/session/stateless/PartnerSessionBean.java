@@ -50,11 +50,11 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     }
     
     @Override
-    public Long partnerLogin(String username, String password) throws InvalidLoginCredentialException {
+    public PartnerEntity partnerLogin(String username, String password) throws InvalidLoginCredentialException {
         try {
             PartnerEntity partnerEntity = retrievePartnerByUsername(username);
             if (partnerEntity.getPassword().equals(password)) {
-                return partnerEntity.getPartnerId();
+                return partnerEntity;
             } else {
                 throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
             }

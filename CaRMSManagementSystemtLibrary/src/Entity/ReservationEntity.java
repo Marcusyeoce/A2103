@@ -211,6 +211,10 @@ public class ReservationEntity implements Serializable {
     public Long getReservationId() {
         return reservationId;
     }
+
+    public void setReservationId(Long reservationId) {
+        this.reservationId = reservationId;
+    }
     
     @XmlTransient
     public List<RentalDayEntity> getRentalDays() {
@@ -245,4 +249,6 @@ public class ReservationEntity implements Serializable {
     public String toString() {
         return "Entity.ReservationEntity[ id=" + reservationId + " ]";
     }
+    
+    
 }
