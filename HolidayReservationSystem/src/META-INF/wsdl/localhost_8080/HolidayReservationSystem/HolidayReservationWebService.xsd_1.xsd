@@ -14,21 +14,21 @@
 
 <xs:element name="retrieveAllOutletsResponse" type="tns:retrieveAllOutletsResponse"/>
 
-<xs:complexType name="retrieveAllOutlets">
-<xs:sequence/>
-</xs:complexType>
-
-<xs:complexType name="retrieveAllOutletsResponse">
-<xs:sequence>
-<xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="retrieveAllCategory">
 <xs:sequence/>
 </xs:complexType>
 
 <xs:complexType name="retrieveAllCategoryResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllOutlets">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="retrieveAllOutletsResponse">
 <xs:sequence>
 <xs:element name="return" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
