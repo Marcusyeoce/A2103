@@ -81,6 +81,22 @@ public class ReservationEntity implements Serializable {
     
     public ReservationEntity() {
     }
+    
+    public CarEntity getCar() {
+        return car;
+    }
+
+    public void setCar(CarEntity car) {
+        this.car = car;
+    }
+
+    public TransitDispatchRecordEntity getTransitDispatchRecord() {
+        return transitDispatchRecord;
+    }
+
+    public void setTransitDispatchRecord(TransitDispatchRecordEntity transitDispatchRecord) {
+        this.transitDispatchRecord = transitDispatchRecord;
+    }
 
     public boolean isIsPaid() {
         return isPaid;
