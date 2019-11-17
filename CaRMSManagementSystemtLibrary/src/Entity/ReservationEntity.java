@@ -41,7 +41,8 @@ public class ReservationEntity implements Serializable {
     //@Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDateTime;
-    
+    private double totalAmount;
+    private double amountPaid;
     private boolean isPaid;
     private int status; //0 for reserved, 1 for cancelled, 2 for success(car returned)
     
@@ -120,7 +121,23 @@ public class ReservationEntity implements Serializable {
     public void setCcCVV(int ccCVV) {
         this.ccCVV = ccCVV;
     }
+    
+    public double getTotalAmount() {
+        return totalAmount;
+    }
 
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public double getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(double amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+    
     @XmlTransient
     public CustomerEntity getCustomer() {
         return customer;

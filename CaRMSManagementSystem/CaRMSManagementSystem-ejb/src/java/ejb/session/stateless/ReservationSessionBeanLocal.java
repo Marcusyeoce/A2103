@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import Entity.ReservationEntity;
+import java.util.List;
 import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;
 
@@ -16,4 +17,7 @@ public interface ReservationSessionBeanLocal {
     public Long createReservationEntityCategory(ReservationEntity newReservationEntity, Long customerId, Long pickupOutletId, Long returnOutletId, Long categoryId);
     
     public Long createReservationEntityModel(ReservationEntity newReservationEntity, Long customerId, Long pickupOutletId, Long returnOutletId, Long modelId);
+
+    public List<ReservationEntity> retrieveReservationByCustomerId(Long customerId);
+
 }

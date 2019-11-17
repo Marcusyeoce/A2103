@@ -44,15 +44,15 @@ public class OutletEntity implements Serializable {
     @OneToMany//(mappedBy = "")
     private List<CarEntity> car;
     
-    @OneToMany
-    private List<ReservationEntity> pickupPointReservations;
+    //@OneToMany
+    //private List<ReservationEntity> pickupPointReservations;
     
-    @OneToMany
-    private List<ReservationEntity> returnPointReservations;
+    //@OneToMany
+    //private List<ReservationEntity> returnPointReservations;
 
     public OutletEntity() {
-        pickupPointReservations = new ArrayList<>();
-        returnPointReservations = new ArrayList<>();
+        //pickupPointReservations = new ArrayList<>();
+        //returnPointReservations = new ArrayList<>();
     }
 
     public OutletEntity(String outletName, String address, String openingTime, String closingTime) {
@@ -146,7 +146,7 @@ public class OutletEntity implements Serializable {
         return "Entity.OutletEntity[ id=" + outletId + " ]";
     }
 
-    @XmlTransient
+    /*@XmlTransient
     public List<ReservationEntity> getPickupPointReservations() {
         return pickupPointReservations;
     }
@@ -162,5 +162,5 @@ public class OutletEntity implements Serializable {
 
     public void setReturnPointReservations(List<ReservationEntity> returnPointReservations) {
         this.returnPointReservations = returnPointReservations;
-    }
+    }*/
 }

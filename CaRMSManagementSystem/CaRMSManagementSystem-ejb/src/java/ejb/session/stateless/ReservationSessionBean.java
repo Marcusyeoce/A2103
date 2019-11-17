@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejb.session.stateless;
 
 import Entity.CategoryEntity;
@@ -84,6 +79,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return newReservationEntity.getReservationId();
     }
     
+    public List<ReservationEntity> retrieveReservationByCustomerId(Long customerId) {
+        
+        CustomerEntity customer = em.find(CustomerEntity.class, customerId);
+        
+        return customer.getReservations();
+    }
+    
+    
     public void generateRentalDays(Long reservationId) {
         
         Query query = em.createQuery("SELECT r from ReservationEntity r WHERE r.reservationId = :inReservationId");
@@ -127,9 +130,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         newReservationEntity.setCustomer(customer);
         customer.getReservations().add(newReservationEntity);
         newReservationEntity.setPickupOutlet(pickupOutlet);
-        pickupOutlet.getPickupPointReservations().add(newReservationEntity);
+        //pickupOutlet.getPickupPointReservations().add(newReservationEntity);
         newReservationEntity.setReturnOutlet(returnOutlet);
-        returnOutlet.getReturnPointReservations().add(newReservationEntity);
+        //returnOutlet.getReturnPointReservations().add(newReservationEntity);
         newReservationEntity.setModel(model);
         model.getReservations().add(newReservationEntity);
         
@@ -150,9 +153,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         newReservationEntity.setCustomer(customer);
         customer.getReservations().add(newReservationEntity);
         newReservationEntity.setPickupOutlet(pickupOutlet);
-        pickupOutlet.getPickupPointReservations().add(newReservationEntity);
+        //pickupOutlet.getPickupPointReservations().add(newReservationEntity);
         newReservationEntity.setReturnOutlet(returnOutlet);
-        returnOutlet.getReturnPointReservations().add(newReservationEntity);
+        //returnOutlet.getReturnPointReservations().add(newReservationEntity);
         newReservationEntity.setCategory(category);
         category.getReservations().add(newReservationEntity);
         
