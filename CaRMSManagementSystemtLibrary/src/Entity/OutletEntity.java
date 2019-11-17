@@ -1,6 +1,8 @@
 package Entity;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -49,6 +51,8 @@ public class OutletEntity implements Serializable {
     private List<ReservationEntity> returnPointReservations;
 
     public OutletEntity() {
+        pickupPointReservations = new ArrayList<>();
+        returnPointReservations = new ArrayList<>();
     }
 
     public OutletEntity(String outletName, String address, String openingTime, String closingTime) {
@@ -77,10 +81,6 @@ public class OutletEntity implements Serializable {
     
     public Long getOutletId() {
         return outletId;
-    }
-
-    public void setOutletId(Long outletId) {
-        this.outletId = outletId;
     }
 
     public String getOutletName() {

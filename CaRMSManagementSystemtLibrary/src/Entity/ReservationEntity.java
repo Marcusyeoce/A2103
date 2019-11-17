@@ -1,6 +1,7 @@
 package Entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -51,7 +52,8 @@ public class ReservationEntity implements Serializable {
     @JoinColumn(nullable = true)
     private PartnerEntity partner;
     
-    @OneToOne
+    @ManyToOne(optional = true)
+    @JoinColumn(nullable = true)
     private CategoryEntity category;
     
     @ManyToOne(optional = true)
@@ -61,10 +63,12 @@ public class ReservationEntity implements Serializable {
     @OneToOne//(mappedBy = "")
     private CarEntity car;
     
-    @OneToOne//(mappedBy = "")
+    @ManyToOne(optional = true)//(mappedBy = "")
+    @JoinColumn(nullable = true)
     private OutletEntity pickupOutlet;
     
-    @OneToOne//(mappedBy = "")
+    @ManyToOne(optional = true)//(mappedBy = "")
+    @JoinColumn(nullable = true)
     private OutletEntity returnOutlet;
     
     //@OneToMany
@@ -72,10 +76,6 @@ public class ReservationEntity implements Serializable {
     
     @OneToOne//(mappedBy = "")
     private TransitDispatchRecordEntity transitDispatchRecord;
-    
-    @ManyToOne(optional = true)
-    @JoinColumn(nullable = true)
-    private PartnerEntity partnerEntity;
     
     public ReservationEntity() {
     }
@@ -186,10 +186,6 @@ public class ReservationEntity implements Serializable {
     
     public Long getReservationId() {
         return reservationId;
-    }
-
-    public void setReservationId(Long reservationId) {
-        this.reservationId = reservationId;
     }
 
     @Override

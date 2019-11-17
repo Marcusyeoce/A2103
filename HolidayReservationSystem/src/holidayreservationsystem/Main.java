@@ -199,6 +199,4 @@ public class Main {
         ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
         return port.retrieveAllOutlets();
     }
-    
-    
 }

@@ -389,6 +389,7 @@ public class MainApp {
         System.out.println("1.Reserve car of specific model and make");
         System.out.println("2.Reserve car of a particular category");
         Integer response = 0;
+        int choice = 0;
         
         ModelEntity modelEntity = new ModelEntity();
         CategoryEntity categoryEntity = new CategoryEntity();
@@ -399,6 +400,7 @@ public class MainApp {
             
             if (response == 1) {
                 
+                choice = 1;
                 Scanner sc = new Scanner(System.in);
                         
                 System.out.print("Enter car make \n>");
@@ -433,6 +435,8 @@ public class MainApp {
                     throw new ModelNotAvailableException();
                 } */
             } else if (response == 2) {
+                
+                choice = 2;
                 
                 counter = 1;
                 List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
@@ -512,10 +516,10 @@ public class MainApp {
      
         Long reservationId;
         
-        if (modelEntity != null) {
+        if (choice == 1) {
             reservationId = reservationSessionBeanRemote.createReservationEntityModel(reservation, currentCustomerEntity.getCustomerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), modelEntity.getModelId());
         } else {
-            reservationId = reservationSessionBeanRemote.createReservationEntityCategory(reservation, currentCustomerEntity.getCustomerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), modelEntity.getModelId());
+            reservationId = reservationSessionBeanRemote.createReservationEntityCategory(reservation, currentCustomerEntity.getCustomerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), categoryEntity.getCategoryId());
         }
         
         System.out.println("Your reservation " + reservationId + " has been confirmed! Thank you!");
