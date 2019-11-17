@@ -127,9 +127,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         newReservationEntity.setCustomer(customer);
         customer.getReservations().add(newReservationEntity);
         newReservationEntity.setPickupOutlet(pickupOutlet);
-        pickupOutlet.getPickupPointReservations().add(newReservationEntity);
+        //pickupOutlet.getPickupPointReservations().add(newReservationEntity);
         newReservationEntity.setReturnOutlet(returnOutlet);
-        returnOutlet.getReturnPointReservations().add(newReservationEntity);
+        //returnOutlet.getReturnPointReservations().add(newReservationEntity);
         newReservationEntity.setModel(model);
         model.getReservations().add(newReservationEntity);
         
@@ -150,9 +150,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         newReservationEntity.setCustomer(customer);
         customer.getReservations().add(newReservationEntity);
         newReservationEntity.setPickupOutlet(pickupOutlet);
-        pickupOutlet.getPickupPointReservations().add(newReservationEntity);
+        //pickupOutlet.getPickupPointReservations().add(newReservationEntity);
         newReservationEntity.setReturnOutlet(returnOutlet);
-        returnOutlet.getReturnPointReservations().add(newReservationEntity);
+        //returnOutlet.getReturnPointReservations().add(newReservationEntity);
         newReservationEntity.setCategory(category);
         category.getReservations().add(newReservationEntity);
         
