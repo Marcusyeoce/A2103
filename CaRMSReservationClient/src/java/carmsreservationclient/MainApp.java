@@ -215,69 +215,69 @@ public class MainApp {
         System.out.println("2) Search by model");
         int response = 0;
                 
-            while(response < 1 || response > 2)
-            {
-            
-                System.out.print("> ");
-                response = scanner.nextInt();
-                
-                if (response == 1) {
-                    System.out.println("All categories:");
-                    List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
-                    counter = 1;
-                    for (CategoryEntity category: categories) {
-                        System.out.println((counter) + ") " + category.getCategoryName());
-                        counter++;
-                    }
-        
-                    System.out.print("Enter your choice of category> ");
-                    CategoryEntity category = categories.get(scanner.nextInt() - 1);
-                    scanner.nextLine();
-                    
-                    //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
-                    List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
-        
-                    try {
-                        availableModels = modelSessionBeanRemote.getAvailableModelsCategory(category.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
-                    } catch (CategoryNotAvailableException ex) {
-                        //Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
-                    System.out.println("\n***All available models:***");
-                    System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
-        
-                    double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(category.getCategoryId(), pickupDate, returnDate);
-        
-                    for (int i = 0; i < availableModels.size(); i++) {
-                        System.out.print((i + 1) + ") ");
-                        System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), totalSumReservation); 
-                    }
-                } else if(response == 2) {
-                    
-                    Scanner sc = new Scanner(System.in);
-                    
-                    System.out.println("Please input make\n>");
-                    String make = sc.nextLine().trim();
-                    
-                    System.out.println("Please input model\n>");
-                    String model = sc.nextLine().trim();
-                    try {
-                        ModelEntity modelEntity = modelSessionBeanRemote.retrieveModelByName(model);
-                        if (modelSessionBeanRemote.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId())) {
-                            System.out.println(modelEntity.getMake() + " " + modelEntity.getModel() + " is available!");
-                            
-                            double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(modelEntity.getCategoryEntity().getCategoryId(), pickupDate, returnDate);
-                            System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
-                            System.out.printf("%15s%20s%15s\n" , model, modelEntity.getMake(), totalSumReservation);
-                        }    
-                    } catch (ModelNotFoundException ex) {
-                        //
-                    }
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
+        while(response < 1 || response > 2)
+        {
+
+            System.out.print("> ");
+            response = scanner.nextInt();
+
+            if (response == 1) {
+                System.out.println("All categories:");
+                List<CategoryEntity> categories = categorySessionBeanRemote.retrieveCategoryEntities();
+                counter = 1;
+                for (CategoryEntity category: categories) {
+                    System.out.println((counter) + ") " + category.getCategoryName());
+                    counter++;
                 }
+
+                System.out.print("Enter your choice of category> ");
+                CategoryEntity category = categories.get(scanner.nextInt() - 1);
+                scanner.nextLine();
+
+                //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
+                List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
+
+                try {
+                    availableModels = modelSessionBeanRemote.getAvailableModelsCategory(category.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                } catch (CategoryNotAvailableException ex) {
+                    //Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                System.out.println("\n***All available models:***");
+                System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
+
+                double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(category.getCategoryId(), pickupDate, returnDate);
+
+                for (int i = 0; i < availableModels.size(); i++) {
+                    System.out.print((i + 1) + ") ");
+                    System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), totalSumReservation); 
+                }
+            } else if(response == 2) {
+
+                Scanner sc = new Scanner(System.in);
+
+                System.out.println("Please input make\n>");
+                String make = sc.nextLine().trim();
+
+                System.out.println("Please input model\n>");
+                String model = sc.nextLine().trim();
+                try {
+                    ModelEntity modelEntity = modelSessionBeanRemote.retrieveModelByName(model);
+                    if (modelSessionBeanRemote.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId())) {
+                        System.out.println(modelEntity.getMake() + " " + modelEntity.getModel() + " is available!");
+
+                        double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(modelEntity.getCategoryEntity().getCategoryId(), pickupDate, returnDate);
+                        System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
+                        System.out.printf("%15s%20s%15s\n" , model, modelEntity.getMake(), totalSumReservation);
+                    }    
+                } catch (ModelNotFoundException ex) {
+                    //
+                }
+            } else {
+                System.out.println("Invalid option, please try again!\n");
             }
         }
+    }
 
     private void mainMenu() {
         Scanner scanner = new Scanner(System.in);
