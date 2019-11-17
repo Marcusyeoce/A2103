@@ -114,7 +114,7 @@ public class MainApp {
             newCustomerEntity.setLastName(scanner.nextLine().trim());
             System.out.print("Enter Passport Number> ");
             newCustomerEntity.setPassportNum(scanner.nextLine().trim());
-            System.out.print("Enter Contact Number> (try to not enter digits)");
+            System.out.print("Enter Contact Number> ");
             newCustomerEntity.setMobileNum(Long.parseLong(scanner.nextLine().trim()));
             System.out.print("Enter email> ");
             newCustomerEntity.setEmail(scanner.nextLine().trim());
@@ -382,7 +382,7 @@ public class MainApp {
             }
         }
         System.out.print("Enter your choice of return outlet> ");
-        OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
+        OutletEntity returnOutlet = outlets.get(scanner.nextInt());
         
         //if there are cars
         ReservationEntity reservation = new ReservationEntity();
@@ -414,13 +414,17 @@ public class MainApp {
                         
                 System.out.print("\nEnter car make> ");
                 String reservationMake = sc.nextLine().trim();
-                System.out.print("\nEnter car model> ");
+                System.out.print("Enter car model> ");
                 String reservationModel = sc.nextLine().trim();
                 
                 modelEntity = modelSessionBeanRemote.retrieveModelByName(reservationModel);
                 
                 try {
                     totalAmount = rentalRateSessionBeanRemote.calculateAmountForReservation(modelEntity.getCategoryEntity().getCategoryId(), pickupDate, returnDate);
+                    System.out.println("\nTotal amount for car model of " + reservationModel + " is $" + totalAmount);
+                    System.out.print("Press any key to procees to payment...");
+                    Scanner scc = new Scanner(System.in);
+                    scc.nextLine();
                 } catch (CategoryNotAvailableException ex) {
                     System.out.println("Model not found!");
                 }
@@ -496,7 +500,7 @@ public class MainApp {
             }
         }
         
-        System.out.println("\n***Choose payment option***\n");
+        System.out.println("\n***Choose payment option***");
         System.out.println("1) Immediate rental fee payment");
         System.out.println("2) Deferred rental fee payment");
         response = 0;
@@ -513,7 +517,7 @@ public class MainApp {
                 reservation.setIsPaid(true);
                 reservation.setAmountPaid(totalAmount);
             } else if (response == 2) {
-                System.out.println("***Please enter your credit card info to gurantee your reservation***");
+                System.out.println("\n***Please enter your credit card info to gurantee your reservation***");
                 reservation.setAmountPaid(0.0);
                 reservation.setIsPaid(false);
             } else {
@@ -552,9 +556,9 @@ public class MainApp {
             reservationId = reservationSessionBeanRemote.createReservationEntityCategory(reservation, currentCustomerEntity.getCustomerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), categoryEntity.getCategoryId());
         }
         
-        System.out.println("Your reservation (id: " + reservationId + ") has been confirmed! Thank you!");
+        System.out.println("\nYour reservation (id: " + reservationId + ") has been confirmed! Thank you!");
         
-        System.out.println("Press any key to continue...");
+        System.out.print("Press any key to continue...");
         Scanner scc = new Scanner(System.in);
         scc.nextLine();
     }
@@ -566,22 +570,29 @@ public class MainApp {
         List<ReservationEntity> reservations = reservationSessionBeanRemote.retrieveReservationByCustomerId(currentCustomerEntity.getCustomerId());
         
         System.out.println("\n***CaRMS Reservation System :: View all my reservations***\n");
-        
+        String pattern = "dd MMM yyyy(EEE) hh:mm";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
         int counter = 1;
         if (!reservations.isEmpty()) {
             System.out.println("All Reservations:");
             for (ReservationEntity reservation: reservations) {
-                System.out.println(counter + ") Reservation ID: "+ reservation.getReservationId() + ", Start Date Time: " + reservation.getStartDateTime() + ", End Start Time: " + reservation.getEndDateTime() + ", Status: " );
+                System.out.printf("%18s%30s%30s%15s\n", "Reservation ID", "Start Date Time", "End Date Time", "Status");
+                String status;
                 if (reservation.getStatus() == 0) {
-                    System.out.print("Reserved");
+                    status = "Reserved";
                 } else if (reservation.getStatus() == 1) {
-                    System.out.print("Cancelled");
+                    status = "Cancelled";
                 } else {
-                    System.out.print("Completed");
+                    status = "Completed";
                 }
+                
+                String startDate = simpleDateFormat.format(reservation.getStartDateTime());
+                String endDate = simpleDateFormat.format(reservation.getEndDateTime());
+                System.out.printf("%3s%7s%38s%30s%15s\n", (counter + ") "), reservation.getReservationId(), startDate, endDate, status);                
                 counter++;
             }
-            System.out.println("Press any key to continue...");
+            System.out.print("Press any key to continue...");
             Scanner scc = new Scanner(System.in);
             scc.nextLine();
         } else {
@@ -601,76 +612,90 @@ public class MainApp {
         
         Long reservationId = scanner.nextLong();
         ReservationEntity reservationEntity = reservationSessionBeanRemote.retrieveReservationById(reservationId);
+        String pattern = "dd MMM yyyy(EEE) hh:mm";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         
         if (reservationEntity.getCustomer() != null && reservationEntity.getCustomer().equals(currentCustomerEntity)) {
             System.out.println("\n***Reservation Id: "+ reservationEntity.getReservationId() +"***\n");
-            System.out.println("Pick up outlet: " + reservationEntity.getPickupOutlet().getOutletName());
-            System.out.println("Pick up date and time: " + reservationEntity.getStartDateTime());
-            System.out.println("Return outlet: " + reservationEntity.getReturnOutlet().getOutletName());
-            System.out.println("Return date and time: " + reservationEntity.getEndDateTime());
-            System.out.print("Reservation status: " );
+            System.out.printf("%-40s%s\n", "Pick up outlet:", reservationEntity.getPickupOutlet().getOutletName());
+            System.out.printf("%-40s%s\n", "Pick up date and time: ", simpleDateFormat.format(reservationEntity.getStartDateTime()) + "");
+            System.out.println("-----------------------------------------------------------------");
+            System.out.printf("%-40s%s\n", "Return outlet: ", reservationEntity.getReturnOutlet().getOutletName());
+            System.out.printf("%-40s%s\n", "Return date and time: ", simpleDateFormat.format(reservationEntity.getEndDateTime()));
+            System.out.println("-----------------------------------------------------------------");
+            String status = "Reserved/n";
             if (reservationEntity.getStatus() == 0) {
-                System.out.println("Reserved");
+                status = "Reserved";
             } else if (reservationEntity.getStatus() == 1) {
-                System.out.println("Cancelled");
+                status = "Cancelled";
             } else {
-                System.out.println("Completed");
+                status = "Completed";
             }
-            System.out.println("Total Amount: " + reservationEntity.getTotalAmount());
-            System.out.print("Payment status : ");
+            System.out.printf("%-40s%s\n", "Reservation status: ", status);
+            System.out.printf("%-40s%s\n", "Total Amount: ", "$" + reservationEntity.getTotalAmount());
+            String paymentStatus = "Fully Paid";
             if (reservationEntity.isIsPaid()) {
                 if (reservationEntity.getStatus() != 1) {
-                    System.out.println("Fully paid");
+                    paymentStatus = "Fully Paid";
                 } else {
-                    System.out.println("Refunded Amount - $" + (reservationEntity.getTotalAmount() - reservationEntity.getAmountPaid()));
+                    paymentStatus = "Refunded Amount - $" + (reservationEntity.getTotalAmount() - reservationEntity.getAmountPaid());
                 }
             } else {
                 if (reservationEntity.getStatus()!= 1) {
-                    System.out.println("Payment to be made during pickup");
+                    paymentStatus = "Payment to be made during pickup";
                 } else {
-                    System.out.println("Credit card has been charged: $" + (reservationEntity.getAmountPaid()) + " for cancellation");
+                    paymentStatus = "Credit card has been charged: $" + (reservationEntity.getAmountPaid() + " for cancellation");
                 }
             }
-
+            System.out.printf("%-40s%s\n", "Payment status: ", paymentStatus);
+            String reservationStatus = "";
             if (reservationEntity.getModel() != null) {
-                System.out.println("Reservation specifications (Model): " + reservationEntity.getModel().getModel());
+                System.out.printf("%-40s%s\n", "Reservation specifications (Category):  ", reservationEntity.getModel().getModel());
             }
             else if (reservationEntity.getCategory() != null) {
-                System.out.println("Reservation specifications (Category): " + reservationEntity.getCategory().getCategoryName());
+                System.out.printf("%-40s%s\n", "Reservation specifications (Category):  ", reservationEntity.getCategory().getCategoryName());
             }
-
             Integer response = 0;
 
-            while(true)
-            {
-                System.out.println("\n***More Options***\n");
-                System.out.println("1. Cancel reservation");
-                System.out.println("2. Exit");
-                response = 0;
-
-                while(response < 1 || response > 2)
+            if (reservationEntity.getStatus() != 1) {
+                while(true)
                 {
+                    System.out.println("\n***More Options***\n");
+                    System.out.println("1. Cancel reservation");
+                    System.out.println("2. Exit");
+                    response = 0;
 
-                    System.out.print("> ");
+                    while(response < 1 || response > 2)
+                    {
 
-                    response = scanner.nextInt();
+                        System.out.print("> ");
 
-                    if (response == 1) {
-                        try {
-                            cancelReservation(reservationEntity);
-                        } catch (CancellationNotAllowedException ex) {
-                            System.out.print("Cancellation for reservation not allowed!");
+                        response = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if (response == 1) {
+                            try {
+                                cancelReservation(reservationEntity);
+                                return;
+                            } catch (CancellationNotAllowedException ex) {
+                                System.out.print("Cancellation for reservation not allowed!");
+                            }
+                        } else if (response == 2) {
+                            break;
+                        } else {
+                            System.out.println("\nInvalid option, please try again!\n");
                         }
-                    } else if (response == 2) {
+                    }
+                    if (response == 2) {
                         break;
-                    } else {
-                        System.out.println("Invalid option, please try again!\n");
                     }
                 }
-                if (response == 2) {
-                    break;
-                }
+            } else {
+                System.out.println("\nPress any key to continue...");
+                Scanner scc = new Scanner(System.in);
+                scc.nextLine();
             }
+            
         } else {
             System.out.println("You can only view your own reservations!");
             System.out.println("Press any key to continue...");
@@ -680,12 +705,6 @@ public class MainApp {
     }
     
     private void cancelReservation(ReservationEntity reservation) throws CancellationNotAllowedException {
-        
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.println("\n***CaRMS Reservation System :: Cancel Reservation***\n");
-
-        System.out.println("Confirm cancellation of reservation? (Y/N)");
         
         Calendar c = Calendar.getInstance();
         c.setTime(reservation.getStartDateTime());
@@ -701,8 +720,16 @@ public class MainApp {
         Calendar penalty2 = Calendar.getInstance();
         penalty2.add(Calendar.DATE, 3);
 
+        Scanner sccr = new Scanner(System.in);
+        
         while (true) {
-            if (scanner.next().equals("Y")) {
+            
+            System.out.println("\n***CaRMS Reservation System :: Cancel Reservation***\n");
+            System.out.print("Confirm cancellation of reservation?\nEnter (Y/N)> ");
+            
+            String ans = sccr.nextLine();
+            
+            if (ans.equals("Y")) {
                 
                 double amountPaid = reservation.getTotalAmount();
                 
@@ -721,22 +748,29 @@ public class MainApp {
                         amountPaid *= 0.7;
                     }
                     
+                    reservation.setStatus(1);
+                    
                     reservation.setAmountPaid(amountPaid);
-                    System.out.print("Reservation cancelled, ");
+                    reservationSessionBeanRemote.updateReservation(reservation);
+                    System.out.print("\nReservation cancelled, ");
                     
                     if (reservation.isIsPaid()) {
                         System.out.println((reservation.getTotalAmount() - amountPaid) + " will be refunded back to you!");
                     } else {
                         System.out.println(amountPaid + " will be charged for the cancelllation!");
                     }
-                    break;
+                    System.out.print("Press any key to continue...");
+                    Scanner scc = new Scanner(System.in);
+                    scc.nextLine();
+                    return;
                 } else {
                     throw new CancellationNotAllowedException();
                 }
-            } else if (scanner.next().equals("N")) {
-                break;
+            } else if (ans.equals("N")) {
+                return;
             } else {
                 System.out.println("Invalid Option!");
+                System.out.print("Press any key to continue...");
             }
         }
     }

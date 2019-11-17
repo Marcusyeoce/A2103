@@ -388,6 +388,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     
     public void updateReservation(ReservationEntity reservation) {
         em.merge(reservation);
+        em.flush();
     }
     
     public void deleteReservation(ReservationEntity reservation) {
