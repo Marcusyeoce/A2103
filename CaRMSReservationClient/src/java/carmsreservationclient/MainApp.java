@@ -37,7 +37,6 @@ public class MainApp {
     
     private CustomerEntity currentCustomerEntity;
     
-    
     public MainApp() {
     }
 

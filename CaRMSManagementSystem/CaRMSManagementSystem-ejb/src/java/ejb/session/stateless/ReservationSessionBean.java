@@ -86,7 +86,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         return customer.getReservations();
     }
     
-    
     public void generateRentalDays(Long reservationId) {
         
         Query query = em.createQuery("SELECT r from ReservationEntity r WHERE r.reservationId = :inReservationId");
@@ -163,6 +162,62 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
         return newReservationEntity.getReservationId();
     }
+    
+    //create transit orders too
+    //2 types of reservation, reservation by model & also category (fulfil the reservations by model first)
+    //query all reservations involving the day, either pickups or returns
+    //query reservations for each outlet, starting from earliest to latest 
+    //start with allocating cars that are already in the outlet
+    //move on to returning cars, whose return outlet is the outlet
+    //(prioritize those who need not need to make transits)
+    //if transit orders are required, need to immediately allocate store to retrieve car from? need to check if other 
+    //move onto car that is currently at another outlet
+    //then move on to cars that are returning to other outlets
+    //need a way to track the unallocated reservations? (list of unallocatd reservations?)
+    //for all of these pickups, need to assign a car, and if needed, a transit dispatch record
+    
+    //create a list of pickups for both model and category, where reservation start date == today, or from 2am to next day 2am
+    //firstly, allocate for reservations by model first, as model cant be replaced, track cars in outlet?
+    //start with reservation for model, go through by outlets, and assign in terms of earliest pick up to latest pickup, starting from cars that are already in outlet
+    //if there are cars left unallocated, look at reservation by categories (if there are leftover of models, means all reservation of that model is already fulfilled)
+    //then, move onto cars that are returning back to the outlet, again by model then by category
+    //if unallocated, store into a list 
+    //repeat for models, this time looking at cars currently in other outlets, does not matter which store
+    //lastly, check for cars that are returning to other outlets that day
+    
+    
+    //date should be 2am by right, but doesnt matter for method
+    /* public void allocateCarsToReservations(Date dateTime) {
+        
+        Calendar startDay = Calendar.getInstance();
+        startDay.setTime(dateTime);
+        
+        Calendar endDay = Calendar.getInstance();
+        endDay.setTime(dateTime);
+        endDay.add(Calendar.DATE, 1);
+        
+        Query queryModel = em.createQuery("SELECT r from ReservationEntity r WHERE r.startDateTime.getTime() >= :inDateTime AND r.startDateTime < :inEndOfDay AND r.category IS EMPTY ORDER BY r.startDateTime");
+        queryModel.setParameter("inDateTime", dateTime.getTime());
+        queryModel.setParameter("inEndOfDay", endOfDay.getTime());
+        List<ReservationEntity> pickupListModel = queryModel.getResultList();
+        
+        Query queryCategory = em.createQuery("SELECT r from ReservationEntity r WHERE r.startDateTime.getTime() >= :inDateTime AND r.endDateTime < :inEndOfDay AND r.model IS EMPTY ORDER BY r.startDateTime");
+        queryCategory.setParameter("inDateTime", dateTime.getTime());
+        queryCategory.setParameter("inEndOfDay", endOfDay.getTime());
+        List<ReservationEntity> pickupListCategory = queryCategory.getResultList();
+        
+        Query query = em.createQuery("SELECT o from OutletEntity o");
+        List<OutletEntity> outlets = query.getResultList();
+        
+        for (ReservationEntity reservation: pickupListModel) {            
+            if (reservation.getCar() == null) {
+                if (reservation.getPickupOutlet()) { 
+                }
+            } else () {
+                ;
+            }
+        }
+    } */
     
     public ReservationEntity retrieveReservationById(Long reservationId) {
         Query query = em.createQuery("SELECT r from ReservationEntity r WHERE r.reservationId = :inReservationId");
