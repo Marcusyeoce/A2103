@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -17,7 +15,6 @@ import ws.client.CategoryNotAvailableException_Exception;
 import ws.client.InvalidLoginCredentialException_Exception;
 import ws.client.ModelEntity;
 import ws.client.ModelNotAvailableException_Exception;
-import ws.client.ModelNotFoundException;
 import ws.client.ModelNotFoundException_Exception;
 import ws.client.OutletEntity;
 
@@ -146,14 +143,18 @@ public class Main {
 
                 System.out.println("Please input model> ");
                 String model = sc.nextLine();
-
+                ModelEntity modelEntity = new ModelEntity();
                 try {
-                    ModelEntity modelEntity = retrieveModelByName(model);
-                    String ans = calulateRentalRate(modelEntity, toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                    modelEntity = retrieveModelByName(model);
+                    String totalSumReservation = calulateRentalRate(modelEntity, toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                    
+                    System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
+                    System.out.printf("%15s%20s%15s\n" , model, modelEntity.getMake(), totalSumReservation);
+
                 } catch (ModelNotFoundException_Exception ex) {
                     System.out.println("Model is not found!");
                 } catch(ModelNotAvailableException_Exception ex) {
-                    System.out.println("Model is not available!");
+                    System.out.println(modelEntity.getMake() + " " + modelEntity.getModel() + " is not available!");
                 }
             } else if(response == 2) {
 

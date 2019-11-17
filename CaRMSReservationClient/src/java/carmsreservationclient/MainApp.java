@@ -1,13 +1,10 @@
 package carmsreservationclient;
 
-import Entity.CarEntity;
 import Entity.CategoryEntity;
 import Entity.CustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
-import Entity.RentalRateEntity;
 import Entity.ReservationEntity;
-import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
@@ -17,15 +14,10 @@ import ejb.session.stateless.ReservationSessionBeanRemote;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import util.exception.CategoryNotAvailableException;
-import util.exception.CategoryNotFoundException;
-import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.ModelExistException;
 import util.exception.ModelNotAvailableException;
@@ -172,7 +164,7 @@ public class MainApp {
         try {
             pickupDate = format.parse(pickupDateString);
         } catch (ParseException ex) {
-            //
+            System.out.println(ex.getMessage() + "Please input the date and time in the correct format!");
         }
 
         System.out.println("Available Outlets");
@@ -196,7 +188,7 @@ public class MainApp {
         try {
             returnDate = format.parse(returnDateString);
         } catch (ParseException ex) {
-            //
+            System.out.println(ex.getMessage() + "Please input the date and time in the correct format!");
         }
 
         System.out.println("Available Outlets");
