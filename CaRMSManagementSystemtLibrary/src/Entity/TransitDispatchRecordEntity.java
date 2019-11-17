@@ -1,6 +1,7 @@
 package Entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,10 +17,14 @@ public class TransitDispatchRecordEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transitDispatchRecordId;
     
+    private Date dateTimeRequired;
+    
     @OneToOne//(optional = false)
     private ReservationEntity reservation;
     @ManyToOne
     private EmployeeEntity employee;
+    @ManyToOne
+    private OutletEntity sourceOutlet;
     @ManyToOne//(optional = false)
     private OutletEntity destinationOutlet;
     
@@ -31,6 +36,46 @@ public class TransitDispatchRecordEntity implements Serializable {
 
     public void setTransitDispatchRecordId(Long transitDispatchRecordId) {
         this.transitDispatchRecordId = transitDispatchRecordId;
+    }
+
+    public Date getDateTimeRequired() {
+        return dateTimeRequired;
+    }
+
+    public void setDateTimeRequired(Date dateTimeRequired) {
+        this.dateTimeRequired = dateTimeRequired;
+    }
+
+    public ReservationEntity getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(ReservationEntity reservation) {
+        this.reservation = reservation;
+    }
+
+    public EmployeeEntity getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(EmployeeEntity employee) {
+        this.employee = employee;
+    }
+
+    public OutletEntity getSourceOutlet() {
+        return sourceOutlet;
+    }
+
+    public void setSourceOutlet(OutletEntity sourceOutlet) {
+        this.sourceOutlet = sourceOutlet;
+    }
+
+    public OutletEntity getDestinationOutlet() {
+        return destinationOutlet;
+    }
+
+    public void setDestinationOutlet(OutletEntity destinationOutlet) {
+        this.destinationOutlet = destinationOutlet;
     }
 
     @Override

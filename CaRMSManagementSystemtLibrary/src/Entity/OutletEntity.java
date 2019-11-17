@@ -44,6 +44,9 @@ public class OutletEntity implements Serializable {
     @OneToMany//(mappedBy = "")
     private List<CarEntity> car;
     
+    @OneToMany
+    private List<TransitDispatchRecordEntity> transitDispatchRecords;
+    
     //@OneToMany
     //private List<ReservationEntity> pickupPointReservations;
     
@@ -61,6 +64,14 @@ public class OutletEntity implements Serializable {
         this.address = address;
         this.openingHour = openingTime;
         this.closingHour = closingTime;
+    }
+
+    public List<TransitDispatchRecordEntity> getTransitDispatchRecords() {
+        return transitDispatchRecords;
+    }
+
+    public void setTransitDispatchRecords(List<TransitDispatchRecordEntity> transitDispatchRecords) {
+        this.transitDispatchRecords = transitDispatchRecords;
     }
 
     @XmlTransient
