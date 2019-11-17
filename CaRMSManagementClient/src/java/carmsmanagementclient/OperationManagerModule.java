@@ -221,7 +221,7 @@ public class OperationManagerModule {
 
         try {
             modelEntity = modelSessionBean.retrieveModelByName(modelName);
-        } catch(ModelNotFoundException ex) {
+        } catch (ModelNotFoundException ex) {
             System.out.println("\nNo such model exist!");
             Scanner tt = new Scanner(System.in);
             System.out.println("Press any key to continue...");

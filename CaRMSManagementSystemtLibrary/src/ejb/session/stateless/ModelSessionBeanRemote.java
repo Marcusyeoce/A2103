@@ -34,4 +34,5 @@ public interface ModelSessionBeanRemote {
     public void deleteModel(long id);
     
     public boolean checkModelAvailability(Long modelId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId);
+    
 }

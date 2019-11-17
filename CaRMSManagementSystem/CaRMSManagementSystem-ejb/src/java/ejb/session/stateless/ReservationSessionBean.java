@@ -5,7 +5,10 @@
  */
 package ejb.session.stateless;
 
+import Entity.CategoryEntity;
 import Entity.CustomerEntity;
+import Entity.ModelEntity;
+import Entity.OutletEntity;
 import Entity.RentalDayEntity;
 import Entity.RentalRateEntity;
 import Entity.ReservationEntity;
@@ -110,6 +113,52 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.HOUR, 0);
         }
+    }
+    
+    public Long createReservationEntityModel(ReservationEntity newReservationEntity, Long customerId, Long pickupOutletId, Long returnOutletId, Long modelId) {
+        
+        em.persist(newReservationEntity);
+        
+        CustomerEntity customer = em.find(CustomerEntity.class, customerId);
+        OutletEntity pickupOutlet = em.find(OutletEntity.class, pickupOutletId);
+        OutletEntity returnOutlet = em.find(OutletEntity.class, returnOutletId);
+        ModelEntity model = em.find(ModelEntity.class, modelId);
+        
+        newReservationEntity.setCustomer(customer);
+        customer.getReservations().add(newReservationEntity);
+        newReservationEntity.setPickupOutlet(pickupOutlet);
+        pickupOutlet.getPickupPointReservations().add(newReservationEntity);
+        newReservationEntity.setReturnOutlet(returnOutlet);
+        returnOutlet.getReturnPointReservations().add(newReservationEntity);
+        newReservationEntity.setModel(model);
+        model.getReservations().add(newReservationEntity);
+        
+        em.flush();
+        
+        return newReservationEntity.getReservationId();
+    }
+    
+    public Long createReservationEntityCategory(ReservationEntity newReservationEntity, Long customerId, Long pickupOutletId, Long returnOutletId, Long categoryId) {
+        
+        em.persist(newReservationEntity);
+        
+        CustomerEntity customer = em.find(CustomerEntity.class, customerId);
+        OutletEntity pickupOutlet = em.find(OutletEntity.class, pickupOutletId);
+        OutletEntity returnOutlet = em.find(OutletEntity.class, returnOutletId);
+        CategoryEntity category = em.find(CategoryEntity.class, categoryId);
+        
+        newReservationEntity.setCustomer(customer);
+        customer.getReservations().add(newReservationEntity);
+        newReservationEntity.setPickupOutlet(pickupOutlet);
+        pickupOutlet.getPickupPointReservations().add(newReservationEntity);
+        newReservationEntity.setReturnOutlet(returnOutlet);
+        returnOutlet.getReturnPointReservations().add(newReservationEntity);
+        newReservationEntity.setCategory(category);
+        category.getReservations().add(newReservationEntity);
+        
+        em.flush();
+        
+        return newReservationEntity.getReservationId();
     }
     
     public ReservationEntity retrieveReservationById(Long reservationId) {

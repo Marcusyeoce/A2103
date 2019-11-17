@@ -1,6 +1,7 @@
 package Entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 @Entity
@@ -41,8 +43,16 @@ public class OutletEntity implements Serializable {
     
     @OneToMany//(mappedBy = "")
     private List<CarEntity> car;
+    
+    @OneToMany
+    private List<ReservationEntity> pickupPointReservations;
+    
+    @OneToMany
+    private List<ReservationEntity> returnPointReservations;
 
     public OutletEntity() {
+        pickupPointReservations = new ArrayList<>();
+        returnPointReservations = new ArrayList<>();
     }
 
     public OutletEntity(String outletName, String address, String openingTime, String closingTime) {
@@ -53,16 +63,16 @@ public class OutletEntity implements Serializable {
         this.closingHour = closingTime;
     }
 
+    @XmlTransient
     public List<CarEntity> getCar() {
         return car;
     }
 
     public void setCar(List<CarEntity> car) {
         this.car = car;
-    }
-    
-    
+    } 
 
+    @XmlTransient
     public List<EmployeeEntity> getEmployeeEntities() {
         return employeeEntities;
     }
@@ -134,5 +144,23 @@ public class OutletEntity implements Serializable {
     @Override
     public String toString() {
         return "Entity.OutletEntity[ id=" + outletId + " ]";
+    }
+
+    @XmlTransient
+    public List<ReservationEntity> getPickupPointReservations() {
+        return pickupPointReservations;
+    }
+
+    public void setPickupPointReservations(List<ReservationEntity> pickupPointReservations) {
+        this.pickupPointReservations = pickupPointReservations;
+    }
+
+    @XmlTransient
+    public List<ReservationEntity> getReturnPointReservations() {
+        return returnPointReservations;
+    }
+
+    public void setReturnPointReservations(List<ReservationEntity> returnPointReservations) {
+        this.returnPointReservations = returnPointReservations;
     }
 }

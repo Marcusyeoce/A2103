@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class CategoryEntity implements Serializable {
@@ -40,6 +41,7 @@ public class CategoryEntity implements Serializable {
         this.categoryName = categoryName;
     }
 
+    @XmlTransient
     public List<ModelEntity> getModels() {
         return models;
     }
@@ -48,6 +50,7 @@ public class CategoryEntity implements Serializable {
         this.models = models;
     }
     
+    @XmlTransient
     public List<RentalRateEntity> getRentalRates() {
         return rentalRates;
     }
@@ -98,6 +101,7 @@ public class CategoryEntity implements Serializable {
         return "Entity.CategoryEntity[ id=" + categoryId + " ]";
     }
 
+    @XmlTransient
     public List<ReservationEntity> getReservations() {
         return reservations;
     }

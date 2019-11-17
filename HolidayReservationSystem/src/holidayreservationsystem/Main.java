@@ -4,11 +4,21 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import ws.client.CategoryEntity;
+import ws.client.CategoryNotAvailableException_Exception;
 import ws.client.InvalidLoginCredentialException_Exception;
 import ws.client.ModelEntity;
+import ws.client.ModelNotAvailableException_Exception;
+import ws.client.ModelNotFoundException;
+import ws.client.ModelNotFoundException_Exception;
 import ws.client.OutletEntity;
 
 public class Main {
@@ -89,13 +99,13 @@ public class Main {
         }
         
         System.out.println("Available Outlets");
-        /*List<OutletEntity> outlets = retrieveAllOutlets();
+        List<OutletEntity> outlets = retrieveAllOutlets();
         for (int i = 0; i < outlets.size(); i++) {
-            System.out.println(i + ") " + outlets.get(i).getOutletName());
+            System.out.println((i + 1) + ") " + outlets.get(i).getOutletName());
         }
         
         System.out.print("Enter your choice of pickup outlet(enter number)> ");
-        OutletEntity pickupOutlet = outlets.get(scanner.nextInt());*/
+        OutletEntity pickupOutlet = outlets.get(scanner.nextInt());
         scanner.nextLine();
         System.out.println(".................................");
         
@@ -109,16 +119,16 @@ public class Main {
         }
         
         System.out.println("Available Outlets");
-        /*for (int i = 0; i < outlets.size(); i++) {
-            System.out.println(i + ") " + outlets.get(i).getOutletName());
+        for (int i = 0; i < outlets.size(); i++) {
+            System.out.println((i + 1) + ") " + outlets.get(i).getOutletName());
         }
         
         System.out.print("Enter your choice of return outlet> ");
-        OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);*/
+        OutletEntity returnOutlet = outlets.get(scanner.nextInt() - 1);
         
         System.out.println("***More Options***");
-        System.out.println("1) Search by categories");
-        System.out.println("2) Search by model");
+        System.out.println("1) Search by make & model");
+        System.out.println("2) Search by category");
         
         int response = 0;
                 
@@ -129,6 +139,24 @@ public class Main {
             response = scanner.nextInt();
 
             if (response == 1) {
+                Scanner sc = new Scanner(System.in);
+                    
+                System.out.println("Please input make> ");
+                String make = sc.nextLine();
+
+                System.out.println("Please input model> ");
+                String model = sc.nextLine();
+
+                try {
+                    ModelEntity modelEntity = retrieveModelByName(model);
+                    String ans = calulateRentalRate(modelEntity, toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                } catch (ModelNotFoundException_Exception ex) {
+                    System.out.println("Model is not found!");
+                } catch(ModelNotAvailableException_Exception ex) {
+                    System.out.println("Model is not available!");
+                }
+            } else if(response == 2) {
+
                 System.out.println("All categories:");
                 List<CategoryEntity> categories = retrieveAllCategory();
                 int counter = 1;
@@ -136,50 +164,29 @@ public class Main {
                     System.out.println((counter) + ") " + category.getCategoryName());
                     counter++;
                 }
-
+                
                 System.out.print("Enter your choice of category> ");
                 CategoryEntity category = categories.get(scanner.nextInt() - 1);
                 scanner.nextLine();
-
+                
                 //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
                 List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
-
-                /*try {
-                    availableModels = modelSessionBeanRemote.getAvailableModelsCategory(category.getCategoryId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
-                } catch (CategoryNotAvailableException ex) {
-                    //Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                
+                try {
+                    availableModels = getAvailableModelsCategory(category.getCategoryId(), toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                } catch (CategoryNotAvailableException_Exception ex) {
+                    System.out.println("Out of cars for this category!");
                 }
-
+                
                 System.out.println("\n***All available models:***");
                 System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
 
-                double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(category.getCategoryId(), pickupDate, returnDate);
+                double totalSumReservation = calculateAmountForReservation(category.getCategoryId(), toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate));
 
                 for (int i = 0; i < availableModels.size(); i++) {
                     System.out.print((i + 1) + ") ");
                     System.out.printf("%15s%20s%15s\n" , availableModels.get(i).getModel(), availableModels.get(i).getMake(), totalSumReservation); 
-                }*/
-            } else if(response == 2) {
-
-                Scanner sc = new Scanner(System.in);
-
-                System.out.println("Please input make\n>");
-                String make = sc.nextLine().trim();
-
-                System.out.println("Please input model\n>");
-                String model = sc.nextLine().trim();
-                /*try {
-                    ModelEntity modelEntity = modelSessionBeanRemote.retrieveModelByName(model);
-                    if (modelSessionBeanRemote.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId())) {
-                        System.out.println(modelEntity.getMake() + " " + modelEntity.getModel() + " is available!");
-
-                        double totalSumReservation = rentalRateSessionBeanRemote.calculateAmountForReservation(modelEntity.getCategoryEntity().getCategoryId(), pickupDate, returnDate);
-                        System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
-                        System.out.printf("%15s%20s%15s\n" , model, modelEntity.getMake(), totalSumReservation);
-                    }    
-                } catch (ModelNotFoundException ex) {
-                    //
-                }*/
+                }
             } else {
                 System.out.println("Invalid option, please try again!\n");
             }
@@ -258,8 +265,40 @@ public class Main {
         ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
         return port.retrieveAllOutlets();
     }
-    
-    
-    
-    
+
+    private static ModelEntity retrieveModelByName(java.lang.String arg0) throws ModelNotFoundException_Exception {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.retrieveModelByName(arg0);
+    }
+
+    private static String calulateRentalRate(ws.client.ModelEntity arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2, java.lang.Long arg3, java.lang.Long arg4) throws ModelNotFoundException_Exception, ModelNotAvailableException_Exception {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.calulateRentalRate(arg0, arg1, arg2, arg3, arg4);
+    }
+
+    private static double calculateAmountForReservation(java.lang.Long arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2) {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.calculateAmountForReservation(arg0, arg1, arg2);
+    }
+
+    private static java.util.List<ws.client.ModelEntity> getAvailableModelsCategory(java.lang.Long arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2, java.lang.Long arg3, java.lang.Long arg4) throws CategoryNotAvailableException_Exception {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.getAvailableModelsCategory(arg0, arg1, arg2, arg3, arg4);
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date){
+        GregorianCalendar gCalendar = new GregorianCalendar();
+        gCalendar.setTime(date);
+        XMLGregorianCalendar xmlCalendar = null;
+        try {
+            xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
+        } catch (DatatypeConfigurationException ex) {
+            //Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return xmlCalendar;
+    }
 }

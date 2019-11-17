@@ -30,9 +30,9 @@ public interface ModelSessionBeanLocal {
     public ModelEntity updateCategory(long id, long catId);
 
     public ModelEntity updateModelName(long id, String name);
-
+    
     public void deleteModel(long id);
     
     public boolean checkModelAvailability(Long modelId, Date pickupDateTime, Date returnDateTime, Long pickupOutletId, Long returnOutletId);
-    
+
 }

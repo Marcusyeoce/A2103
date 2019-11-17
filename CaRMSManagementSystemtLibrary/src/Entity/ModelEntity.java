@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class ModelEntity implements Serializable {
@@ -34,17 +35,26 @@ public class ModelEntity implements Serializable {
     private CategoryEntity categoryEntity;
     
     @OneToMany//(mappedBy = "")
-    private List<ReservationEntity> reservationList;
+    private List<ReservationEntity> reservations;
 
     public ModelEntity() {
         cars = new ArrayList<>();
-        reservationList = new ArrayList<>();
+        reservations = new ArrayList<>();
     }
 
     public ModelEntity(String make, String model) {
         this();
         this.make = make;
         this.model = model;
+    }
+
+    @XmlTransient
+    public List<ReservationEntity> getReservations() {
+        return reservations;
+    }
+    
+    public void setReservations(List<ReservationEntity> reservations) {
+        this.reservations = reservations;
     }
 
     public boolean isIsDeleted() {
@@ -54,16 +64,6 @@ public class ModelEntity implements Serializable {
     public void setIsDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
-    
-    public List<ReservationEntity> getReservationList() {
-        return reservationList;
-    }
-
-    public void setReservationList(List<ReservationEntity> reservationList) {
-        this.reservationList = reservationList;
-    }
-    
-    
 
     public String getMake() {
         return make;
@@ -89,6 +89,7 @@ public class ModelEntity implements Serializable {
         this.cars = cars;
     }
 
+    @XmlTransient
     public CategoryEntity getCategoryEntity() {
         return categoryEntity;
     }

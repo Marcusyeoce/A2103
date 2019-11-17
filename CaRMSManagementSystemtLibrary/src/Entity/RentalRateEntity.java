@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class RentalRateEntity implements Serializable {
@@ -40,7 +41,20 @@ public class RentalRateEntity implements Serializable {
     @ManyToOne(optional = true)
     @JoinColumn(nullable = false)
     private CategoryEntity category;
+    
+    @OneToMany //(mappedBy = "")
+    private List<RentalDayEntity> rentalDays;
 
+    public RentalRateEntity() {
+    }
+    
+    public RentalRateEntity(String rentalRateName, double ratePerDay, Date startDateTime, Date endDateTime) {
+        this.rentalRateName = rentalRateName;
+        this.ratePerDay = ratePerDay;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+    }
+    
     public boolean isIsDeleted() {
         return isDeleted;
     }
@@ -49,24 +63,13 @@ public class RentalRateEntity implements Serializable {
         this.isDeleted = isDeleted;
     }
     
+    @XmlTransient
     public CategoryEntity getCategory() {
         return category;
     }
 
     public void setCategory(CategoryEntity category) {
         this.category = category;
-    }
-    @OneToMany //(mappedBy = "")
-    private List<RentalDayEntity> rentalDays;
-
-    public RentalRateEntity() {
-    }
-
-    public RentalRateEntity(String rentalRateName, double ratePerDay, Date startDateTime, Date endDateTime) {
-        this.rentalRateName = rentalRateName;
-        this.ratePerDay = ratePerDay;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
     }
 
     public Date getStartDateTime() {

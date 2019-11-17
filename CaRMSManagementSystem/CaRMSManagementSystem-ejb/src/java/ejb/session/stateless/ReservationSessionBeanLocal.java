@@ -10,8 +10,10 @@ import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;
 
 public interface ReservationSessionBeanLocal {
-    
-    public Long createReservationEntity(ReservationEntity newReservationEntity, Long customerId) /* InputDataValidationException, UnknownPersistenceException */;
 
     public ReservationEntity retrieveReservationById(Long reservationId);
+
+    public Long createReservationEntityCategory(ReservationEntity newReservationEntity, Long customerId, Long pickupOutletId, Long returnOutletId, Long categoryId);
+    
+    public Long createReservationEntityModel(ReservationEntity newReservationEntity, Long customerId, Long pickupOutletId, Long returnOutletId, Long modelId);
 }
