@@ -17,5 +17,6 @@ public interface ReservationSessionBeanRemote {
     public void updateReservation(ReservationEntity reservation);
     
     public void allocateCarsToReservations(Date dateTime);
-
+    
+    public List<ReservationEntity> retrieveAllReservations();
 }

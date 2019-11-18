@@ -44,7 +44,7 @@ public class ReservationEntity implements Serializable {
     private double totalAmount;
     private double amountPaid;
     private boolean isPaid;
-    private int status; //0 for reserved, 1 for cancelled, 2 for success(car returned)
+    private int status; //0 for reserved, 1 for cancelled, 2 for allocated, 3 for success(pickup-ed), 4 for success(completed)
     
     @ManyToOne(optional = true)
     @JoinColumn(nullable = true)

@@ -65,6 +65,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     } */
     
+    public List<ReservationEntity> retrieveAllReservations() {
+        Query query = em.createQuery("SELECT r from ReservationEntity r");
+        
+        return query.getResultList();
+    }
+    
     public Long createReservationEntity(ReservationEntity newReservationEntity, Long customerId) {
         
         em.persist(newReservationEntity);
@@ -91,7 +97,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
     }
     
-    public void generateRentalDays(Long reservationId) {
+    /* public void generateRentalDays(Long reservationId) {
         
         Query query = em.createQuery("SELECT r from ReservationEntity r WHERE r.reservationId = :inReservationId");
         query.setParameter("inReservationId", reservationId);
@@ -120,7 +126,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.HOUR, 0);
         }
-    }
+    } */
     
     public Long createReservationEntityModel(ReservationEntity newReservationEntity, Long customerId, Long pickupOutletId, Long returnOutletId, Long modelId) {
         
@@ -200,8 +206,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     //date should be 2am by right, but doesnt matter for method
     //need to return transit dispatch records?
     public void allocateCarsToReservations(Date dateTime) {
-        
-        List<TransitDispatchRecordEntity> transitDispatchRecords = new ArrayList<TransitDispatchRecordEntity>();
+
         List<ReservationEntity> pickupListModel = new ArrayList<ReservationEntity>();
         List<ReservationEntity> pickupListCategory = new ArrayList<ReservationEntity>();
         List<ReservationEntity> returnList = new ArrayList<ReservationEntity>();
@@ -212,9 +217,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         Calendar endDay = Calendar.getInstance();
         endDay.setTime(dateTime);
         endDay.add(Calendar.DATE, 1);
-        
-        Query query = em.createQuery("SELECT o from OutletEntity o");
-        List<OutletEntity> outlets = query.getResultList();
         
         Query carQuery = em.createQuery("SELECT c from CarEntity c");
         List<CarEntity> cars = carQuery.getResultList();
@@ -298,7 +300,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
                         transitDispatchRecord.setDateTimeRequired(reservation.getStartDateTime());
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), car.getOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
-                        transitDispatchRecords.add(transitDispatchRecord);
                     }
                 }
             }
@@ -319,7 +320,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
                         transitDispatchRecord.setDateTimeRequired(reservation.getStartDateTime());
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), returningReservation.getReturnOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
-                        transitDispatchRecords.add(transitDispatchRecord);
                     }
                 }
             }
@@ -336,7 +336,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
                         transitDispatchRecord.setDateTimeRequired(reservation.getStartDateTime());
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), car.getOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
-                        transitDispatchRecords.add(transitDispatchRecord);
                     }
                 }
             }
@@ -357,7 +356,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
                         transitDispatchRecord.setDateTimeRequired(reservation.getStartDateTime());
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), returningReservation.getReturnOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
-                        transitDispatchRecords.add(transitDispatchRecord);
                     }
                 }
             }
@@ -369,6 +367,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         ReservationEntity reservation = em.find(ReservationEntity.class, reservationId);
         CarEntity car = em.find(CarEntity.class, carId);
         
+        reservation.setStatus(2);
         reservation.setCar(car);
         car.setReservationEntity(reservation);
         

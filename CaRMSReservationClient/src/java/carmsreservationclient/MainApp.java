@@ -586,6 +586,10 @@ public class MainApp {
                     status = "Reserved";
                 } else if (reservation.getStatus() == 1) {
                     status = "Cancelled";
+                } else if (reservation.getStatus() == 2) {
+                    status= "Ready For Pickup";
+                } else if (reservation.getStatus() == 3) {
+                    status= "In Progress";
                 } else {
                     status = "Completed";
                 }
@@ -628,11 +632,15 @@ public class MainApp {
             System.out.println("-----------------------------------------------------------------");
             String status = "Reserved/n";
             if (reservationEntity.getStatus() == 0) {
-                status = "Reserved";
+                    status = "Reserved";
             } else if (reservationEntity.getStatus() == 1) {
-                status = "Cancelled";
+                    status = "Cancelled";
+            } else if (reservationEntity.getStatus() == 2) {
+                    status= "Ready For Pickup";
+            } else if (reservationEntity.getStatus() == 3) {
+                    status= "In Progress";
             } else {
-                status = "Completed";
+                    status = "Completed";
             }
             System.out.printf("%-40s%s\n", "Reservation status: ", status);
             System.out.printf("%-40s%s\n", "Total Amount: ", "$" + reservationEntity.getTotalAmount());
@@ -660,7 +668,7 @@ public class MainApp {
             }
             Integer response = 0;
 
-            if (reservationEntity.getStatus() != 1) {
+            if (reservationEntity.getStatus() == 0) {
                 while(true)
                 {
                     System.out.println("\n***More Options***\n");

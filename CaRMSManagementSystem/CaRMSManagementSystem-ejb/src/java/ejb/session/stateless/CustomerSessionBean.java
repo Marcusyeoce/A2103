@@ -51,6 +51,18 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
     }
     
     @Override
+    public OwnCustomerEntity retrieveCustomerByPassport(String passport) throws CustomerNotFoundException {
+        Query query = em.createQuery("SELECT c from OwnCustomerEntity c WHERE c.passportNum = :inusername");
+        query.setParameter("inusername", passport);
+        
+        try {
+            return (OwnCustomerEntity)query.getSingleResult();
+        } catch(NoResultException | NonUniqueResultException ex) {
+            throw new CustomerNotFoundException("Customer with passport number: " + passport + " does not exist!");
+        }
+    }
+    
+    @Override
     public OwnCustomerEntity customerLogin(String username, String password) throws InvalidLoginCredentialException {
         try {
             OwnCustomerEntity customerEntity = retrieveCustomerByUsername(username);

@@ -111,9 +111,9 @@ public class SalesMangerModule {
         Scanner scanner = new Scanner(System.in);
         
         List<CategoryEntity> list = categorySessionBean.retrieveCategoryEntities();
-        System.out.println("\nAvailable car catergories");
+        System.out.println("\nAvailable car categories");
         for (int i = 0; i < list.size(); i++) {
-            System.out.println((i + 1) + ") " + list.get(i).getCategoryName());
+            System.out.println((i + 1) + ") " + list.get(i).getCategoryName());  
         }
         int status;
         while (true) {

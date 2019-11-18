@@ -18,4 +18,6 @@ public interface ReservationSessionBeanLocal {
 
     public void allocateCarsToReservations(Date dateTime);
 
+    public List<ReservationEntity> retrieveAllReservations();
+
 }

@@ -15,4 +15,6 @@ public interface CustomerSessionBeanRemote {
     public OwnCustomerEntity retrieveCustomerByUsername(String username) throws CustomerNotFoundException;
     
     public void updateCustomer(OwnCustomerEntity customer);
+    
+    public OwnCustomerEntity retrieveCustomerByPassport(String passport) throws CustomerNotFoundException;
 }
