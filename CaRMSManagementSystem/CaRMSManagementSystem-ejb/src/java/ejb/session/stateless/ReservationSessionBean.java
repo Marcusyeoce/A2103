@@ -209,7 +209,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         List<ReservationEntity> pickupListModel = new ArrayList<ReservationEntity>();
         List<ReservationEntity> pickupListCategory = new ArrayList<ReservationEntity>();
-        List<ReservationEntity> returnList = new ArrayList<ReservationEntity>();
+        //List<ReservationEntity> returnList = new ArrayList<ReservationEntity>();
         
         Calendar startDay = Calendar.getInstance();
         startDay.setTime(dateTime);
@@ -235,19 +235,19 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             if (!reservationStartCalendar.before(startDay) && reservationStartCalendar.before(endDay) && reservation.getModel() != null) {
                 pickupListModel.add(reservation);
             }
-            System.out.println(pickupListModel.size());
+            //System.out.println(pickupListModel.size());
                 
             if (!reservationStartCalendar.before(startDay) && reservationStartCalendar.before(endDay) && reservation.getCategory()!= null) {
                 pickupListCategory.add(reservation);
                 System.out.println("pick up category list check");
             }
-            System.out.println(pickupListCategory.size());
+            //System.out.println(pickupListCategory.size());
             
-            if (!reservationEndCalendar.before(startDay) && reservationEndCalendar.before(endDay)) {
+            /* if (!reservationEndCalendar.before(startDay) && reservationEndCalendar.before(endDay)) {
                 returnList.add(reservation);
                 System.out.println("return list check");
-            }
-            System.out.println(returnList.size());
+            } */
+            //System.out.println(returnList.size());
         }
         
         for (ReservationEntity reservation: pickupListModel) {
@@ -262,7 +262,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 }
             }
             //if reservation still not fulfilled
-            if (reservation.getCar() == null) {
+            /* if (reservation.getCar() == null) {
                 for (ReservationEntity returningReservation: returnList) {
                     //how to check if returning car is reserved?
                     //when pickup, change reservation to null
@@ -270,7 +270,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
                     }
                 }
-            }
+            } */
         }
         
         for (ReservationEntity reservation: pickupListCategory) {
@@ -285,7 +285,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 }
             }
             //if reservation still not fulfilled
-            if (reservation.getCar() == null) {
+            /* if (reservation.getCar() == null) {
                 for (ReservationEntity returningReservation: returnList) {
                     //how to check if returning car is reserved?
                     //when pickup, change reservation to null
@@ -293,7 +293,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
                     }
                 }
-            }
+            } */
         }
         
         for (ReservationEntity reservation: pickupListModel) {
@@ -311,7 +311,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 }
             }
             //if reservation still not fulfilled
-            if (reservation.getCar() == null) {
+            /* if (reservation.getCar() == null) {
                 for (ReservationEntity returningReservation: returnList) {
                     
                     Calendar startDateTimePlusTransitCalendar = Calendar.getInstance();
@@ -328,8 +328,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         transitDispatchRecord.setDateTimeRequiredBy(reservation.getStartDateTime());
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), returningReservation.getReturnOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
                     }
-                }
-            }
+                } 
+            } */
         }
         
         for (ReservationEntity reservation: pickupListCategory) {
@@ -347,7 +347,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 }
             }
             //if reservation still not fulfilled
-            if (reservation.getCar() == null) {
+            /* if (reservation.getCar() == null) {
                 for (ReservationEntity returningReservation: returnList) {
                     
                     Calendar startDateTimePlusTransitCalendar = Calendar.getInstance();
@@ -365,7 +365,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), returningReservation.getReturnOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
                     }
                 }
-            }
+            } */
         }
     }
     
