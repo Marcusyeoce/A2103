@@ -25,7 +25,7 @@ public class PartnerEntity implements Serializable {
     private String password;
     
     @OneToMany//(mappedBy = "")
-    private List<CustomerEntity> customerEntitys;
+    private List<OwnCustomerEntity> customerEntitys;
     
     @OneToMany(mappedBy = "")
     private List<ReservationEntity> reservationEntitys;

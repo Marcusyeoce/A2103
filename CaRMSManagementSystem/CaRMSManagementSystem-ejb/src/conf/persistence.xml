@@ -13,6 +13,7 @@
     <class>Entity.RentalRateEntity</class>
     <class>Entity.ReservationEntity</class>
     <class>Entity.TransitDispatchRecordEntity</class>
+    <class>Entity.OwnCustomerEntity</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

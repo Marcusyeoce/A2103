@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -31,8 +29,6 @@ public class CustomerEntity implements Serializable {
     private String email;
     @Column(length = 32, nullable = false, unique = true)
     private String passportNum;
-    @Column(length = 32, nullable = false)
-    private String password;
     
     @OneToMany//(mappedBy = "")
     private List<ReservationEntity> reservations;
@@ -40,19 +36,36 @@ public class CustomerEntity implements Serializable {
     //@ManyToOne(optional = true)
     //@JoinColumn(nullable = true)
     private List<PartnerEntity> partner;
-
+    
     public CustomerEntity() {
         partner = new ArrayList<>();
         reservations = new ArrayList<>();
     }
 
-    public CustomerEntity(String firstName, String lastName, long mobileNum, String email, String passportNum, String password) {
+    public CustomerEntity(String firstName, String lastName, long mobileNum, String email, String passportNum) {
+        this();
         this.firstName = firstName;
         this.lastName = lastName;
         this.mobileNum = mobileNum;
         this.email = email;
         this.passportNum = passportNum;
-        this.password = password;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+    
+    @XmlTransient
+    public List<ReservationEntity> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<ReservationEntity> reservations) {
+        this.reservations = reservations;
     }
 
     public String getFirstName() {
@@ -95,30 +108,16 @@ public class CustomerEntity implements Serializable {
         this.passportNum = passportNum;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     @XmlTransient
-    public List<ReservationEntity> getReservations() {
-        return reservations;
+    public List<PartnerEntity> getPartner() {
+        return partner;
     }
 
-    public void setReservations(List<ReservationEntity> reservations) {
-        this.reservations = reservations;
+    public void setPartner(List<PartnerEntity> partner) {
+        this.partner = partner;
     }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
+    
+    
 
     @Override
     public int hashCode() {
@@ -144,7 +143,4 @@ public class CustomerEntity implements Serializable {
     public String toString() {
         return "Entity.CustomerEntity[ id=" + customerId + " ]";
     }
-    
-    
-    
 }

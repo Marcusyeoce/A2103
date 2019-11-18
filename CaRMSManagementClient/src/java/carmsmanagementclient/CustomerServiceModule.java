@@ -1,7 +1,7 @@
 package carmsmanagementclient;
 
 import Entity.CarEntity;
-import Entity.CustomerEntity;
+import Entity.OwnCustomerEntity;
 import Entity.EmployeeEntity;
 import Entity.ReservationEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
@@ -108,10 +108,11 @@ public class CustomerServiceModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        CustomerEntity customer = null;
+        OwnCustomerEntity customer = null;
         
         while (true) {
             System.out.println("\n***CaRMS Management System :: Pickup Car***");
+
             System.out.println("1.Identify customer by passport number");
             System.out.println("2.Exit");
             response = 0;
@@ -125,7 +126,7 @@ public class CustomerServiceModule {
                 if (response == 1) {
                     System.out.print("Enter customer's passport number > ");
                     try {
-                        customer = customerSessionBean.retrieveCustomerByPassportNum(scanner.nextLine().trim());
+                        customer = customerSessionBean.retrieveCustomerByPassport(scanner.nextLine().trim());
                     } catch (CustomerNotFoundException ex) {
                         System.out.println("No customer associated with this passport number!");
                     }
