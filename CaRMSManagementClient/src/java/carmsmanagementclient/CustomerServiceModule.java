@@ -168,9 +168,11 @@ public class CustomerServiceModule {
                         if (reservationEntity.isIsPaid()) {
                             //do nth
                         } else {
+                            System.out.print("Please pay $" + reservationEntity.getTotalAmount() + " to the counter");
                             reservationEntity.setIsPaid(true);
                             reservationEntity.setAmountPaid(reservationEntity.getTotalAmount());
                         }
+                        reservationEntity.setStatus(3);
                         carEntity.setOutlet(null);
                         carEntity.setReservationEntity(null);
                         carEntity.setStatus("Unavailable");
@@ -205,15 +207,26 @@ public class CustomerServiceModule {
 
             try {
                 CarEntity car = carSessionBean.retrieveCarEntityByLicensePlateNum(carplateNum);
+                
+                for (ReservationEntity reservation: reservationSessionBean.retrieveAllReservations()) {
+                    if (reservation.getStatus() == 3 && reservation.getCar().equals(car)) {
+                        if (reservation.getReturnOutlet().equals(currentEmployeeEntity.getOutletEntity())) {
+                            reservation.setStatus(4);
+                            car.setOutlet(currentEmployeeEntity.getOutletEntity());
+                            
+                            reservationSessionBean.updateReservation(reservation);
+                            carSessionBean.updateCar(car);
+                            
+                            System.out.println("Car return successful! Thank you!");
+                        } else {
+                            System.out.println("Wrong outlet to return car!");
+                            break;
+                        }
+                    }
+                }
             } catch (CarExistException ex) {
-                //
+                System.out.println("Car does not exist!");
             }
-            
-            if (true) {
-                //if car has reservation that is returned in between the timing?
-                //check if carplatenum matches reservation
-                //update status and location of car
-            } 
         }
     }
 }

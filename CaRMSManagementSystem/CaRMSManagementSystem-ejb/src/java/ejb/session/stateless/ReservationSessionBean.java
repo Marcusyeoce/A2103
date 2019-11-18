@@ -65,6 +65,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         }
     } */
     
+    public List<ReservationEntity> retrieveAllReservations() {
+        Query query = em.createQuery("SELECT r from ReservationEntity r");
+        
+        return query.getResultList();
+    }
+    
     public Long createReservationEntity(ReservationEntity newReservationEntity, Long customerId) {
         
         em.persist(newReservationEntity);
@@ -91,7 +97,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
     }
     
-    public void generateRentalDays(Long reservationId) {
+    /* public void generateRentalDays(Long reservationId) {
         
         Query query = em.createQuery("SELECT r from ReservationEntity r WHERE r.reservationId = :inReservationId");
         query.setParameter("inReservationId", reservationId);
@@ -120,7 +126,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.HOUR, 0);
         }
-    }
+    } */
     
     public Long createReservationEntityModel(ReservationEntity newReservationEntity, Long customerId, Long pickupOutletId, Long returnOutletId, Long modelId) {
         
