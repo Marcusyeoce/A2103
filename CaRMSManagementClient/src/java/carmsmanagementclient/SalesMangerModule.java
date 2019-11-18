@@ -115,11 +115,11 @@ public class SalesMangerModule {
         System.out.println("\nAvailable car catergories");
         for (int i = 0; i < list.size(); i++) {
             System.out.println((i + 1) + ") " + list.get(i).getCategoryName());
+                Scanner sc = new Scanner(System.in);
         }
         int status;
         while (true) {
             try {
-                Scanner sc = new Scanner(System.in);
                 System.out.print("Select a car catergory(Enter the number)> ");
                 status = sc.nextInt();
                 if (status < 1 || status > list.size()) {
