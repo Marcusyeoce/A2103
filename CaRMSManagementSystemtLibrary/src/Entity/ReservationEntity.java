@@ -90,6 +90,7 @@ public class ReservationEntity implements Serializable {
         this.car = car;
     }
 
+    @XmlTransient
     public TransitDispatchRecordEntity getTransitDispatchRecord() {
         return transitDispatchRecord;
     }
@@ -163,7 +164,7 @@ public class ReservationEntity implements Serializable {
         this.customer = customer;
     }
 
-    @XmlTransient
+    //@XmlTransient
     public CategoryEntity getCategory() {
         return category;
     }
@@ -172,7 +173,7 @@ public class ReservationEntity implements Serializable {
         this.category = category;
     }
 
-    @XmlTransient
+    //@XmlTransient
     public ModelEntity getModel() {
         return model;
     }
@@ -181,7 +182,7 @@ public class ReservationEntity implements Serializable {
         this.model = model;
     }
     
-    @XmlTransient
+    //@XmlTransient
     public PartnerEntity getPartner() {
         return partner;
     }
@@ -206,7 +207,7 @@ public class ReservationEntity implements Serializable {
         this.endDateTime = endDateTime;
     }
 
-    @XmlTransient
+    //@XmlTransient
     public OutletEntity getPickupOutlet() {
         return pickupOutlet;
     }
@@ -215,7 +216,7 @@ public class ReservationEntity implements Serializable {
         this.pickupOutlet = pickupOutlet;
     }
 
-    @XmlTransient
+    //@XmlTransient
     public OutletEntity getReturnOutlet() {
         return returnOutlet;
     }
@@ -265,6 +266,4 @@ public class ReservationEntity implements Serializable {
     public String toString() {
         return "Entity.ReservationEntity[ id=" + reservationId + " ]";
     }
-    
-    
 }

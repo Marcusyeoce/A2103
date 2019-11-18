@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.persistence.CacheRetrieveMode;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
@@ -143,6 +144,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         newReservationEntity.setModel(model);
         model.getReservations().add(newReservationEntity);
         
+        /*em.merge(customer);
+        em.merge(model);
+        em.merge(newReservationEntity);*/
         em.flush();
         
         return newReservationEntity.getReservationId();
@@ -166,6 +170,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         newReservationEntity.setCategory(category);
         category.getReservations().add(newReservationEntity);
         
+        /*em.merge(customer);
+        em.merge(category);
+        em.merge(newReservationEntity);*/
         em.flush();
         
         return newReservationEntity.getReservationId();
@@ -382,7 +389,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     public ReservationEntity retrieveReservationById(Long reservationId) {
         Query query = em.createQuery("SELECT r from ReservationEntity r WHERE r.reservationId = :inReservationId");
         query.setParameter("inReservationId", reservationId);
-        
+        query.setHint("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
         return (ReservationEntity) query.getSingleResult();
     }
     

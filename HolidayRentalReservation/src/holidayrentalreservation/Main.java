@@ -1,8 +1,10 @@
 package holidayrentalreservation;
 
+import holidayrentalreservation.exception.CancellationNotAllowedException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -31,7 +33,7 @@ public class Main {
         
         while(true)
         {
-            System.out.println("\n***Welcome To Holiday Reservation System***");
+            System.out.println("\n***Holiday Reservation System***");
             System.out.println("1: Login");
             System.out.println("2: Search Car");
             System.out.println("3: Exit");
@@ -63,7 +65,8 @@ public class Main {
                 }
             }
             if (response == 3) {
-                    break;
+                partnerEntity = new PartnerEntity();
+                break;
             }
         }
     }
@@ -96,7 +99,7 @@ public class Main {
             return;
         }
         
-        System.out.println("Available Outlets");
+        System.out.println("Available Pickup Outlets");
         List<OutletEntity> outlets = retrieveAllOutlets();
         for (int i = 0; i < outlets.size(); i++) {
             System.out.println((i + 1) + ") " + outlets.get(i).getOutletName());
@@ -114,7 +117,7 @@ public class Main {
         try {
             returnDate = format.parse(returnDateString);
         } catch (ParseException ex) {
-            System.out.println("Please input the date and time in the correct format!");
+            System.out.println(ex.getMessage() + " - Please input the date and time in the correct format!");
             return;
         }
         
@@ -143,7 +146,7 @@ public class Main {
                 System.out.println("\nEnter car make> ");
                 String make = sc.nextLine();
 
-                System.out.println("\nEnter car model> ");
+                System.out.println("Enter car model> ");
                 String model = sc.nextLine();
                 ModelEntity modelEntity = new ModelEntity();
                 try {
@@ -152,11 +155,12 @@ public class Main {
                     
                     System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
                     System.out.printf("%15s%20s%15s\n" , model, modelEntity.getMake(), totalSumReservation);
-
                 } catch (ModelNotFoundException_Exception ex) {
-                    System.out.println("Model is not found!");
+                    System.out.println(model + " is not found!");
                 } catch(ModelNotAvailableException_Exception ex) {
-                    System.out.println(modelEntity.getMake() + " " + modelEntity.getModel() + " is not available!");
+                    System.out.println(modelEntity.getMake() + " - " + modelEntity.getModel() + " is not available!");
+                } catch (CategoryNotAvailableException_Exception ex) {
+                    System.out.println(modelEntity.getMake() + " - " + modelEntity.getModel() + " is not available!");
                 }
             } else if(response == 2) {
                 System.out.println("\nAll categories:");
@@ -177,7 +181,7 @@ public class Main {
                 scanner.nextLine();
                 
                 //search all cars, if available, get category and model, and if not already in list, add to list, search reservations to make sure no overlap
-                List<ModelEntity> availableModels = new ArrayList<ModelEntity>();
+                List<ModelEntity> availableModels = new ArrayList<>();
                 
                 try {
                     availableModels = getAvailableModelsCategory(category.getCategoryId(), toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
@@ -222,7 +226,7 @@ public class Main {
                     try {
                        reserveCar();
                     } catch (Exception ex) {
-                        System.out.println("exception = " + ex.getMessage());
+                        System.out.println("An exception occured - Please try again!\n" + ex.getMessage());
                     }
                 } else if (response == 2) {
                     viewReservationDetails();
@@ -253,9 +257,10 @@ public class Main {
             pickupDate = format.parse(pickupDateString);
         } catch (ParseException ex) {
             System.out.println(ex.getMessage() + " - Please input the date and time in the correct format!");
+            return;
         }
         
-        System.out.println("Available Outlets");
+        System.out.println("Available Pickup Outlets");
         List<OutletEntity> outlets = retrieveAllOutlets();
         for (int i = 0; i < outlets.size(); i++) {
             System.out.println((i + 1) + ") " + outlets.get(i).getOutletName());
@@ -264,7 +269,7 @@ public class Main {
         System.out.print("Enter your choice of pickup outlet> ");
         OutletEntity pickupOutlet = outlets.get(scanner.nextInt() - 1);
         scanner.nextLine();
-        System.out.println("...............................................................");
+        System.out.println("\n...............................................................");
         
         System.out.print("Enter return date and time (dd/mm/yyyy hh:mm)> ");
         String returnDateString = scanner.nextLine().trim();
@@ -274,6 +279,7 @@ public class Main {
             returnDate = format.parse(returnDateString);
         } catch (ParseException ex) {
             System.out.println(ex.getMessage() + " - Please input the date and time in the correct format!");
+            return;
         }
         
         System.out.println("Available Return Outlets");
@@ -311,19 +317,26 @@ public class Main {
                 System.out.print("\nEnter car make> ");
                 String make = sc.nextLine();
 
-                System.out.print("\nEnter car model> ");
+                System.out.print("Enter car model> ");
                 String model = sc.nextLine();
                 
                 try {
                     modelEntity = retrieveModelByName(model);
                     totalAmount = calulateRentalRate(modelEntity, toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
                     
-                    //System.out.printf("%15s%20s%15s\n" , "Car Model", "Car Manufacturer", "Car Rate");
-                    //System.out.printf("%15s%20s%15s\n" , model, modelEntity.getMake(), totalAmount);
+                    System.out.println("\nTotal amount for car model of " + model + " is $" + totalAmount);
+                    System.out.print("Press any key to procees to payment...");
+                    Scanner scc = new Scanner(System.in);
+                    scc.nextLine();
                 } catch (ModelNotFoundException_Exception ex) {
                     System.out.println("Model is not found!");
+                    return;
                 } catch(ModelNotAvailableException_Exception ex) {
                     System.out.println(modelEntity.getMake() + " " + modelEntity.getModel() + " is not available!");
+                    return;
+                } catch (CategoryNotAvailableException_Exception ex) {
+                    System.out.println(modelEntity.getMake() + " " + modelEntity.getModel() + " is not available!");
+                    return;
                 }
             } else if (response == 2) {
                 
@@ -345,7 +358,6 @@ public class Main {
                 
                 System.out.print("Please indicate your choice of car category> ");
                 categoryEntity = categories.get(scanner.nextInt() - 1);
-                scanner.nextLine();
                 
                 try {
                     getAvailableModelsCategory(categoryEntity.getCategoryId(), toXMLGregorianCalendar(pickupDate), toXMLGregorianCalendar(returnDate), pickupOutlet.getOutletId(), returnOutlet.getOutletId());
@@ -354,8 +366,6 @@ public class Main {
                 } catch (CategoryNotAvailableException_Exception ex) {
                     System.out.println("\nSorry, we are currently out of cars for this category!");
                     return;
-                } catch (IndexOutOfBoundsException ex) {
-                    
                 }
             } else {
                 System.out.println("Invalid option, please try again!\n");
@@ -378,7 +388,7 @@ public class Main {
                 reservation.setIsPaid(true);
                 reservation.setAmountPaid(totalAmount);
             } else if (response == 2) {
-                System.out.println("***Please enter your credit card info to gurantee your reservation***");
+                System.out.println("\n***Please enter your credit card info to gurantee your reservation***");
                 reservation.setAmountPaid(0.0);
                 reservation.setIsPaid(false);
             } else {
@@ -416,28 +426,221 @@ public class Main {
         } else {
             reservationId = createReservationEntityCategory(reservation, partnerEntity.getPartnerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), categoryEntity.getCategoryId());
         }
-        System.out.println("Your reservation (id: " + reservationId + ") has been confirmed! Thank you!");
-        System.out.println("Press any key to continue...");
-        Scanner scc = new Scanner(System.in);
-        scc.nextLine();
-    }
-
-    private static void viewReservationDetails() {
-        System.out.println("Press any key to continue...");
+        System.out.print("\nYour reservation (id: " + reservationId + ") has been confirmed! Thank you!\n");
+        
+        System.out.print("Press any key to continue...");
         Scanner scc = new Scanner(System.in);
         scc.nextLine();
     }
 
     private static void viewAllMyReservations() {
-        System.out.println("Press any key to continue...");
-        Scanner scc = new Scanner(System.in);
-        scc.nextLine();
+        Scanner scanner = new Scanner(System.in);
+        List<ReservationEntity> reservations = retrieveReservationByPartnerId(partnerEntity.getPartnerId());
+        
+        System.out.println("\n***CaRMS Reservation System :: View all my reservations***\n");
+        String pattern = "dd MMM yyyy(EEE) hh:mm";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+        int counter = 1;
+        if (!reservations.isEmpty()) {
+            System.out.printf("%18s%30s%30s%15s\n", "Reservation ID", "Start Date Time", "End Date Time", "Status");
+            for (ReservationEntity reservation: reservations) {
+                String status;
+                if (reservation.getStatus() == 0) {
+                    status = "Reserved";
+                } else if (reservation.getStatus() == 1) {
+                    status = "Cancelled";
+                } else {
+                    status = "Completed";
+                }
+                
+                String startDate = simpleDateFormat.format(toDate(reservation.getStartDateTime()));
+                String endDate = simpleDateFormat.format(toDate(reservation.getEndDateTime()));
+                System.out.printf("%3s%7s%38s%30s%15s\n", (counter + ") "), reservation.getReservationId(), startDate, endDate, status);                
+                counter++;
+            }
+            System.out.print("Press any key to continue...");
+            Scanner scc = new Scanner(System.in);
+            scc.nextLine();
+        } else {
+            System.out.println("You have have not made reservations! Start today! =P");
+            System.out.println("Press any key to continue...");
+            Scanner scc = new Scanner(System.in);
+            scc.nextLine();
+        }
     }
 
-    private static double calculateAmountForReservation(java.lang.Long arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2) {
-        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
-        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
-        return port.calculateAmountForReservation(arg0, arg1, arg2);
+    private static void viewReservationDetails() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("\n***CaRMS Reservation System :: View reservation details***\n");
+        System.out.print("Enter reservation id> ");
+        
+        Long reservationId = scanner.nextLong();
+        ReservationEntity reservationEntity = retrieveReservationById(reservationId);
+        String pattern = "dd MMM yyyy(EEE) hh:mm";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        
+        if (reservationEntity.getPartner()!= null && reservationEntity.getPartner().getPartnerId() == partnerEntity.getPartnerId()) {
+            System.out.println("\n***Reservation Id: "+ reservationEntity.getReservationId() +"***\n");
+            System.out.printf("%-40s%s\n", "Pick up outlet:", reservationEntity.getPickupOutlet().getOutletName());
+            System.out.printf("%-40s%s\n", "Pick up date and time: ", simpleDateFormat.format(toDate(reservationEntity.getStartDateTime())) + "");
+            System.out.println("-----------------------------------------------------------------");
+            System.out.printf("%-40s%s\n", "Return outlet: ", reservationEntity.getReturnOutlet().getOutletName());
+            System.out.printf("%-40s%s\n", "Return date and time: ", simpleDateFormat.format(toDate(reservationEntity.getEndDateTime())));
+            System.out.println("-----------------------------------------------------------------");
+            String status = "Reserved/n";
+            if (reservationEntity.getStatus() == 0) {
+                status = "Reserved";
+            } else if (reservationEntity.getStatus() == 1) {
+                status = "Cancelled";
+            } else {
+                status = "Completed";
+            }
+            System.out.printf("%-40s%s\n", "Reservation status: ", status);
+            System.out.printf("%-40s%s\n", "Total Amount: ", "$" + reservationEntity.getTotalAmount());
+            String paymentStatus = "Fully Paid";
+            if (reservationEntity.isIsPaid()) {
+                if (reservationEntity.getStatus() != 1) {
+                    paymentStatus = "Fully Paid";
+                } else {
+                    paymentStatus = "Refunded Amount - $" + (reservationEntity.getTotalAmount() - reservationEntity.getAmountPaid());
+                }
+            } else {
+                if (reservationEntity.getStatus()!= 1) {
+                    paymentStatus = "Payment to be made during pickup";
+                } else {
+                    paymentStatus = "Credit card has been charged: $" + (reservationEntity.getAmountPaid() + " for cancellation");
+                }
+            }
+            System.out.printf("%-40s%s\n", "Payment status: ", paymentStatus);
+            String reservationStatus = "";
+            if (reservationEntity.getModel() != null) {
+                System.out.printf("%-40s%s\n", "Reservation specifications (Category):  ", reservationEntity.getModel().getModel());
+            }
+            else if (reservationEntity.getCategory() != null) {
+                System.out.printf("%-40s%s\n", "Reservation specifications (Category):  ", reservationEntity.getCategory().getCategoryName());
+            }
+            Integer response = 0;
+
+            if (reservationEntity.getStatus() != 1) {
+                while(true)
+                {
+                    System.out.println("\n***More Options***\n");
+                    System.out.println("1. Cancel reservation");
+                    System.out.println("2. Exit");
+                    response = 0;
+
+                    while(response < 1 || response > 2)
+                    {
+
+                        System.out.print("> ");
+
+                        response = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if (response == 1) {
+                            try {
+                                cancelReservation(reservationEntity);
+                                return;
+                            } catch (CancellationNotAllowedException ex) {
+                                System.out.print("Cancellation for reservation not allowed!");
+                            }
+                        } else if (response == 2) {
+                            break;
+                        } else {
+                            System.out.println("\nInvalid option, please try again!\n");
+                        }
+                    }
+                    if (response == 2) {
+                        break;
+                    }
+                }
+            } else {
+                System.out.print("\nPress any key to continue...");
+                Scanner scc = new Scanner(System.in);
+                scc.nextLine();
+            }
+            
+        } else {
+            System.out.println("You can only view your own reservations!");
+            System.out.print("Press any key to continue...");
+            Scanner scc = new Scanner(System.in);
+            scc.nextLine();
+        }
+    }
+    
+    private static void cancelReservation(ReservationEntity reservation) throws CancellationNotAllowedException {
+        
+        Calendar c = Calendar.getInstance();
+        c.setTime(toDate(reservation.getStartDateTime()));
+        
+        Calendar now = Calendar.getInstance();
+        
+        Calendar penalty0 = Calendar.getInstance();
+        penalty0.add(Calendar.DATE, 14);
+        
+        Calendar penalty1 = Calendar.getInstance();
+        penalty1.add(Calendar.DATE, 7);
+        
+        Calendar penalty2 = Calendar.getInstance();
+        penalty2.add(Calendar.DATE, 3);
+
+        Scanner sccr = new Scanner(System.in);
+        
+        while (true) {
+            
+            System.out.println("\n***CaRMS Reservation System :: Cancel Reservation***\n");
+            System.out.print("Confirm cancellation of reservation?\nEnter (Y/N)> ");
+            
+            String ans = sccr.nextLine();
+            
+            if (ans.equals("Y")) {
+                
+                double amountPaid = reservation.getTotalAmount();
+                
+                if (now.before(c)) {
+                    //0% for more than 14 days, 20% for less than 14 days but at least 7 days before pickup
+                    //50% for less than 7 days but at least 3 days before pickup, 70% for less than 3 days before pickup 
+                    reservation.setStatus(1);
+                    
+                    if (c.after(penalty0)) {
+                        amountPaid = 0;
+                    } else if (c.after(penalty1)) {
+                        amountPaid *= 0.2;
+                    } else if (c.after(penalty2)) {
+                        amountPaid *= 0.5;
+                    } else {
+                        amountPaid *= 0.7;
+                    }
+                    
+                    reservation.setStatus(1);
+                    
+                    reservation.setAmountPaid(amountPaid);
+                    updateReservation(reservation);
+                    System.out.print("\nReservation cancelled, ");
+                    
+                    if (reservation.isIsPaid()) {
+                        System.out.println((reservation.getTotalAmount() - amountPaid) + " will be refunded back to you!");
+                    } else {
+                        System.out.println(amountPaid + " will be charged for the cancelllation!");
+                    }
+                    System.out.print("Press any key to continue...");
+                    Scanner scc = new Scanner(System.in);
+                    scc.nextLine();
+                    return;
+                } else {
+                    throw new CancellationNotAllowedException();
+                }
+            } else if (ans.equals("N")) {
+                return;
+            } else {
+                System.out.println("Invalid Option!");
+                System.out.print("Press any key to continue...");
+                Scanner sc = new Scanner(System.in);
+                sc.nextLine();
+            }
+        }
     }
 
     private static java.util.List<ws.client.ModelEntity> getAvailableModelsCategory(java.lang.Long arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2, java.lang.Long arg3, java.lang.Long arg4) throws CategoryNotAvailableException_Exception {
@@ -469,24 +672,6 @@ public class Main {
         ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
         return port.retrieveModelByName(arg0);
     }
-    
-    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date){
-        GregorianCalendar gCalendar = new GregorianCalendar();
-        gCalendar.setTime(date);
-        XMLGregorianCalendar xmlCalendar = null;
-        try {
-            xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
-        } catch (DatatypeConfigurationException ex) {
-            //Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return xmlCalendar;
-    }
-
-    private static double calulateRentalRate(ws.client.ModelEntity arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2, java.lang.Long arg3, java.lang.Long arg4) throws ModelNotFoundException_Exception, ModelNotAvailableException_Exception {
-        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
-        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
-        return port.calulateRentalRate(arg0, arg1, arg2, arg3, arg4);
-    }
 
     private static PartnerEntity partnerLogin(java.lang.String arg0, java.lang.String arg1) throws InvalidLoginCredentialException_Exception {
         ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
@@ -504,5 +689,54 @@ public class Main {
         ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
         ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
         return port.createReservationEntityCategory(arg0, arg1, arg2, arg3, arg4);
+    }
+
+    private static double calulateRentalRate(ws.client.ModelEntity arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2, java.lang.Long arg3, java.lang.Long arg4) throws ModelNotAvailableException_Exception, CategoryNotAvailableException_Exception, ModelNotFoundException_Exception {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.calulateRentalRate(arg0, arg1, arg2, arg3, arg4);
+    }
+
+    private static void updateReservation(ws.client.ReservationEntity arg0) {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        port.updateReservation(arg0);
+    }
+
+    private static java.util.List<ws.client.ReservationEntity> retrieveReservationByPartnerId(java.lang.Long arg0) {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.retrieveReservationByPartnerId(arg0);
+    }
+
+    private static double calculateAmountForReservation(java.lang.Long arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2) throws CategoryNotAvailableException_Exception {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.calculateAmountForReservation(arg0, arg1, arg2);
+    }
+    
+    private static ReservationEntity retrieveReservationById(java.lang.Long arg0) {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.retrieveReservationById(arg0);
+    }
+    
+    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date){
+        GregorianCalendar gCalendar = new GregorianCalendar();
+        gCalendar.setTime(date);
+        XMLGregorianCalendar xmlCalendar = null;
+        try {
+            xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gCalendar);
+        } catch (DatatypeConfigurationException ex) {
+            //Logger.getLogger(StringReplace.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return xmlCalendar;
+    }
+    
+    public static Date toDate(XMLGregorianCalendar calendar){
+        if(calendar == null) {
+            return null;
+        }
+        return calendar.toGregorianCalendar().getTime();
     }
 }

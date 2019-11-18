@@ -66,6 +66,7 @@ public class OutletEntity implements Serializable {
         this.closingHour = closingTime;
     }
 
+    @XmlTransient
     public List<TransitDispatchRecordEntity> getTransitDispatchRecords() {
         return transitDispatchRecords;
     }
