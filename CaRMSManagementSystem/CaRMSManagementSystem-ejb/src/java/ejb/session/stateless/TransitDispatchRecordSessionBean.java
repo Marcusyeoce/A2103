@@ -104,12 +104,12 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
     
     @Override
     public List<TransitDispatchRecordEntity> getAllTransitDispatchRecordForOutletForToday(Long outletId) {
-        
+
         //get today date
-        Query query = em.createQuery("SELECT t FROM TransitDispatchRecordEntity t WHERE t.outletId = outletId AND t.status = 0 ORDER BY t.dateTimeRequired");
-        
+        Query query = em.createQuery("SELECT t FROM TransitDispatchRecordEntity t WHERE t.sourceOutlet.outletId = :outlet AND t.status = 0 ORDER BY t.dateTimeRequiredBy");
+        query.setParameter("outlet", outletId);
         List<TransitDispatchRecordEntity> dispatchRecords = query.getResultList();
-        
+
         return dispatchRecords;
-    } 
+    }
 }

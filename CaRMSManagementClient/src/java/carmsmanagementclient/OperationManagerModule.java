@@ -591,19 +591,25 @@ public class OperationManagerModule {
         int counter = 1;
         System.out.println("All transit dispatch records for today:");
         for (TransitDispatchRecordEntity dispatchRecord: dispatchRecords) {
-            System.out.println(counter +") Pickup Outlet: " + dispatchRecord.getSourceOutlet().getOutletName() + "Time required by: " + dispatchRecord.getDateTimeRequiredBy() + "Status: ");
-            if (dispatchRecord.getStatus() == 0 && dispatchRecord.getEmployee() == null) {
-               System.out.println("All transit dispatch records for today:"); System.out.print("No employee allocated");
-            } else if (dispatchRecord.getStatus() == 0 && dispatchRecord.getEmployee() != null) {
-                System.out.print("Assigned to- " + dispatchRecord.getEmployee().getName());
+            String status;
+            if (dispatchRecord.getStatus() == 0) {
+                status = "Pending";
             } else {
-                System.out.print("Completed by- " + dispatchRecord.getEmployee().getName());
+                status = "Completed";
+            }
+            System.out.println(counter +") Pickup Outlet: " + dispatchRecord.getSourceOutlet().getOutletName() + "\n   Time required by: " + dispatchRecord.getDateTimeRequiredBy() + "\n   Status: " + status);
+            if (dispatchRecord.getStatus() == 0 && dispatchRecord.getEmployee() == null) {
+               System.out.println("   No employee allocated");
+            } else if (dispatchRecord.getStatus() == 0 && dispatchRecord.getEmployee() != null) {
+                System.out.println("   Assigned to - " + dispatchRecord.getEmployee().getName());
+            } else {
+                System.out.println("   Completed by - " + dispatchRecord.getEmployee().getName());
             }
             counter++;
         }
         
-        System.out.println("***More Options:***");
-        System.out.println("1) Assign employee to trasit dispatch record");
+        System.out.println("\n***More Options:***");
+        System.out.println("1) Assign employee to transit dispatch record");
         System.out.println("2) Update transit dispatch record as completed");
         System.out.println("3) Exit");
         int response = 0;

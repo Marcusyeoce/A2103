@@ -1,6 +1,7 @@
 package ejb.session.stateless;
 
 import Entity.CategoryEntity;
+import Entity.ModelEntity;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.Local;
@@ -91,6 +92,11 @@ public class CategorySessionBean implements CategorySessionBeanRemote, CategoryS
         } else {
             throw new CategoryNotFoundException();
         }
+    }
+    
+    public CategoryEntity retrieveCatByModelId(long modelId) {
+        ModelEntity modelEntity =em.find(ModelEntity.class, modelId);
+        return null;
     }
     
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CategoryEntity>>constraintViolations)
