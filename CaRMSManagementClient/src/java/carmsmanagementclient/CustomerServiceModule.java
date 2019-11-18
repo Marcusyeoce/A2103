@@ -3,6 +3,7 @@ package carmsmanagementclient;
 import Entity.CarEntity;
 import Entity.OwnCustomerEntity;
 import Entity.EmployeeEntity;
+import Entity.OutletEntity;
 import Entity.ReservationEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
@@ -164,6 +165,7 @@ public class CustomerServiceModule {
                         
                         ReservationEntity reservationEntity = allocatedReservations.get(scanner.nextInt() - 1);
                         CarEntity carEntity = reservationEntity.getCar();
+                        OutletEntity outletEntity = currentEmployeeEntity.getOutletEntity();
                                 
                         scanner.nextLine();
                         
@@ -178,9 +180,11 @@ public class CustomerServiceModule {
                         carEntity.setOutlet(null);
                         carEntity.setReservationEntity(null);
                         carEntity.setStatus("Unavailable");
+                        outletEntity.getCar().remove(carEntity);
 
                         carSessionBean.updateCar(carEntity);
                         reservationSessionBean.updateReservation(reservationEntity);
+                        outletSessionBean.updateOutletEntity(outletEntity);
                         
                         System.out.print("Your car plate number is " + carEntity.getLicensePlateNumber() + ", Have a nice day!");
                     }
@@ -201,6 +205,8 @@ public class CustomerServiceModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
+        OutletEntity outletEntity = currentEmployeeEntity.getOutletEntity();
+        
         while (true) {
             System.out.println("\n***CaRMS Management System :: Return Car***");
             System.out.println("Input car plate number of returning car");
@@ -216,9 +222,11 @@ public class CustomerServiceModule {
                             reservation.setStatus(4);
                             car.setStatus("Available");
                             car.setOutlet(currentEmployeeEntity.getOutletEntity());
+                            outletEntity.getCar().add(car);
                             
                             reservationSessionBean.updateReservation(reservation);
                             carSessionBean.updateCar(car);
+                            outletSessionBean.updateOutletEntity(outletEntity);
                             
                             System.out.println("Car return successful! Thank you!");
                         } else {

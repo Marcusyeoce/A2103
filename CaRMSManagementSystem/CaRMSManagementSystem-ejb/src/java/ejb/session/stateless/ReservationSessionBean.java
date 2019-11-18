@@ -234,6 +234,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             
             if (!reservationStartCalendar.before(startDay) && reservationStartCalendar.before(endDay) && reservation.getModel() != null) {
                 pickupListModel.add(reservation);
+                System.out.println("pick up model list check");
             }
             if (!reservationStartCalendar.before(startDay) && reservationStartCalendar.before(endDay) && reservation.getCategory()!= null) {
                 pickupListCategory.add(reservation);
