@@ -105,6 +105,11 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         return query.getResultList();
     }
     
+    @Override
+    public void updateCar(CarEntity car) {
+        em.merge(car);
+        em.flush();
+    }
     
     @Override
     public CarEntity updateCarlicensePlateNumber(long id,String num) {

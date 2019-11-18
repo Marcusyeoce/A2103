@@ -3,6 +3,7 @@ package carmsmanagementclient;
 import Entity.CarEntity;
 import Entity.CustomerEntity;
 import Entity.EmployeeEntity;
+import Entity.ReservationEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;
 import ejb.session.stateless.CustomerSessionBeanRemote;
@@ -10,7 +11,11 @@ import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.ModelSessionBeanRemote;
 import ejb.session.stateless.OutletSessionBeanRemote;
 import ejb.session.stateless.RentalRateSessionBeanRemote;
+import ejb.session.stateless.ReservationSessionBeanRemote;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -27,6 +32,7 @@ public class CustomerServiceModule {
     private OutletSessionBeanRemote outletSessionBean;
     private EmployeeSessionBeanRemote employeeSessionBean;
     private CategorySessionBeanRemote categorySessionBean;
+    private ReservationSessionBeanRemote reservationSessionBean;
     
     private EmployeeEntity currentEmployeeEntity;
     
@@ -38,7 +44,7 @@ public class CustomerServiceModule {
         validator = validatorFactory.getValidator();
     }
 
-    public CustomerServiceModule(EmployeeEntity currentEmployeeEntity, EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean) {
+    public CustomerServiceModule(EmployeeEntity currentEmployeeEntity, EmployeeSessionBeanRemote employeeSessionBean, OutletSessionBeanRemote outletSessionBean, CarSessionBeanRemote carSessionBean, CustomerSessionBeanRemote customerSessionBean, ModelSessionBeanRemote modelSessionBean, RentalRateSessionBeanRemote rentalRateSessionBean, CategorySessionBeanRemote categorySessionBean, ReservationSessionBeanRemote reservationSessionBean) {
         this();
         this.currentEmployeeEntity = currentEmployeeEntity;
         this.employeeSessionBean = employeeSessionBean;
@@ -48,6 +54,7 @@ public class CustomerServiceModule {
         this.modelSessionBean = modelSessionBean;
         this.rentalRateSessionBean = rentalRateSessionBean;
         this.categorySessionBean = categorySessionBean;
+        this.reservationSessionBean = reservationSessionBean;
     }
     
     public void mainMenuCustomerRelations() {
@@ -105,9 +112,8 @@ public class CustomerServiceModule {
         
         while (true) {
             System.out.println("\n***CaRMS Management System :: Pickup Car***");
-            System.out.println("1.Identify customer by mobile number");
-            System.out.println("2.Identify customer by passport number");
-            System.out.println("3.Exit");
+            System.out.println("1.Identify customer by passport number");
+            System.out.println("2.Exit");
             response = 0;
 
             while(response < 1 || response > 2) {
@@ -117,34 +123,73 @@ public class CustomerServiceModule {
                 response = scanner.nextInt();
                 
                 if (response == 1) {
-                    System.out.print("Enter customer's mobile number > ");
-                    try {
-                        customer = customerSessionBean.retrieveCustomerByMobileNum(scanner.nextLine().trim());
-                    } catch (CustomerNotFoundException ex) {
-                        //System.err.println("");
-                    }
-                } else if (response == 2) {
                     System.out.print("Enter customer's passport number > ");
                     try {
                         customer = customerSessionBean.retrieveCustomerByPassportNum(scanner.nextLine().trim());
                     } catch (CustomerNotFoundException ex) {
-                        //System.err.println("");
+                        System.out.println("No customer associated with this passport number!");
                     }
+                    
+                    List<ReservationEntity> allocatedReservations = new ArrayList<ReservationEntity>();
+                    
+                    customer.getReservations().size();
+                    for (ReservationEntity reservation: customer.getReservations()) {
+                        
+                        //check for reservation that pick up their car today
+                        if (reservation.getStatus() == 2) {
+                            allocatedReservations.add(reservation);
+                        }
+                    }
+                    
+                    String pattern = "dd MMM yyyy(EEE) hh:mm";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    
+                    if (allocatedReservations.isEmpty()) {
+                        System.out.println("No reservations for pickup today");
+                    } else {
+                        
+                        System.out.println("All reservations for pickup today:\n");
+                        System.out.printf("%18s%30s%30s%15s\n", "Reservation ID", "Start Date Time", "End Date Time", "Allocated Car");
+                        
+                        for (int i = 0; i < allocatedReservations.size(); i++) {
+                            ReservationEntity reservation = allocatedReservations.get(i);
+                            String startDate = simpleDateFormat.format(reservation.getStartDateTime());
+                            String endDate = simpleDateFormat.format(reservation.getEndDateTime());
+                            System.out.printf("%3s%7s%38s%30s%15s\n", ((i+1) + ") "), reservation.getReservationId(), startDate, endDate, reservation.getCar().getLicensePlateNumber());
+                        }
+                        
+                        System.out.print("Choose reservation for pickup:\n>");
+                        
+                        ReservationEntity reservationEntity = allocatedReservations.get(scanner.nextInt() - 1);
+                        CarEntity carEntity = reservationEntity.getCar();
+                                
+                        scanner.nextLine();
+                        
+                        if (reservationEntity.isIsPaid()) {
+                            //do nth
+                        } else {
+                            reservationEntity.setIsPaid(true);
+                            reservationEntity.setAmountPaid(reservationEntity.getTotalAmount());
+                        }
+                        carEntity.setOutlet(null);
+                        carEntity.setReservationEntity(null);
+                        carEntity.setStatus("Unavailable");
+
+                        carSessionBean.updateCar(carEntity);
+                        reservationSessionBean.updateReservation(reservationEntity);
+                        
+                        System.out.print("Your car plat number is " + carEntity.getLicensePlateNumber() + ", Have a nice day!");
+                    }
+                } else if (response == 2) {
+                    break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-            if (response == 3) {
+            if (response == 2) {
                 break;
             }
         }
-        
-        //check for reservations
-        //for (ReservationEntity reservationEntity: customer.getReservations()) {
-        //}
-        
-        //check payment of reservation 
-        //update status and location of car
     }
     
     public void returnCar() {

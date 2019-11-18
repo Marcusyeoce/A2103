@@ -109,7 +109,7 @@ public class MainApp {
                             operationManagerModule = new OperationManagerModule(currentEmployeeEntity, employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean, transitDispatchRecordSessionBean);
                             operationManagerModule.mainMenuOperationsManager();
                         } else if (employeeRole == AccessRightEnum.CUSTOMERSERVICEEXECUTIVE){
-                            customerServiceModule = new CustomerServiceModule(currentEmployeeEntity, employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean);
+                            customerServiceModule = new CustomerServiceModule(currentEmployeeEntity, employeeSessionBean, outletSessionBean, carSessionBean, customerSessionBean, modelSessionBean, rentalRateSessionBean, categorySessionBean, reservationSessionBean);
                             customerServiceModule.mainMenuCustomerRelations();
                         } else if (employeeRole == AccessRightEnum.ADMINISTRATOR) {
                             System.out.println("Please select option 1 and login as System Admin instead!\n");
