@@ -2,7 +2,6 @@ package carmsmanagementclient;
 
 import Entity.CategoryEntity;
 import Entity.EmployeeEntity;
-import Entity.ModelEntity;
 import Entity.RentalRateEntity;
 import ejb.session.stateless.CarSessionBeanRemote;
 import ejb.session.stateless.CategorySessionBeanRemote;

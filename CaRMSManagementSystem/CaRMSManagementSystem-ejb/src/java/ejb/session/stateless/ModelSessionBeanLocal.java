@@ -1,8 +1,6 @@
 package ejb.session.stateless;
 
-import Entity.CategoryEntity;
 import Entity.ModelEntity;
-import Entity.OutletEntity;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;

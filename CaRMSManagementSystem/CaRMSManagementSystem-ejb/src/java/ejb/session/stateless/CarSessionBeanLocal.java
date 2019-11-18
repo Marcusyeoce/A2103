@@ -1,9 +1,7 @@
 package ejb.session.stateless;
 
 import Entity.CarEntity;
-import Entity.ModelEntity;
 import java.util.List;
-import javax.ejb.Local;
 import util.exception.CarExistException;
 import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;

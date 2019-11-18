@@ -37,6 +37,7 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         validator = validatorFactory.getValidator();
     }
     
+    @Override
     public Long createTransitDispatchRecord(TransitDispatchRecordEntity newTransitDispatchRecord) throws UnknownPersistenceException, InputDataValidationException {
         try
         {
@@ -60,6 +61,7 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         }
     } 
     
+    @Override
     public void updateTransitDispatchRecord(TransitDispatchRecordEntity transitDispatchRecordEntity) {
         
         em.merge(transitDispatchRecordEntity);
@@ -77,6 +79,7 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         return msg;
     }
     
+    @Override
     public List<TransitDispatchRecordEntity> generateTransitDispatchRecords(OutletEntity outlet, Date currentDay) {
         
         Query query = em.createQuery("SELECT r FROM ReservationEntity r WHERE r.pickupOutlet = outlet JOIN r.startDateTime = curentDay");
@@ -88,6 +91,7 @@ public class TransitDispatchRecordSessionBean implements TransitDispatchRecordSe
         return new ArrayList<TransitDispatchRecordEntity>();
     } 
     
+    @Override
     public List<TransitDispatchRecordEntity> getAllTransitDispatchRecordForOutlet(OutletEntity outlet) {
         
         //get today date

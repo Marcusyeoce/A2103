@@ -6,7 +6,6 @@ import Entity.CustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
 import Entity.RentalDayEntity;
-import Entity.RentalRateEntity;
 import Entity.ReservationEntity;
 import Entity.TransitDispatchRecordEntity;
 import java.util.ArrayList;
@@ -20,14 +19,11 @@ import javax.ejb.Stateless;
 import javax.persistence.CacheRetrieveMode;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import util.exception.InputDataValidationException;
-import util.exception.UnknownPersistenceException;
 
 @Stateless
 @Local(ReservationSessionBeanLocal.class)

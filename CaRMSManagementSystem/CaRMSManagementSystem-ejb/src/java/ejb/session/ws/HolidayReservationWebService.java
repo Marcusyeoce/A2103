@@ -1,7 +1,6 @@
 package ejb.session.ws;
 
 import Entity.CategoryEntity;
-import Entity.CustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
 import Entity.PartnerEntity;
