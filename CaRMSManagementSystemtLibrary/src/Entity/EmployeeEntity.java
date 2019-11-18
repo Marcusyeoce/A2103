@@ -43,6 +43,7 @@ public class EmployeeEntity implements Serializable {
     @ManyToOne(optional = false) 
     @JoinColumn(nullable = false)
     private OutletEntity outletEntity;
+    
     @OneToMany
     private List<TransitDispatchRecordEntity> transitDispatchRecords;
 
@@ -56,6 +57,16 @@ public class EmployeeEntity implements Serializable {
         this.password = password;
         this.accessRightEnum = accessRightEnum;
     }
+
+    public List<TransitDispatchRecordEntity> getTransitDispatchRecords() {
+        return transitDispatchRecords;
+    }
+
+    public void setTransitDispatchRecords(List<TransitDispatchRecordEntity> transitDispatchRecords) {
+        this.transitDispatchRecords = transitDispatchRecords;
+    }
+    
+    
 
     public Long getEmployeeId() {
         return employeeId;

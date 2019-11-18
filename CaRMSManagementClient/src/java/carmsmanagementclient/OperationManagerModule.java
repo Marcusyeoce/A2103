@@ -636,58 +636,43 @@ public class OperationManagerModule {
         System.out.println("\n***CaRMS Management System :: Assign transit driver***\n");
 
         //print out unassigned dispatch records
-        List<TransitDispatchRecordEntity> unassignedDispatchRecords = new ArrayList<TransitDispatchRecordEntity>();
-        for (TransitDispatchRecordEntity transitDispatchRecord :transitDispatchRecordSessionBean.getAllTransitDispatchRecordForOutlet(currentEmployeeEntity.getOutletEntity())) {
-            /* if (transitDispatchRecord.getStatus().equals("Unassigned")) {
-                unassignedDispatchRecords.add(transitDispatchRecord);
-            } */
-        } 
-        
-        System.out.println("Enter the number of unassigned transit dispatch record to assign employee");
-        System.out.println("Current unassigned transit dispatch records:");
-        int counter = 1;
-        for (TransitDispatchRecordEntity transitDispatchRecordEntity: unassignedDispatchRecords) {
-            System.out.println(counter + ") Pickup Outlet: " + "" + "Pickup Time: " + "");
-            counter++;
+        if (transitDispatchRecord.getEmployee() == null) {
+            
+            //if thereis time allow manager to choose time for employee to leave, and also check if they are available
+            
+            System.out.println("Please choose the employee for transit dispatch");
+            currentEmployeeEntity.getOutletEntity().getEmployeeEntities().size();
+            int counter = 1;
+            for (EmployeeEntity employee: currentEmployeeEntity.getOutletEntity().getEmployeeEntities()) {
+                System.out.println(counter + ") Employee Name: " + employee.getName() + "Employee Role: " + employee.getAccessRightEnum());
+                counter++;
+            }
+            EmployeeEntity employee = currentEmployeeEntity.getOutletEntity().getEmployeeEntities().get(scanner.nextInt() - 1);
+            
+            transitDispatchRecord.setEmployee(employee);
+            employee.getTransitDispatchRecords().add(transitDispatchRecord);
+            
+            transitDispatchRecordSessionBean.updateTransitDispatchRecord(transitDispatchRecord);
+            employeeSessionBean.updateEmployeeEntity(employee);
+        } else {
+            System.out.println("Transit dispatch record already has employee assigned to it!");
         }
-        TransitDispatchRecordEntity dispatchRecord = unassignedDispatchRecords.get(scanner.nextInt() - 1);
-        
-        //print out list of available employees
-        List<EmployeeEntity> availableEmployees = new ArrayList<EmployeeEntity>();
-        for (EmployeeEntity employee: currentEmployeeEntity.getOutletEntity().getEmployeeEntities()) {
-            /* if (available) {
-                availableEmployees.add(employee);
-            } */
-        } 
-        
-        System.out.println("Enter the number of available employee to assign employee");
-        System.out.println("Available employees for the transit dispatch:");
-        counter = 1;
-        for (EmployeeEntity employee: availableEmployees) {
-            System.out.println(counter + ") Employee Name: " + "" + "Employee Role: " + "");
-            counter++;
-        }
-        EmployeeEntity employee = availableEmployees.get(scanner.nextInt() - 1);
-        
-        //transitDispatchRecordSessionBean.setEmployee(employee);
-        //transitDispatchRecordSessionBean.updateTransitDispatchRecord(dispatchRecord);
     }
+
 
     //update dispatch records
     private void updateTransitAsCompleted(TransitDispatchRecordEntity transitDispatchRecord) {
-        Scanner scanner = new Scanner(System.in);
+
         System.out.println("\n***CaRMS Management System :: Update transit as completed***\n");
-        System.out.println("Input number of the transit dispatch record to update it as completed:");
-        System.out.println("Current transit dispatch in progress:");
         
-        //if status in progress, change to completed
-        /* for () {
-        
-        } */
-        
-        //dispatchRecord.setStatus("Completed");
-        //transitDispatchRecordSessionBean.updateTransitDispatchRecord(dispatchRecord);
-        
+        if (transitDispatchRecord.getStatus() == 0 && transitDispatchRecord.getEmployee() != null) {
+            transitDispatchRecord.setStatus(1);
+            transitDispatchRecordSessionBean.updateTransitDispatchRecord(transitDispatchRecord);
+            
+            System.out.println("Transit dispatch record has been updated as complete!");
+        } else {
+            System.out.println("Transit dispatch record cannot be updated as complete!");
+        }
     }
     
     private void showInputDataValidationErrorsForModelEntity(Set<ConstraintViolation<ModelEntity>>constraintViolations) {
