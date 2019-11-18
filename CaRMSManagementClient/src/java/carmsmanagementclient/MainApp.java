@@ -185,10 +185,10 @@ public class MainApp {
         c.set(Calendar.MILLISECOND, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.HOUR, 2);
+        c.set(Calendar.HOUR_OF_DAY, 2);
         Date date = c.getTime();
         reservationSessionBean.allocateCarsToReservations(date);
-        System.out.println("Date: " + date);
+//        /System.out.println("Date: " + date);
         
         System.out.println("All reservations for today has been allocated cars and transit dispatch records has been created!");
     }

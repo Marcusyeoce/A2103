@@ -14,4 +14,6 @@ public interface CategorySessionBeanRemote {
     public long createCategory(CategoryEntity newCategoryEntity) throws CategoryExistException, InputDataValidationException, UnknownPersistenceException;
  
     public CategoryEntity retrieveCategoryByName(String categoryName) throws CategoryNotFoundException;
+    
+    public CategoryEntity retrieveCatByModelId(long modelId);
 }

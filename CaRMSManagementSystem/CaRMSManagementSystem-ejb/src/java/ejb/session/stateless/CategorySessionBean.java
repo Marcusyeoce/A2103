@@ -95,7 +95,16 @@ public class CategorySessionBean implements CategorySessionBeanRemote, CategoryS
     }
     
     public CategoryEntity retrieveCatByModelId(long modelId) {
-        ModelEntity modelEntity =em.find(ModelEntity.class, modelId);
+        ModelEntity modelEntity = em.find(ModelEntity.class, modelId);
+        List<CategoryEntity> list = retrieveCategoryEntities();
+        for (CategoryEntity c: list) {
+            List<ModelEntity> m = c.getModels();
+            for (ModelEntity ll: m) {
+                if (ll.getModelId() == modelId) {
+                    return c;
+                } 
+            }
+        }
         return null;
     }
     

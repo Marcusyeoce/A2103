@@ -456,7 +456,7 @@ public class Main {
         List<ReservationEntity> reservations = retrieveReservationByPartnerId(partnerEntity.getPartnerId());
         
         System.out.println("\n***CaRMS Reservation System :: View all my reservations***\n");
-        String pattern = "dd MMM yyyy(EEE) hh:mm";
+        String pattern = "dd MMM yyyy(EEE) HH:mm";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
         int counter = 1;
@@ -496,7 +496,7 @@ public class Main {
         
         Long reservationId = scanner.nextLong();
         ReservationEntity reservationEntity = retrieveReservationById(reservationId);
-        String pattern = "dd MMM yyyy(EEE) hh:mm";
+        String pattern = "dd MMM yyyy(EEE) HH:mm";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         
         if (reservationEntity.getPartner()!= null && reservationEntity.getPartner().getPartnerId() == partnerEntity.getPartnerId()) {

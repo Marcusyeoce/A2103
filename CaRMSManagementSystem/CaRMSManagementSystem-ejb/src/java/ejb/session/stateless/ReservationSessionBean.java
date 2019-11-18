@@ -225,12 +225,18 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         endDay.add(Calendar.DATE, 1);
         
         Query carQuery = em.createQuery("SELECT c from CarEntity c");
+        carQuery.setHint("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);;
         List<CarEntity> cars = carQuery.getResultList();
         cars.size();
         
-        Query reservationQuery = em.createQuery("SELECT r FROM ReservationEntity r");
-        List<ReservationEntity> allReservations = reservationQuery.getResultList();
         
+        Query reservationQuery = em.createQuery("SELECT r FROM ReservationEntity r");
+        reservationQuery.setHint("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
+        List<ReservationEntity> allReservations = reservationQuery.getResultList();
+        System.out.println("size = " + allReservations.size());
+        System.out.println("start time = " + startDay);
+        System.out.println("end time = " + endDay);
+        System.out.println(System.currentTimeMillis());
         for (ReservationEntity reservation: allReservations) {
             
             Calendar reservationStartCalendar = Calendar.getInstance();
@@ -247,7 +253,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 
             if (!reservationStartCalendar.before(startDay) && reservationStartCalendar.before(endDay) && reservation.getCategory()!= null) {
                 pickupListCategory.add(reservation);
-                System.out.println("pick up category list check");
+                System.out.println("pick up category list check " + reservation.getReservationId());
             }
             //System.out.println(pickupListCategory.size());
             
@@ -264,7 +270,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 reservation.getPickupOutlet().getCar().size();
                 //check pickup outlet for car of model
                 for (CarEntity car: reservation.getPickupOutlet().getCar()) {
-                    if (car.getReservationEntity() == null && car.getModelEntity().equals(reservation.getModel())) {
+                    if (car.getReservationEntity() == null && car.getModelEntity().getModelId() == reservation.getModel().getModelId()) {
                         assignCar(reservation.getReservationId(), car.getCarId());
                     }
                 }
@@ -311,7 +317,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 //look at other outlets, car outlet != pickup outlet
                 System.out.println("Categ2 - " + reservation.getReservationId());
                 for (CarEntity car: cars) {
-                    if (car.getReservationEntity() == null && car.getOutlet() != null && car.getOutlet() != reservation.getPickupOutlet() && car.getModelEntity().getModelId() == reservation.getModel().getModelId()) {
+                    if (car.getReservationEntity() == null && car.getOutlet() != null /*&& car.getOutlet().getOutletId() != reservation.getPickupOutlet().getOutletId()*/ && car.getModelEntity().getModelId() == reservation.getModel().getModelId()) {
                         assignCar(reservation.getReservationId(), car.getCarId());
                         
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
@@ -320,26 +326,6 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                     }
                 }
             }
-            //if reservation still not fulfilled
-            /*if (reservation.getCar() == null) {
-                for (ReservationEntity returningReservation: returnList) {
-                    
-                    Calendar startDateTimePlusTransitCalendar = Calendar.getInstance();
-                    startDateTimePlusTransitCalendar.setTime(reservation.getStartDateTime());
-                    startDateTimePlusTransitCalendar.add(Calendar.HOUR, -2);
-                    Date startDateTimePlusTransit = startDateTimePlusTransitCalendar.getTime();
-                    
-                    //how to check if returning car is reserved?
-                    //when pickup, change reservation to null
-                    if (returningReservation.getCar().getReservationEntity() == null && !returningReservation.getReturnOutlet().equals(reservation.getPickupOutlet()) && !returningReservation.getEndDateTime().after(startDateTimePlusTransit) && returningReservation.getCar().getModelEntity().equals(reservation.getModel())) {
-                        assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
-                        
-                        TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
-                        transitDispatchRecord.setDateTimeRequiredBy(reservation.getStartDateTime());
-                        createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), returningReservation.getReturnOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
-                    }
-                }
-            }*/
         }
         
         for (ReservationEntity reservation: pickupListCategory) {
@@ -349,15 +335,19 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 //look at other outlets, car outlet != pickup outlet   
                 for (CarEntity car: cars) {
                     System.out.println("Categ3 - " + reservation.getReservationId() + " inside car" + car.getLicensePlateNumber());
-                    if (car.getReservationEntity() == null && car.getOutlet() != null && car.getOutlet().getOutletId() != reservation.getPickupOutlet().getOutletId()) {
+                    System.out.println("WEird " + categorySessionBean.retrieveCatByModelId(car.getModelEntity().getModelId()).getCategoryId());
+                    System.out.println("WEird " + reservation.getCategory().getCategoryId());
+                    if (car.getReservationEntity() == null && car.getOutlet() != null) {
+                        System.out.println("WEird " + categorySessionBean.retrieveCatByModelId(car.getModelEntity().getModelId()).getCategoryId());
+                        System.out.println("WEird " + reservation.getCategory().getCategoryId());
                         //if (car.getModelEntity().getCategoryEntity().getCategoryId() == reservation.getCategory().getCategoryId()) {
-                        //if (categorySessionBean..getModelEntity().getModelId()) {    
-                        //}
-                        assignCar(reservation.getReservationId(), car.getCarId());
+                        if (categorySessionBean.retrieveCatByModelId(car.getModelEntity().getModelId()).getCategoryId() ==  reservation.getCategory().getCategoryId()) {    
+                            assignCar(reservation.getReservationId(), car.getCarId());
                         
-                        TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
-                        transitDispatchRecord.setDateTimeRequiredBy(reservation.getStartDateTime());
-                        createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), car.getOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
+                            TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
+                            transitDispatchRecord.setDateTimeRequiredBy(reservation.getStartDateTime());
+                            createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), car.getOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
+                        }
                     }
                 }
             }

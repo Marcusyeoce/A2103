@@ -581,7 +581,7 @@ public class MainApp {
         List<ReservationEntity> reservations = reservationSessionBeanRemote.retrieveReservationByCustomerId(currentCustomerEntity.getCustomerId());
         
         System.out.println("\n***CaRMS Reservation System :: View all my reservations***\n");
-        String pattern = "dd MMM yyyy(EEE) hh:mm";
+        String pattern = "dd MMM yyyy(EEE) HH:mm";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
         int counter = 1;
@@ -626,7 +626,7 @@ public class MainApp {
         
         Long reservationId = scanner.nextLong();
         ReservationEntity reservationEntity = reservationSessionBeanRemote.retrieveReservationById(reservationId);
-        String pattern = "dd MMM yyyy(EEE) hh:mm";
+        String pattern = "dd MMM yyyy(EEE) HH:mm";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         
         if (reservationEntity.getCustomer() != null && reservationEntity.getCustomer().equals(currentCustomerEntity)) {
