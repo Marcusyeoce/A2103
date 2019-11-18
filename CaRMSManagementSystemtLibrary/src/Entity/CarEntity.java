@@ -46,6 +46,14 @@ public class CarEntity implements Serializable {
         this.status = status;
     }
     
+    public Long getCarId() {
+        return carId;
+    }
+
+    public void setCarId(Long carId) {
+        this.carId = carId;
+    }
+    
     @XmlTransient
     public OutletEntity getOutlet() {
         return outlet;
@@ -87,14 +95,6 @@ public class CarEntity implements Serializable {
 
     public void setModelEntity(ModelEntity modelEntity) {
         this.modelEntity = modelEntity;
-    }
-
-    public Long getCarId() {
-        return carId;
-    }
-
-    public void setCarId(Long carId) {
-        this.carId = carId;
     }
 
     @Override

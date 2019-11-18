@@ -25,9 +25,9 @@ public class PartnerEntity implements Serializable {
     private String password;
     
     @OneToMany//(mappedBy = "")
-    private List<OwnCustomerEntity> customerEntitys;
+    private List<CustomerEntity> customerEntitys;
     
-    @OneToMany(mappedBy = "")
+    @OneToMany//(mappedBy = "")
     private List<ReservationEntity> reservationEntitys;
 
     public PartnerEntity() {
@@ -38,6 +38,15 @@ public class PartnerEntity implements Serializable {
         this.name = name;
         this.username = username;
         this.password = password;
+    }
+
+    @XmlTransient
+    public List<CustomerEntity> getCustomerEntitys() {
+        return customerEntitys;
+    }
+
+    public void setCustomerEntitys(List<CustomerEntity> customerEntitys) {
+        this.customerEntitys = customerEntitys;
     }
 
     @XmlTransient

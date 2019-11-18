@@ -40,6 +40,14 @@ public class CategoryEntity implements Serializable {
         this();
         this.categoryName = categoryName;
     }
+    
+    public Long getCategoryId() {
+        return categoryId;
+    }
+    
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
 
     @XmlTransient
     public List<ModelEntity> getModels() {
@@ -59,21 +67,21 @@ public class CategoryEntity implements Serializable {
         this.rentalRates = rentalRates;
     }
 
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
     public String getCategoryName() {
         return categoryName;
-    }
-    
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
     }
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+    
+    @XmlTransient
+    public List<ReservationEntity> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<ReservationEntity> reservations) {
+        this.reservations = reservations;
     }
 
     @Override
@@ -100,14 +108,4 @@ public class CategoryEntity implements Serializable {
     public String toString() {
         return "Entity.CategoryEntity[ id=" + categoryId + " ]";
     }
-
-    @XmlTransient
-    public List<ReservationEntity> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List<ReservationEntity> reservations) {
-        this.reservations = reservations;
-    }
-    
 }

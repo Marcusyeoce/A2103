@@ -47,6 +47,14 @@ public class ModelEntity implements Serializable {
         this.make = make;
         this.model = model;
     }
+    
+    public Long getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(Long modelId) {
+        this.modelId = modelId;
+    }
 
     @XmlTransient
     public List<ReservationEntity> getReservations() {
@@ -96,14 +104,6 @@ public class ModelEntity implements Serializable {
 
     public void setCategoryEntity(CategoryEntity categoryEntity) {
         this.categoryEntity = categoryEntity;
-    }
-
-    public Long getModelId() {
-        return modelId;
-    }
-
-    public void setModelId(Long modelId) {
-        this.modelId = modelId;
     }
 
     @Override

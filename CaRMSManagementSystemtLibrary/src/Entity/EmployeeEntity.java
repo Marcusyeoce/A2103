@@ -43,7 +43,8 @@ public class EmployeeEntity implements Serializable {
     @ManyToOne(optional = false) 
     @JoinColumn(nullable = false)
     private OutletEntity outletEntity;
-    @OneToMany
+    
+    @OneToMany//(mappedBy = "")
     private List<TransitDispatchRecordEntity> transitDispatchRecords;
 
     public EmployeeEntity() {
