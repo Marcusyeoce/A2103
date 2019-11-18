@@ -206,6 +206,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     public void allocateCarsToReservations(Date dateTime) {
         
         List<TransitDispatchRecordEntity> transitDispatchRecords = new ArrayList<TransitDispatchRecordEntity>();
+        List<ReservationEntity> pickupListModel = new ArrayList<ReservationEntity>();
+        List<ReservationEntity> pickupListCategory = new ArrayList<ReservationEntity>();
+        List<ReservationEntity> returnList = new ArrayList<ReservationEntity>();
         
         Calendar startDay = Calendar.getInstance();
         startDay.setTime(dateTime);
@@ -214,25 +217,33 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         endDay.setTime(dateTime);
         endDay.add(Calendar.DATE, 1);
         
-        Query queryModel = em.createQuery("SELECT r from ReservationEntity r WHERE r.startDateTime.getTime() >= :inDateTime AND r.startDateTime < :inEndOfDay AND r.category IS EMPTY ORDER BY r.startDateTime");
-        //queryModel.setParameter("inDateTime", dateTime.getTime());
-        //queryModel.setParameter("inEndOfDay", endOfDay.getTime());
-        List<ReservationEntity> pickupListModel = queryModel.getResultList();
-        
-        Query queryCategory = em.createQuery("SELECT r from ReservationEntity r WHERE r.startDateTime.getTime() >= :inDateTime AND r.startDateTime < :inEndOfDay AND r.model IS EMPTY ORDER BY r.startDateTime");
-        //queryCategory.setParameter("inDateTime", dateTime.getTime());
-        //queryCategory.setParameter("inEndOfDay", endOfDay.getTime());
-        List<ReservationEntity> pickupListCategory = queryCategory.getResultList();
-        
-        Query queryReturningReservations = em.createQuery("SELECT r from ReservationEntity r WHERE r.endDateTime() >= :inDateTime AND r.endDateTime < :inEndOfDay ORDER BY r.endDateTime");
-        //queryReturningReservations.setParameter(param, value);
-        List<ReservationEntity> returnList = queryReturningReservations.getResultList();
-        
         Query query = em.createQuery("SELECT o from OutletEntity o");
         List<OutletEntity> outlets = query.getResultList();
         
         Query carQuery = em.createQuery("SELECT c from CarEntity c");
         List<CarEntity> cars = carQuery.getResultList();
+        
+        Query reservationQuery = em.createQuery("SELECT r FROM ReservationEntity r");
+        List<ReservationEntity> allReservations = reservationQuery.getResultList();
+        
+        for (ReservationEntity reservation: allReservations) {
+            
+            Calendar reservationStartCalendar = Calendar.getInstance();
+            reservationStartCalendar.setTime(reservation.getStartDateTime());
+            
+            Calendar reservationEndCalendar = Calendar.getInstance();
+            reservationEndCalendar.setTime(reservation.getEndDateTime());
+            
+            if (!reservationStartCalendar.before(startDay) && reservationStartCalendar.before(endDay) && reservation.getModel() != null) {
+                pickupListModel.add(reservation);
+            }
+            if (!reservationStartCalendar.before(startDay) && reservationStartCalendar.before(endDay) && reservation.getCategory()!= null) {
+                pickupListCategory.add(reservation);
+            }
+            if (!reservationEndCalendar.before(startDay) && reservationEndCalendar.before(endDay)) {
+                returnList.add(reservation);
+            }
+        }
         
         for (ReservationEntity reservation: pickupListModel) {
             //if reservation has no car            
