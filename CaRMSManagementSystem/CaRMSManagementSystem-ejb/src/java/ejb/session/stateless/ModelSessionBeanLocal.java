@@ -7,6 +7,7 @@ import javax.ejb.Local;
 import util.exception.CategoryNotAvailableException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelExistException;
+import util.exception.ModelNotAvailableException;
 import util.exception.ModelNotFoundException;
 import util.exception.UnknownPersistenceException;
 

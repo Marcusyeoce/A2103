@@ -223,6 +223,11 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.println((counter) + ") " + outlets.get(i).getOutletName());
+                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour() == null) {
+                    System.out.println(" [OPENS 24 HOURS!!]");
+                } else {
+                    System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
+                }
             }
         }
         
@@ -247,7 +252,12 @@ public class MainApp {
         for (int i = 0; i < outlets.size(); i++) {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
-                System.out.println((counter) + ") " + outlets.get(i).getOutletName());
+                System.out.print((counter) + ") " + outlets.get(i).getOutletName());
+                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour() == null) {
+                    System.out.println(" [OPENS 24 HOURS!!]");
+                } else {
+                    System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
+                }
             }
         }
         System.out.print("Enter your choice of return outlet> ");
@@ -356,6 +366,11 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.println((counter) + ") " + outlets.get(i).getOutletName());
+                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour() == null) {
+                    System.out.println(" [OPENS 24 HOURS!!]");
+                } else {
+                    System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
+                }
             }
         }
         
@@ -381,6 +396,11 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.println((counter) + ") " + outlets.get(i).getOutletName());
+                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour() == null) {
+                    System.out.println(" [OPENS 24 HOURS!!]");
+                } else {
+                    System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
+                }
             }
         }
         System.out.print("Enter your choice of return outlet> ");
@@ -419,7 +439,19 @@ public class MainApp {
                 System.out.print("Enter car model> ");
                 String reservationModel = sc.nextLine().trim();
                 
-                modelEntity = modelSessionBeanRemote.retrieveModelByName(reservationModel);
+                //check if model exists
+                try {
+                    modelEntity = modelSessionBeanRemote.retrieveModelByName(reservationModel);
+                } catch (ModelNotFoundException ex) {
+                    System.out.println("Model does not exist!");
+                }
+                
+                //check if model is available
+                try {
+                    modelSessionBeanRemote.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
+                } catch (ModelNotAvailableException ex) {
+                    System.out.println("Model is not available!");
+                }
                 
                 try {
                     totalAmount = rentalRateSessionBeanRemote.calculateAmountForReservation(modelEntity.getCategoryEntity().getCategoryId(), pickupDate, returnDate);
@@ -429,33 +461,7 @@ public class MainApp {
                     scc.nextLine();
                 } catch (CategoryNotAvailableException ex) {
                     System.out.println("Model not found!");
-                    return;
                 }
-                
-                //check if model exists
-                /* boolean modelExists = false;
-                for (ModelEntity model: modelSessionBeanRemote.retrieveAllModels()) {
-                    if (model.getModel().equals(reservationModel) && model.getMake().equals(reservationMake)) {
-                        modelExists = true;
-                        break;
-                    }
-                }
-                if (!modelExists) {
-                    throw new ModelNotFoundException();
-                } */
-                
-                //check if model is available
-                /* boolean modelAvailable = false;
-                for (ModelEntity model: availableModels) {
-                    if (model.getModel().equals(reservationModel) && model.getMake().equals(reservationMake)) {
-                        reservation.setModel(model);
-                        modelAvailable = true;
-                        break;
-                    }
-                }
-                if (!modelAvailable) {
-                    throw new ModelNotAvailableException();
-                } */
             } else if (response == 2) {
                 
                 choice = 2;

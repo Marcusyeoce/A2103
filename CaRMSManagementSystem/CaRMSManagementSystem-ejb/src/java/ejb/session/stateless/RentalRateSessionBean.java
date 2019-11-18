@@ -125,7 +125,7 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         //for first day, take into account the pickuptime
         while (!c.after(d)) {
             
-            System.out.println(c);
+            //System.out.println(c);
             
             if ((getPrevailingRentalRate(categoryId, c.getTime()) == null)) {
                 throw new CategoryNotAvailableException();
