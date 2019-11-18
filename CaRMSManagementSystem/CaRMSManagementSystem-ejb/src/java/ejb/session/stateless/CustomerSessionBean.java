@@ -66,7 +66,7 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
     public OwnCustomerEntity customerLogin(String username, String password) throws InvalidLoginCredentialException {
         try {
             OwnCustomerEntity customerEntity = retrieveCustomerByUsername(username);
-            if (customerEntity.getUsername().equals(username)) {
+            if (customerEntity.getPassword().equals(password)) {
                 return customerEntity;
             } else {
                 throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
