@@ -155,7 +155,7 @@ public class ReservationEntity implements Serializable {
         this.amountPaid = amountPaid;
     }
     
-    @XmlTransient
+    //@XmlTransient
     public CustomerEntity getCustomer() {
         return customer;
     }

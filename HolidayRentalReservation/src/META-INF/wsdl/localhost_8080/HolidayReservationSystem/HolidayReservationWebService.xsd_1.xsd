@@ -16,6 +16,10 @@
 
 <xs:element name="calulateRentalRateResponse" type="tns:calulateRentalRateResponse"/>
 
+<xs:element name="createNewCustomerEntity" type="tns:createNewCustomerEntity"/>
+
+<xs:element name="createNewCustomerEntityResponse" type="tns:createNewCustomerEntityResponse"/>
+
 <xs:element name="createReservationEntityCategory" type="tns:createReservationEntityCategory"/>
 
 <xs:element name="createReservationEntityCategoryResponse" type="tns:createReservationEntityCategoryResponse"/>
@@ -80,6 +84,7 @@
 <xs:element name="ccCVV" type="xs:int"/>
 <xs:element name="ccExpiryDate" type="xs:dateTime" minOccurs="0"/>
 <xs:element name="ccNum" type="xs:string" minOccurs="0"/>
+<xs:element name="customer" type="tns:customerEntity" minOccurs="0"/>
 <xs:element name="endDateTime" type="xs:dateTime" minOccurs="0"/>
 <xs:element name="isPaid" type="xs:boolean"/>
 <xs:element name="model" type="tns:modelEntity" minOccurs="0"/>
@@ -105,6 +110,17 @@
 <xs:sequence>
 <xs:element name="categoryId" type="xs:long" minOccurs="0"/>
 <xs:element name="categoryName" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="customerEntity">
+<xs:sequence>
+<xs:element name="customerId" type="xs:long" minOccurs="0"/>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
+<xs:element name="firstName" type="xs:string" minOccurs="0"/>
+<xs:element name="lastName" type="xs:string" minOccurs="0"/>
+<xs:element name="mobileNum" type="xs:long"/>
+<xs:element name="passportNum" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -137,6 +153,18 @@
 </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="createNewCustomerEntity">
+<xs:sequence>
+<xs:element name="arg0" type="tns:customerEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="createNewCustomerEntityResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:customerEntity" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
 <xs:complexType name="retrieveReservationById">
 <xs:sequence>
 <xs:element name="arg0" type="xs:long" minOccurs="0"/>
@@ -152,10 +180,11 @@
 <xs:complexType name="createReservationEntityModel">
 <xs:sequence>
 <xs:element name="arg0" type="tns:reservationEntity" minOccurs="0"/>
-<xs:element name="arg1" type="xs:long" minOccurs="0"/>
+<xs:element name="arg1" type="tns:customerEntity" minOccurs="0"/>
 <xs:element name="arg2" type="xs:long" minOccurs="0"/>
 <xs:element name="arg3" type="xs:long" minOccurs="0"/>
 <xs:element name="arg4" type="xs:long" minOccurs="0"/>
+<xs:element name="arg5" type="xs:long" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -228,10 +257,11 @@
 <xs:complexType name="createReservationEntityCategory">
 <xs:sequence>
 <xs:element name="arg0" type="tns:reservationEntity" minOccurs="0"/>
-<xs:element name="arg1" type="xs:long" minOccurs="0"/>
+<xs:element name="arg1" type="tns:customerEntity" minOccurs="0"/>
 <xs:element name="arg2" type="xs:long" minOccurs="0"/>
 <xs:element name="arg3" type="xs:long" minOccurs="0"/>
 <xs:element name="arg4" type="xs:long" minOccurs="0"/>
+<xs:element name="arg5" type="xs:long" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -269,22 +299,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="getAvailableModelsCategory">
-<xs:sequence>
-<xs:element name="arg0" type="xs:long" minOccurs="0"/>
-<xs:element name="arg1" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="arg2" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="arg3" type="xs:long" minOccurs="0"/>
-<xs:element name="arg4" type="xs:long" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="getAvailableModelsCategoryResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:modelEntity" minOccurs="0" maxOccurs="unbounded"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="partnerLogin">
 <xs:sequence>
 <xs:element name="arg0" type="xs:string" minOccurs="0"/>
@@ -301,6 +315,22 @@
 <xs:complexType name="InvalidLoginCredentialException">
 <xs:sequence>
 <xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getAvailableModelsCategory">
+<xs:sequence>
+<xs:element name="arg0" type="xs:long" minOccurs="0"/>
+<xs:element name="arg1" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="arg2" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="arg3" type="xs:long" minOccurs="0"/>
+<xs:element name="arg4" type="xs:long" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getAvailableModelsCategoryResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:modelEntity" minOccurs="0" maxOccurs="unbounded"/>
 </xs:sequence>
 </xs:complexType>
 

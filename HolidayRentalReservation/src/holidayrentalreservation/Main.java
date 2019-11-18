@@ -14,6 +14,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import ws.client.CategoryEntity;
 import ws.client.CategoryNotAvailableException_Exception;
+import ws.client.CustomerEntity;
 import ws.client.InvalidLoginCredentialException_Exception;
 import ws.client.ModelEntity;
 import ws.client.ModelNotAvailableException_Exception;
@@ -372,6 +373,19 @@ public class Main {
             }
         }
         
+        Scanner ff = new Scanner(System.in);
+        CustomerEntity newCustomerEntity = new CustomerEntity();
+        System.out.print("\nEnter Customer First Name> ");
+        newCustomerEntity.setFirstName(ff.nextLine().trim());
+        System.out.print("Enter Customer Last Name> ");
+        newCustomerEntity.setLastName(ff.nextLine().trim());
+        System.out.print("Enter Customer Passport Number> ");
+        newCustomerEntity.setPassportNum(ff.nextLine().trim());
+        System.out.print("Enter Customer Contact Number> ");
+        newCustomerEntity.setMobileNum(Long.parseLong(ff.nextLine().trim()));
+        System.out.print("Enter Customer Email> ");
+        newCustomerEntity.setEmail(ff.nextLine().trim());
+        
         System.out.println("\n***Choose payment option***\n");
         System.out.println("1) Immediate rental fee payment");
         System.out.println("2) Deferred rental fee payment");
@@ -420,12 +434,16 @@ public class Main {
         reservation.setCcCVV(ccCVV);
      
         Long reservationId;
+        newCustomerEntity = createNewCustomerEntity(newCustomerEntity);
         
         if (choice == 1) {
-            reservationId = createReservationEntityModel(reservation, partnerEntity.getPartnerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), modelEntity.getModelId());
+            reservationId = createReservationEntityModel(reservation, newCustomerEntity, partnerEntity.getPartnerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), modelEntity.getModelId());
+            //createReservationEntityModelCustomer(reservation, newCustomerEntity.getCustomerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), modelEntity.getModelId());
         } else {
-            reservationId = createReservationEntityCategory(reservation, partnerEntity.getPartnerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), categoryEntity.getCategoryId());
+            reservationId = createReservationEntityCategory(reservation,newCustomerEntity, partnerEntity.getPartnerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), categoryEntity.getCategoryId());
+            //createReservationEntityCategoryCustomer(reservation, newCustomerEntity.getCustomerId(), pickupOutlet.getOutletId(), returnOutlet.getOutletId(), modelEntity.getModelId());
         }
+        
         System.out.print("\nYour reservation (id: " + reservationId + ") has been confirmed! Thank you!\n");
         
         System.out.print("Press any key to continue...");
@@ -483,11 +501,12 @@ public class Main {
         
         if (reservationEntity.getPartner()!= null && reservationEntity.getPartner().getPartnerId() == partnerEntity.getPartnerId()) {
             System.out.println("\n***Reservation Id: "+ reservationEntity.getReservationId() +"***\n");
-            System.out.printf("%-40s%s\n", "Pick up outlet:", reservationEntity.getPickupOutlet().getOutletName());
-            System.out.printf("%-40s%s\n", "Pick up date and time: ", simpleDateFormat.format(toDate(reservationEntity.getStartDateTime())) + "");
+            System.out.printf("%-40s%s\n", "Customer Name", reservationEntity.getCustomer().getFirstName() + " " + reservationEntity.getCustomer().getLastName());
+            System.out.printf("%-40s%s\n", "Customer Pick up outlet:", reservationEntity.getPickupOutlet().getOutletName());
+            System.out.printf("%-40s%s\n", "Customer Pick up date and time: ", simpleDateFormat.format(toDate(reservationEntity.getStartDateTime())) + "");
             System.out.println("-----------------------------------------------------------------");
-            System.out.printf("%-40s%s\n", "Return outlet: ", reservationEntity.getReturnOutlet().getOutletName());
-            System.out.printf("%-40s%s\n", "Return date and time: ", simpleDateFormat.format(toDate(reservationEntity.getEndDateTime())));
+            System.out.printf("%-40s%s\n", "Customer Return outlet: ", reservationEntity.getReturnOutlet().getOutletName());
+            System.out.printf("%-40s%s\n", "Customer Return date and time: ", simpleDateFormat.format(toDate(reservationEntity.getEndDateTime())));
             System.out.println("-----------------------------------------------------------------");
             String status = "Reserved/n";
             if (reservationEntity.getStatus() == 0) {
@@ -679,18 +698,6 @@ public class Main {
         return port.partnerLogin(arg0, arg1);
     }
 
-    private static Long createReservationEntityModel(ws.client.ReservationEntity arg0, java.lang.Long arg1, java.lang.Long arg2, java.lang.Long arg3, java.lang.Long arg4) {
-        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
-        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
-        return port.createReservationEntityModel(arg0, arg1, arg2, arg3, arg4);
-    }
-
-    private static Long createReservationEntityCategory(ws.client.ReservationEntity arg0, java.lang.Long arg1, java.lang.Long arg2, java.lang.Long arg3, java.lang.Long arg4) {
-        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
-        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
-        return port.createReservationEntityCategory(arg0, arg1, arg2, arg3, arg4);
-    }
-
     private static double calulateRentalRate(ws.client.ModelEntity arg0, javax.xml.datatype.XMLGregorianCalendar arg1, javax.xml.datatype.XMLGregorianCalendar arg2, java.lang.Long arg3, java.lang.Long arg4) throws ModelNotAvailableException_Exception, CategoryNotAvailableException_Exception, ModelNotFoundException_Exception {
         ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
         ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
@@ -739,4 +746,23 @@ public class Main {
         }
         return calendar.toGregorianCalendar().getTime();
     }
+
+    private static CustomerEntity createNewCustomerEntity(ws.client.CustomerEntity arg0) {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.createNewCustomerEntity(arg0);
+    }
+
+    private static Long createReservationEntityCategory(ws.client.ReservationEntity arg0, ws.client.CustomerEntity arg1, java.lang.Long arg2, java.lang.Long arg3, java.lang.Long arg4, java.lang.Long arg5) {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.createReservationEntityCategory(arg0, arg1, arg2, arg3, arg4, arg5);
+    }
+
+    private static Long createReservationEntityModel(ws.client.ReservationEntity arg0, ws.client.CustomerEntity arg1, java.lang.Long arg2, java.lang.Long arg3, java.lang.Long arg4, java.lang.Long arg5) {
+        ws.client.HolidayReservationSystem service = new ws.client.HolidayReservationSystem();
+        ws.client.HolidayReservationWebService port = service.getHolidayReservationWebServicePort();
+        return port.createReservationEntityModel(arg0, arg1, arg2, arg3, arg4, arg5);
+    }
+    
 }

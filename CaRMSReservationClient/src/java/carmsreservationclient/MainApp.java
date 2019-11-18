@@ -1,7 +1,7 @@
 package carmsreservationclient;
 
 import Entity.CategoryEntity;
-import Entity.CustomerEntity;
+import Entity.OwnCustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
 import Entity.ReservationEntity;
@@ -35,7 +35,7 @@ public class MainApp {
     private OutletSessionBeanRemote outletSessionBeanRemote;
     private RentalRateSessionBeanRemote rentalRateSessionBeanRemote;
     
-    private CustomerEntity currentCustomerEntity;
+    private OwnCustomerEntity currentCustomerEntity;
     
     public MainApp() {
     }
@@ -87,7 +87,7 @@ public class MainApp {
                     searchCar();
                 } 
                 else if (response == 4) {
-                    currentCustomerEntity = new CustomerEntity();
+                    currentCustomerEntity = new OwnCustomerEntity();
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
@@ -105,7 +105,7 @@ public class MainApp {
         try {
             Scanner scanner = new Scanner(System.in);
             
-            CustomerEntity newCustomerEntity = new CustomerEntity();
+            OwnCustomerEntity newCustomerEntity = new OwnCustomerEntity();
             
             System.out.println("\n***CaRMS Registeration page***\n");
             
@@ -119,13 +119,14 @@ public class MainApp {
             newCustomerEntity.setMobileNum(Long.parseLong(scanner.nextLine().trim()));
             System.out.print("Enter email> ");
             newCustomerEntity.setEmail(scanner.nextLine().trim());
+            System.out.print("Enter username> ");
+            newCustomerEntity.setUsername(scanner.nextLine().trim());
             System.out.print("Enter password> ");
             newCustomerEntity.setPassword(scanner.nextLine().trim());
             
             customerSessionBeanRemote.registerNewCustomer(newCustomerEntity);
         
             System.out.println("You are registed successfully!\n");
-        
         } catch(Exception ex) {
             System.out.println(ex.getMessage() + "! Please try again!\n");
         }
@@ -137,7 +138,7 @@ public class MainApp {
         String username;
         String password;
         
-        System.out.print("Enter passport number> ");
+        System.out.print("Enter username> ");
         username = scanner.nextLine().trim();
         System.out.print("Enter password> ");
         password = scanner.nextLine().trim();

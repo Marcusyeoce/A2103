@@ -1,18 +1,18 @@
 package ejb.session.stateless;
 
-import Entity.CustomerEntity;
+import Entity.OwnCustomerEntity;
 import util.exception.CustomerNotFoundException;
 import util.exception.InvalidLoginCredentialException;
 
 public interface CustomerSessionBeanRemote {
     
-    public void registerNewCustomer(CustomerEntity customer);
+    public void registerNewCustomer(OwnCustomerEntity customer);
     
-    public CustomerEntity customerLogin(String passportNum, String password) throws InvalidLoginCredentialException;
+    public OwnCustomerEntity customerLogin(String passportNum, String password) throws InvalidLoginCredentialException;
     
-    public CustomerEntity retrieveCustomerByMobileNum(String mobileNum) throws CustomerNotFoundException;
+    public OwnCustomerEntity retrieveCustomerByMobileNum(String mobileNum) throws CustomerNotFoundException;
     
-    public CustomerEntity retrieveCustomerByPassportNum(String passportNum) throws CustomerNotFoundException;
+    public OwnCustomerEntity retrieveCustomerByUsername(String username) throws CustomerNotFoundException;
     
-    public void updateCustomer(CustomerEntity customer);
+    public void updateCustomer(OwnCustomerEntity customer);
 }

@@ -1,6 +1,7 @@
 package ejb.session.ws;
 
 import Entity.CategoryEntity;
+import Entity.CustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
 import Entity.PartnerEntity;
@@ -13,7 +14,9 @@ import ejb.session.stateless.RentalRateSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -121,14 +124,20 @@ public class HolidayReservationWebService {
     }
     
     @WebMethod(operationName = "createReservationEntityModel")
-    public Long createReservationEntityModel(@WebParam ReservationEntity newReservationEntity, @WebParam Long partnerId, @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam Long modelId) {
+    public Long createReservationEntityModel(@WebParam ReservationEntity newReservationEntity, @WebParam CustomerEntity customerEntity, @WebParam Long partnerId, @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam Long modelId) {
+        Map<String, Object> props = new HashMap<>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        
         em.persist(newReservationEntity);
         
+        customerEntity = em.find(CustomerEntity.class, customerEntity.getCustomerId(), props);
         PartnerEntity partnerEntity = em.find(PartnerEntity.class, partnerId);
         OutletEntity pickupOutlet = em.find(OutletEntity.class, pickupOutletId);
         OutletEntity returnOutlet = em.find(OutletEntity.class, returnOutletId);
         ModelEntity model = em.find(ModelEntity.class, modelId);
         
+        newReservationEntity.setCustomer(customerEntity);
+        customerEntity.getReservations().add(newReservationEntity);
         newReservationEntity.setPartner(partnerEntity);
         partnerEntity.getReservationEntitys().add(newReservationEntity);
         newReservationEntity.setPickupOutlet(pickupOutlet);
@@ -146,14 +155,22 @@ public class HolidayReservationWebService {
     }
     
     @WebMethod(operationName = "createReservationEntityCategory")
-    public Long createReservationEntityCategory(@WebParam ReservationEntity newReservationEntity, @WebParam Long partnerId, @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam Long categoryId) {
+    public Long createReservationEntityCategory(@WebParam ReservationEntity newReservationEntity, @WebParam CustomerEntity customerEntity, @WebParam Long partnerId, @WebParam Long pickupOutletId, @WebParam Long returnOutletId, @WebParam Long categoryId) {
+        Map<String, Object> props = new HashMap<>();
+        props.put("javax.persistence.cache.retrieveMode", "BYPASS");
+        
         em.persist(newReservationEntity);
+        
+        customerEntity = em.find(CustomerEntity.class, customerEntity.getCustomerId(), props);
+        
         
         PartnerEntity partnerEntity = em.find(PartnerEntity.class, partnerId);
         OutletEntity pickupOutlet = em.find(OutletEntity.class, pickupOutletId);
         OutletEntity returnOutlet = em.find(OutletEntity.class, returnOutletId);
         CategoryEntity category = em.find(CategoryEntity.class, categoryId);
         
+        newReservationEntity.setCustomer(customerEntity);
+        customerEntity.getReservations().add(newReservationEntity);
         newReservationEntity.setPartner(partnerEntity);
         partnerEntity.getReservationEntitys().add(newReservationEntity);
         newReservationEntity.setPickupOutlet(pickupOutlet);
@@ -196,4 +213,10 @@ public class HolidayReservationWebService {
         return reservationSessionBean.retrieveReservationById(reservationId);
     }
     
+    @WebMethod(operationName = "createNewCustomerEntity")
+    public CustomerEntity createNewCustomerEntity(@WebParam CustomerEntity customerEntity) {
+        em.persist(customerEntity);
+        em.flush();
+        return customerEntity;
+    }
 }

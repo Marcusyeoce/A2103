@@ -1,6 +1,6 @@
 package ejb.session.stateless;
 
-import Entity.CustomerEntity;
+import Entity.OwnCustomerEntity;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -21,50 +21,51 @@ public class CustomerSessionBean implements CustomerSessionBeanRemote, CustomerS
     private EntityManager em;
 
     @Override
-    public void registerNewCustomer(CustomerEntity customer) {
-        
+    public void registerNewCustomer(OwnCustomerEntity customer) {
         em.persist(customer);
         em.flush();
     }
 
-    public CustomerEntity retrieveCustomerByMobileNum(String mobileNum) throws CustomerNotFoundException {
-        Query query = em.createQuery("SELECT c from CustomerEntity c WHERE c.mobileNum = :inmobilenum");
+    @Override
+    public OwnCustomerEntity retrieveCustomerByMobileNum(String mobileNum) throws CustomerNotFoundException {
+        Query query = em.createQuery("SELECT c from OwnCustomerEntity c WHERE c.mobileNum = :inmobilenum");
         query.setParameter("inmobilenum", mobileNum);
         
         try {
-            return (CustomerEntity)query.getSingleResult();
+            return (OwnCustomerEntity)query.getSingleResult();
         } catch(NoResultException | NonUniqueResultException ex) {
             throw new CustomerNotFoundException("Customer with mobile number " + mobileNum + " does not exist!");
         }
     }
     
-    public CustomerEntity retrieveCustomerByPassportNum(String passportNum) throws CustomerNotFoundException {
-        Query query = em.createQuery("SELECT c from CustomerEntity c WHERE c.passportNum = :inpassportnum");
-        query.setParameter("inpassportnum", passportNum);
+    @Override
+    public OwnCustomerEntity retrieveCustomerByUsername(String username) throws CustomerNotFoundException {
+        Query query = em.createQuery("SELECT c from OwnCustomerEntity c WHERE c.username = :inusername");
+        query.setParameter("inusername", username);
         
         try {
-            return (CustomerEntity)query.getSingleResult();
+            return (OwnCustomerEntity)query.getSingleResult();
         } catch(NoResultException | NonUniqueResultException ex) {
-            throw new CustomerNotFoundException("Customer with passport number " + passportNum + " does not exist!");
+            throw new CustomerNotFoundException("Customer with username " + username + " does not exist!");
         }
     }
     
     @Override
-    public CustomerEntity customerLogin(String passportNum, String password) throws InvalidLoginCredentialException {
+    public OwnCustomerEntity customerLogin(String username, String password) throws InvalidLoginCredentialException {
         try {
-            CustomerEntity customerEntity = retrieveCustomerByPassportNum(passportNum);
-            if (customerEntity.getPassword().equals(password)) {
+            OwnCustomerEntity customerEntity = retrieveCustomerByUsername(username);
+            if (customerEntity.getUsername().equals(username)) {
                 return customerEntity;
             } else {
-                throw new InvalidLoginCredentialException("Passport num does not exist or invalid password!");
+                throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
             }
         } catch (CustomerNotFoundException ex) {
-            throw new InvalidLoginCredentialException("Passport number does not exist or invalid password!");
+            throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
         }
     }  
     
     @Override
-    public void updateCustomer(CustomerEntity customer) {
+    public void updateCustomer(OwnCustomerEntity customer) {
         em.merge(customer);
     }
 }

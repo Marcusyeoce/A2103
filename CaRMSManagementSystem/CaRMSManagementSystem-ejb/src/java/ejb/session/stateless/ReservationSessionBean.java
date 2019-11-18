@@ -2,7 +2,7 @@ package ejb.session.stateless;
 
 import Entity.CarEntity;
 import Entity.CategoryEntity;
-import Entity.CustomerEntity;
+import Entity.OwnCustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
 import Entity.RentalDayEntity;
@@ -69,7 +69,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
         em.persist(newReservationEntity);
         
-        CustomerEntity customer = em.find(CustomerEntity.class, customerId);
+        OwnCustomerEntity customer = em.find(OwnCustomerEntity.class, customerId);
         newReservationEntity.setCustomer(customer);
         customer.getReservations().add(newReservationEntity);
         
@@ -80,7 +80,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     
     public List<ReservationEntity> retrieveReservationByCustomerId(Long customerId) {
         
-        CustomerEntity customer = em.find(CustomerEntity.class, customerId);
+        OwnCustomerEntity customer = em.find(OwnCustomerEntity.class, customerId);
         
         if (customer != null) {
             customer.getReservations().size();
@@ -126,7 +126,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
         em.persist(newReservationEntity);
         
-        CustomerEntity customer = em.find(CustomerEntity.class, customerId);
+        OwnCustomerEntity customer = em.find(OwnCustomerEntity.class, customerId);
         OutletEntity pickupOutlet = em.find(OutletEntity.class, pickupOutletId);
         OutletEntity returnOutlet = em.find(OutletEntity.class, returnOutletId);
         ModelEntity model = em.find(ModelEntity.class, modelId);
@@ -152,7 +152,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
         em.persist(newReservationEntity);
         
-        CustomerEntity customer = em.find(CustomerEntity.class, customerId);
+        OwnCustomerEntity customer = em.find(OwnCustomerEntity.class, customerId);
         OutletEntity pickupOutlet = em.find(OutletEntity.class, pickupOutletId);
         OutletEntity returnOutlet = em.find(OutletEntity.class, returnOutletId);
         CategoryEntity category = em.find(CategoryEntity.class, categoryId);
