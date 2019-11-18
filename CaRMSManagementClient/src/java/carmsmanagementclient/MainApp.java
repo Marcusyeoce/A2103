@@ -80,7 +80,7 @@ public class MainApp {
                         Scanner scanner = new Scanner(System.in);
                         System.out.print("> ");
                         response = scanner.nextInt();
-                        if (response < 1 || response > 3) {
+                        if (response < 1 || response > 4) {
                             System.out.println("Please enter a valid option");
                         } else {
                             break;

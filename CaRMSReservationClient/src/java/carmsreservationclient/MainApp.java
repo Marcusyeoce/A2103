@@ -447,11 +447,11 @@ public class MainApp {
                 }
                 
                 //check if model is available
-                try {
+                //try {
                     modelSessionBeanRemote.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
-                } catch (ModelNotAvailableException ex) {
+                //} catch (ModelNotAvailableException ex) {
                     System.out.println("Model is not available!");
-                }
+                //}
                 
                 try {
                     totalAmount = rentalRateSessionBeanRemote.calculateAmountForReservation(modelEntity.getCategoryEntity().getCategoryId(), pickupDate, returnDate);

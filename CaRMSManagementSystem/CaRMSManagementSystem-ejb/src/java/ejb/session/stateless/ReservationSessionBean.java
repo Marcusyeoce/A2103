@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -30,11 +31,16 @@ import javax.validation.ValidatorFactory;
 @Remote(ReservationSessionBeanRemote.class)
 public class ReservationSessionBean implements ReservationSessionBeanRemote, ReservationSessionBeanLocal {
 
+    @EJB
+    private CategorySessionBeanLocal categorySessionBean;
+
     @PersistenceContext(unitName = "CaRMSManagementSystem-ejbPU")
     private EntityManager em;
     
     private final ValidatorFactory validatorFactory;
     private final Validator validator;
+    
+    
 
     public ReservationSessionBean() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
@@ -220,6 +226,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
         Query carQuery = em.createQuery("SELECT c from CarEntity c");
         List<CarEntity> cars = carQuery.getResultList();
+        cars.size();
         
         Query reservationQuery = em.createQuery("SELECT r FROM ReservationEntity r");
         List<ReservationEntity> allReservations = reservationQuery.getResultList();
@@ -234,6 +241,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             
             if (!reservationStartCalendar.before(startDay) && reservationStartCalendar.before(endDay) && reservation.getModel() != null) {
                 pickupListModel.add(reservation);
+                System.out.println("pick up model list check");
             }
             System.out.println(pickupListModel.size());
                 
@@ -262,7 +270,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 }
             }
             //if reservation still not fulfilled
-            if (reservation.getCar() == null) {
+            /*if (reservation.getCar() == null) {
                 for (ReservationEntity returningReservation: returnList) {
                     //how to check if returning car is reserved?
                     //when pickup, change reservation to null
@@ -270,22 +278,23 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
                     }
                 }
-            }
+            }*/
         }
         
         for (ReservationEntity reservation: pickupListCategory) {
             //if reservation has no car            
             if (reservation.getCar() == null) {
+                System.out.println("Categ1 - " + reservation.getReservationId());
                 reservation.getPickupOutlet().getCar().size();
                 //check pickup outlet for car of model
                 for (CarEntity car: reservation.getPickupOutlet().getCar()) {
-                    if (car.getReservationEntity() == null && car.getModelEntity().getCategoryEntity().equals(reservation.getCategory())) {
+                    if (car.getReservationEntity() == null && car.getModelEntity().getCategoryEntity().getCategoryId() == reservation.getCategory().getCategoryId()) {
                         assignCar(reservation.getReservationId(), car.getCarId());
                     }
                 }
             }
             //if reservation still not fulfilled
-            if (reservation.getCar() == null) {
+            /*if (reservation.getCar() == null) {
                 for (ReservationEntity returningReservation: returnList) {
                     //how to check if returning car is reserved?
                     //when pickup, change reservation to null
@@ -293,15 +302,16 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
                     }
                 }
-            }
+            }*/
         }
         
         for (ReservationEntity reservation: pickupListModel) {
             //if reservation has no car        
             if (reservation.getCar() == null) {
                 //look at other outlets, car outlet != pickup outlet
+                System.out.println("Categ2 - " + reservation.getReservationId());
                 for (CarEntity car: cars) {
-                    if (car.getReservationEntity() == null && car.getOutlet() != null && car.getOutlet() != reservation.getPickupOutlet() && car.getModelEntity().equals(reservation.getModel())) {
+                    if (car.getReservationEntity() == null && car.getOutlet() != null && car.getOutlet() != reservation.getPickupOutlet() && car.getModelEntity().getModelId() == reservation.getModel().getModelId()) {
                         assignCar(reservation.getReservationId(), car.getCarId());
                         
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
@@ -311,7 +321,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 }
             }
             //if reservation still not fulfilled
-            if (reservation.getCar() == null) {
+            /*if (reservation.getCar() == null) {
                 for (ReservationEntity returningReservation: returnList) {
                     
                     Calendar startDateTimePlusTransitCalendar = Calendar.getInstance();
@@ -329,15 +339,20 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), returningReservation.getReturnOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
                     }
                 }
-            }
+            }*/
         }
         
         for (ReservationEntity reservation: pickupListCategory) {
+            System.out.println("Categ3 - " + reservation.getReservationId());
             //if reservation has no car        
             if (reservation.getCar() == null) {
-                //look at other outlets, car outlet != pickup outlet
+                //look at other outlets, car outlet != pickup outlet   
                 for (CarEntity car: cars) {
-                    if (car.getReservationEntity() == null && car.getOutlet() != null && car.getOutlet() != reservation.getPickupOutlet() && car.getModelEntity().getCategoryEntity().equals(reservation.getCategory())) {
+                    System.out.println("Categ3 - " + reservation.getReservationId() + " inside car" + car.getLicensePlateNumber());
+                    if (car.getReservationEntity() == null && car.getOutlet() != null && car.getOutlet().getOutletId() != reservation.getPickupOutlet().getOutletId()) {
+                        //if (car.getModelEntity().getCategoryEntity().getCategoryId() == reservation.getCategory().getCategoryId()) {
+                        //if (categorySessionBean..getModelEntity().getModelId()) {    
+                        //}
                         assignCar(reservation.getReservationId(), car.getCarId());
                         
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
@@ -347,7 +362,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 }
             }
             //if reservation still not fulfilled
-            if (reservation.getCar() == null) {
+            /*if (reservation.getCar() == null) {
                 for (ReservationEntity returningReservation: returnList) {
                     
                     Calendar startDateTimePlusTransitCalendar = Calendar.getInstance();
@@ -365,7 +380,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), returningReservation.getReturnOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
                     }
                 }
-            }
+            }*/
         }
     }
     
@@ -373,6 +388,8 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
         ReservationEntity reservation = em.find(ReservationEntity.class, reservationId);
         CarEntity car = em.find(CarEntity.class, carId);
+        
+        System.out.println("Assigning!");
         
         reservation.setStatus(2);
         reservation.setCar(car);
