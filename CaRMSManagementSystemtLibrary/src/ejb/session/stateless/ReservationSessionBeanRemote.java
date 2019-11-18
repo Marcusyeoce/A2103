@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import Entity.ReservationEntity;
+import java.util.Date;
 import java.util.List;
 import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;
@@ -21,4 +22,7 @@ public interface ReservationSessionBeanRemote {
     public List<ReservationEntity> retrieveReservationByCustomerId(Long customerId);
 
     public void updateReservation(ReservationEntity reservation);
+    
+    public void allocateCarsToReservations(Date dateTime);
+
 }
