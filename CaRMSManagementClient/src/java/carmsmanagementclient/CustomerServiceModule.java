@@ -182,7 +182,7 @@ public class CustomerServiceModule {
                         carSessionBean.updateCar(carEntity);
                         reservationSessionBean.updateReservation(reservationEntity);
                         
-                        System.out.print("Your car plat number is " + carEntity.getLicensePlateNumber() + ", Have a nice day!");
+                        System.out.print("Your car plate number is " + carEntity.getLicensePlateNumber() + ", Have a nice day!");
                     }
                 } else if (response == 2) {
                     break;
@@ -214,6 +214,7 @@ public class CustomerServiceModule {
                     if (reservation.getStatus() == 3 && reservation.getCar().equals(car)) {
                         if (reservation.getReturnOutlet().equals(currentEmployeeEntity.getOutletEntity())) {
                             reservation.setStatus(4);
+                            car.setStatus("Available");
                             car.setOutlet(currentEmployeeEntity.getOutletEntity());
                             
                             reservationSessionBean.updateReservation(reservation);
