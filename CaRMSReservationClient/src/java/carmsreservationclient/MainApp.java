@@ -222,8 +222,8 @@ public class MainApp {
         for (int i = 0; i < outlets.size(); i++) {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
-                System.out.println((counter) + ") " + outlets.get(i).getOutletName());
-                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour() == null) {
+                System.out.print((counter) + ") " + outlets.get(i).getOutletName());
+                if (outlets.get(i).getOpeningHour().equals(null) && outlets.get(i).getClosingHour().equals(null)) {
                     System.out.println(" [OPENS 24 HOURS!!]");
                 } else {
                     System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
@@ -253,7 +253,7 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.print((counter) + ") " + outlets.get(i).getOutletName());
-                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour() == null) {
+                if (outlets.get(i).getOpeningHour().equals(null) && outlets.get(i).getClosingHour().equals(null)) {
                     System.out.println(" [OPENS 24 HOURS!!]");
                 } else {
                     System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
@@ -366,7 +366,7 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.println((counter) + ") " + outlets.get(i).getOutletName());
-                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour() == null) {
+                if (outlets.get(i).getOpeningHour().equals(null) && outlets.get(i).getClosingHour().equals(null)) {
                     System.out.println(" [OPENS 24 HOURS!!]");
                 } else {
                     System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
@@ -396,7 +396,7 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.println((counter) + ") " + outlets.get(i).getOutletName());
-                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour() == null) {
+                if (outlets.get(i).getOpeningHour().equals(null) && outlets.get(i).getClosingHour().equals(null)) {
                     System.out.println(" [OPENS 24 HOURS!!]");
                 } else {
                     System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
@@ -447,11 +447,12 @@ public class MainApp {
                 }
                 
                 //check if model is available
-                //try {
-                    modelSessionBeanRemote.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId());
-                //} catch (ModelNotAvailableException ex) {
-                    System.out.println("Model is not available!");
-                //}
+                if (modelSessionBeanRemote.checkModelAvailability(modelEntity.getModelId(), pickupDate, returnDate, pickupOutlet.getOutletId(), returnOutlet.getOutletId())) {
+                    System.out.println("Model not available!");
+                } else {
+                    System.out.println("Model is not available! Please reserve another model or category!");
+                    response = 0;
+                }
                 
                 try {
                     totalAmount = rentalRateSessionBeanRemote.calculateAmountForReservation(modelEntity.getCategoryEntity().getCategoryId(), pickupDate, returnDate);
