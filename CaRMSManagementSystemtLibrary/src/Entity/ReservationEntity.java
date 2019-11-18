@@ -80,6 +80,7 @@ public class ReservationEntity implements Serializable {
     private TransitDispatchRecordEntity transitDispatchRecord;
     
     public ReservationEntity() {
+        status = 0;
     }
     
     public CarEntity getCar() {

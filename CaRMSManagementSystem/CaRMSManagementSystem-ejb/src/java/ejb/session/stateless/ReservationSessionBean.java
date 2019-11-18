@@ -298,7 +298,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         assignCar(reservation.getReservationId(), car.getCarId());
                         
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
-                        transitDispatchRecord.setDateTimeRequired(reservation.getStartDateTime());
+                        transitDispatchRecord.setDateTimeRequiredBy(reservation.getStartDateTime());
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), car.getOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
                     }
                 }
@@ -318,7 +318,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
                         
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
-                        transitDispatchRecord.setDateTimeRequired(reservation.getStartDateTime());
+                        transitDispatchRecord.setDateTimeRequiredBy(reservation.getStartDateTime());
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), returningReservation.getReturnOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
                     }
                 }
@@ -334,7 +334,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         assignCar(reservation.getReservationId(), car.getCarId());
                         
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
-                        transitDispatchRecord.setDateTimeRequired(reservation.getStartDateTime());
+                        transitDispatchRecord.setDateTimeRequiredBy(reservation.getStartDateTime());
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), car.getOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
                     }
                 }
@@ -354,7 +354,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                         assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
 
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();
-                        transitDispatchRecord.setDateTimeRequired(reservation.getStartDateTime());
+                        transitDispatchRecord.setDateTimeRequiredBy(reservation.getStartDateTime());
                         createTransitDispatchRecord(transitDispatchRecord, reservation.getReservationId(), returningReservation.getReturnOutlet().getOutletId(), reservation.getPickupOutlet().getOutletId());
                     }
                 }

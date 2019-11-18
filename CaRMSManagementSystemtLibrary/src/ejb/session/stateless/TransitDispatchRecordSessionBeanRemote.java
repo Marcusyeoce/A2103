@@ -17,4 +17,5 @@ public interface TransitDispatchRecordSessionBeanRemote {
 
     public Long createTransitDispatchRecord(TransitDispatchRecordEntity newTransitDispatchRecord) throws UnknownPersistenceException, InputDataValidationException;
     
+    public List<TransitDispatchRecordEntity> getAllTransitDispatchRecordForOutletForToday(Long outletId);
 }

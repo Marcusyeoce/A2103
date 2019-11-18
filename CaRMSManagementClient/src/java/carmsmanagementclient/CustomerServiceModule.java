@@ -113,8 +113,8 @@ public class CustomerServiceModule {
         while (true) {
             System.out.println("\n***CaRMS Management System :: Pickup Car***");
 
-            System.out.println("1.Identify customer by passport number");
-            System.out.println("2.Exit");
+            System.out.println("1. Identify customer by passport number");
+            System.out.println("2. Exit");
             response = 0;
 
             while(response < 1 || response > 2) {
@@ -125,16 +125,17 @@ public class CustomerServiceModule {
                 
                 if (response == 1) {
                     System.out.print("Enter customer's passport number > ");
+                    Scanner sss = new Scanner(System.in);
                     try {
-                        customer = customerSessionBean.retrieveCustomerByPassport(scanner.nextLine().trim());
+                        customer = customerSessionBean.retrieveCustomerByPassport(sss.nextLine().trim());
                     } catch (CustomerNotFoundException ex) {
                         System.out.println("No customer associated with this passport number!");
                     }
                     
                     List<ReservationEntity> allocatedReservations = new ArrayList<ReservationEntity>();
                     
-                    customer.getReservations().size();
-                    for (ReservationEntity reservation: customer.getReservations()) {
+                    List<ReservationEntity> list = reservationSessionBean.retrieveReservationByCustomerId(customer.getCustomerId());
+                    for (ReservationEntity reservation: list) {
                         
                         //check for reservation that pick up their car today
                         if (reservation.getStatus() == 2) {
