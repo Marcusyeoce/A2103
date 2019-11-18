@@ -152,13 +152,13 @@ public class CustomerServiceModule {
                     } else {
                         
                         System.out.println("All reservations for pickup today:\n");
-                        System.out.printf("%18s%30s%30s%15s\n", "Reservation ID", "Start Date Time", "End Date Time", "Allocated Car");
+                        System.out.printf("%18s%30s%30s\n", "Reservation ID", "Start Date Time", "End Date Time");
                         
                         for (int i = 0; i < allocatedReservations.size(); i++) {
                             ReservationEntity reservation = allocatedReservations.get(i);
                             String startDate = simpleDateFormat.format(reservation.getStartDateTime());
                             String endDate = simpleDateFormat.format(reservation.getEndDateTime());
-                            System.out.printf("%3s%7s%38s%30s%15s\n", ((i+1) + ") "), reservation.getReservationId(), startDate, endDate, reservation.getCar().getLicensePlateNumber());
+                            System.out.printf("%3s%7s%38s%30s\n", ((i+1) + ") "), reservation.getReservationId(), startDate, endDate);
                         }
                         
                         System.out.print("Choose reservation for pickup:\n>");
@@ -180,7 +180,8 @@ public class CustomerServiceModule {
                         carEntity.setOutlet(null);
                         carEntity.setReservationEntity(null);
                         carEntity.setStatus("Unavailable");
-                        outletEntity.getCar().remove(carEntity);
+                        List<CarEntity> cars = carSessionBean.retrieveAllCarInOutlet(outletEntity.getOutletId());
+                        cars.remove(carEntity);
 
                         carSessionBean.updateCar(carEntity);
                         reservationSessionBean.updateReservation(reservationEntity);
@@ -218,7 +219,8 @@ public class CustomerServiceModule {
                 
                 for (ReservationEntity reservation: reservationSessionBean.retrieveAllReservations()) {
                     if (reservation.getStatus() == 3 && reservation.getCar().equals(car)) {
-                        if (reservation.getReturnOutlet().equals(currentEmployeeEntity.getOutletEntity())) {
+                        if (reservation.getReturnOutlet().getOutletId() == currentEmployeeEntity.getOutletEntity().getOutletId()) {
+                            
                             reservation.setStatus(4);
                             car.setStatus("Available");
                             car.setOutlet(currentEmployeeEntity.getOutletEntity());

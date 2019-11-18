@@ -30,7 +30,7 @@ public class CategoryEntity implements Serializable {
     private List<RentalRateEntity> rentalRates;
     
     @OneToMany//(mappedBy = "")
-    //@JoinColumn(nullable = true)
+    //l@JoinColumn(nullable = true)
     private List<ReservationEntity> reservations;
     
     public CategoryEntity() {

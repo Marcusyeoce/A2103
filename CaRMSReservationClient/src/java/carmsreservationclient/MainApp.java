@@ -223,7 +223,7 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.print((counter) + ") " + outlets.get(i).getOutletName());
-                if (outlets.get(i).getOpeningHour().equals(null) && outlets.get(i).getClosingHour().equals(null)) {
+                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour()== null) {
                     System.out.println(" [OPENS 24 HOURS!!]");
                 } else {
                     System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
@@ -253,7 +253,7 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.print((counter) + ") " + outlets.get(i).getOutletName());
-                if (outlets.get(i).getOpeningHour().equals(null) && outlets.get(i).getClosingHour().equals(null)) {
+                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour()== null) {
                     System.out.println(" [OPENS 24 HOURS!!]");
                 } else {
                     System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
@@ -366,7 +366,7 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.println((counter) + ") " + outlets.get(i).getOutletName());
-                if (outlets.get(i).getOpeningHour().equals(null) && outlets.get(i).getClosingHour().equals(null)) {
+                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour()== null) {
                     System.out.println(" [OPENS 24 HOURS!!]");
                 } else {
                     System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");
@@ -396,7 +396,7 @@ public class MainApp {
             if (!outlets.get(i).getOutletName().equals("Outlet Admin")) {
                 counter++;
                 System.out.println((counter) + ") " + outlets.get(i).getOutletName());
-                if (outlets.get(i).getOpeningHour().equals(null) && outlets.get(i).getClosingHour().equals(null)) {
+                if (outlets.get(i).getOpeningHour() == null && outlets.get(i).getClosingHour()== null) {
                     System.out.println(" [OPENS 24 HOURS!!]");
                 } else {
                     System.out.println(" [OPENING HOURS: " + outlets.get(i).getOpeningHour() + " - " + outlets.get(i).getClosingHour() + "]");

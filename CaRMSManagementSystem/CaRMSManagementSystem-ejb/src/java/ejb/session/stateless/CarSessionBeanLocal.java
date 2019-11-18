@@ -26,4 +26,6 @@ public interface CarSessionBeanLocal {
 
     public void updateCar(CarEntity car);
     
+    public List<CarEntity> retrieveAllCarInOutlet(Long outletId);
+    
 }

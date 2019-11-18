@@ -79,7 +79,7 @@ public class OperationManagerModule {
             System.out.println("6:  View all cars");
             System.out.println("7:  View car details");
             System.out.println("---------------------------------------------------------------------");
-            System.out.println("8:  View Transit driver dispatch records for current day reservations (assign & update)");
+            System.out.println("8: View Transit driver dispatch records for current day reservations (assign & update)");
             System.out.println("9: Logout");
             response = 0;
             
@@ -583,6 +583,7 @@ public class OperationManagerModule {
 
     //show how many is required and status
     private void viewDispatchRecords() {
+        
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***CaRMS Management System :: View transit driver dispatch records for current day reservations***\n");
         
@@ -617,8 +618,10 @@ public class OperationManagerModule {
         while(response < 1 || response > 3)
         {
 
+            Scanner sc = new Scanner(System.in);
+            
             System.out.print("> ");
-            response = scanner.nextInt();
+            response = sc.nextInt();
 
             if (response == 1) {
                 System.out.print("Please input which transit dispatch record \n>");

@@ -215,7 +215,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
 
         List<ReservationEntity> pickupListModel = new ArrayList<ReservationEntity>();
         List<ReservationEntity> pickupListCategory = new ArrayList<ReservationEntity>();
-        //List<ReservationEntity> returnList = new ArrayList<ReservationEntity>();
+        List<ReservationEntity> returnList = new ArrayList<ReservationEntity>();
         
         Calendar startDay = Calendar.getInstance();
         startDay.setTime(dateTime);
@@ -254,13 +254,14 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
             if (!reservationStartCalendar.before(startDay) && reservationStartCalendar.before(endDay) && reservation.getCategory()!= null) {
                 pickupListCategory.add(reservation);
                 System.out.println("pick up category list check " + reservation.getReservationId());
+
             }
             //System.out.println(pickupListCategory.size());
             
-            /* if (!reservationEndCalendar.before(startDay) && reservationEndCalendar.before(endDay)) {
+            if (!reservationEndCalendar.before(startDay) && reservationEndCalendar.before(endDay)) {
                 returnList.add(reservation);
                 System.out.println("return list check");
-            } */
+            }
             //System.out.println(returnList.size());
         }
         
@@ -280,10 +281,11 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 for (ReservationEntity returningReservation: returnList) {
                     //how to check if returning car is reserved?
                     //when pickup, change reservation to null
-                    if (returningReservation.getCar().getReservationEntity() == null && returningReservation.getReturnOutlet().equals(reservation.getPickupOutlet()) && !returningReservation.getEndDateTime().after(reservation.getStartDateTime()) && returningReservation.getCar().getModelEntity().equals(reservation.getModel())) {
+                    if (returningReservation.getCar().getReservationEntity() == null && returningReservation.getReturnOutlet().getOutletId() == reservation.getPickupOutlet().getOutletId() && !returningReservation.getEndDateTime().after(reservation.getStartDateTime()) && returningReservation.getCar().getModelEntity().getModelId() == reservation.getModel().getModelId()) {
                         assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
                     }
                 }
+
             }*/
         }
         
@@ -304,7 +306,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                 for (ReservationEntity returningReservation: returnList) {
                     //how to check if returning car is reserved?
                     //when pickup, change reservation to null
-                    if (returningReservation.getCar().getReservationEntity() == null && returningReservation.getReturnOutlet().equals(reservation.getPickupOutlet()) && !returningReservation.getEndDateTime().after(reservation.getStartDateTime()) && returningReservation.getCar().getModelEntity().getCategoryEntity().equals(reservation.getCategory())) {
+                    if (returningReservation.getCar().getReservationEntity() == null && returningReservation.getReturnOutlet().getOutletId() == reservation.getPickupOutlet().getOutletId() && !returningReservation.getEndDateTime().after(reservation.getStartDateTime()) && returningReservation.getCar().getModelEntity().getCategoryEntity().getCategoryId() == reservation.getCategory().getCategoryId()) {
                         assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
                     }
                 }
@@ -362,7 +364,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
                     
                     //how to check if returning car is reserved?
                     //when pickup, change reservation to null
-                    if (returningReservation.getCar().getReservationEntity() == null && !returningReservation.getReturnOutlet().equals(reservation.getPickupOutlet()) && !returningReservation.getEndDateTime().after(startDateTimePlusTransit) && returningReservation.getCar().getModelEntity().getCategoryEntity().equals(reservation.getCategory())) {
+                    if (returningReservation.getCar().getReservationEntity() == null && returningReservation.getReturnOutlet().getOutletId() != reservation.getPickupOutlet().getOutletId() && !returningReservation.getEndDateTime().after(startDateTimePlusTransit) && returningReservation.getCar().getModelEntity().getCategoryEntity().getCategoryId() == reservation.getCategory().getCategoryId()) {
                         assignCar(reservation.getReservationId(), returningReservation.getCar().getCarId());
 
                         TransitDispatchRecordEntity transitDispatchRecord = new TransitDispatchRecordEntity();

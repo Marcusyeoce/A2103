@@ -184,6 +184,14 @@ public class CarSessionBean implements CarSessionBeanRemote, CarSessionBeanLocal
         }
     }
     
+    public List<CarEntity> retrieveAllCarInOutlet(Long outletId) {
+        
+        OutletEntity outlet = em.find(OutletEntity.class, outletId);
+        outlet.getCar().size();
+        
+        return outlet.getCar();
+    }
+    
     private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<CarEntity>>constraintViolations)
     {
         String msg = "Input data validation error!:";
