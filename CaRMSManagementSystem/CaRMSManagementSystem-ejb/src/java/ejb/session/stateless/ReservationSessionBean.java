@@ -6,7 +6,6 @@ import Entity.CustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
 import Entity.RentalDayEntity;
-import Entity.RentalRateEntity;
 import Entity.ReservationEntity;
 import Entity.TransitDispatchRecordEntity;
 import java.util.ArrayList;
@@ -17,16 +16,14 @@ import java.util.Set;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.persistence.CacheRetrieveMode;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import util.exception.InputDataValidationException;
-import util.exception.UnknownPersistenceException;
 
 @Stateless
 @Local(ReservationSessionBeanLocal.class)
@@ -143,6 +140,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         newReservationEntity.setModel(model);
         model.getReservations().add(newReservationEntity);
         
+        /*em.merge(customer);
+        em.merge(model);
+        em.merge(newReservationEntity);*/
         em.flush();
         
         return newReservationEntity.getReservationId();
@@ -166,6 +166,9 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         newReservationEntity.setCategory(category);
         category.getReservations().add(newReservationEntity);
         
+        /*em.merge(customer);
+        em.merge(category);
+        em.merge(newReservationEntity);*/
         em.flush();
         
         return newReservationEntity.getReservationId();
@@ -393,7 +396,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     public ReservationEntity retrieveReservationById(Long reservationId) {
         Query query = em.createQuery("SELECT r from ReservationEntity r WHERE r.reservationId = :inReservationId");
         query.setParameter("inReservationId", reservationId);
-        
+        query.setHint("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
         return (ReservationEntity) query.getSingleResult();
     }
     

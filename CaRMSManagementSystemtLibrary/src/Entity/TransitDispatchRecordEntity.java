@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class TransitDispatchRecordEntity implements Serializable {
@@ -27,9 +28,6 @@ public class TransitDispatchRecordEntity implements Serializable {
     private OutletEntity sourceOutlet;
     @ManyToOne//(optional = false)
     private OutletEntity destinationOutlet;
-    
-    
-
     public Long getTransitDispatchRecordId() {
         return transitDispatchRecordId;
     }
@@ -46,6 +44,7 @@ public class TransitDispatchRecordEntity implements Serializable {
         this.dateTimeRequired = dateTimeRequired;
     }
 
+    @XmlTransient
     public ReservationEntity getReservation() {
         return reservation;
     }
@@ -54,6 +53,7 @@ public class TransitDispatchRecordEntity implements Serializable {
         this.reservation = reservation;
     }
 
+    @XmlTransient
     public EmployeeEntity getEmployee() {
         return employee;
     }
@@ -62,6 +62,7 @@ public class TransitDispatchRecordEntity implements Serializable {
         this.employee = employee;
     }
 
+    @XmlTransient
     public OutletEntity getSourceOutlet() {
         return sourceOutlet;
     }
@@ -70,6 +71,7 @@ public class TransitDispatchRecordEntity implements Serializable {
         this.sourceOutlet = sourceOutlet;
     }
 
+    @XmlTransient
     public OutletEntity getDestinationOutlet() {
         return destinationOutlet;
     }

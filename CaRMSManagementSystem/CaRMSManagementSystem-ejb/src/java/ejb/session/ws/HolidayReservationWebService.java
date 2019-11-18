@@ -138,6 +138,9 @@ public class HolidayReservationWebService {
         newReservationEntity.setModel(model);
         model.getReservations().add(newReservationEntity);
         
+        /*em.merge(partnerEntity);
+        em.merge(model);
+        em.merge(newReservationEntity);*/
         em.flush();
         return newReservationEntity.getReservationId();
     }
@@ -160,12 +163,37 @@ public class HolidayReservationWebService {
         newReservationEntity.setCategory(category);
         category.getReservations().add(newReservationEntity);
         
+        /*em.merge(partnerEntity);
+        em.merge(category);
+        em.merge(newReservationEntity);*/
         em.flush();
         return newReservationEntity.getReservationId();
     }
     
+    @WebMethod(operationName = "retrieveReservationByPartnerId")
+    public List<ReservationEntity> retrieveReservationByPartnerId(@WebParam Long partnerId) {
+        PartnerEntity partnerEntity = em.find(PartnerEntity.class, partnerId);
+        
+        if (partnerEntity != null) {
+            partnerEntity.getReservationEntitys().size();
+            return partnerEntity.getReservationEntitys();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+    
+    @WebMethod(operationName = "updateReservation")
+    public void updateReservation(@WebParam ReservationEntity reservation) {
+        reservationSessionBean.updateReservation(reservation);
+    }
+    
     public void persist(Object object) {
         em.persist(object);
+    }
+    
+    @WebMethod(operationName = "retrieveReservationById")
+    public ReservationEntity retrieveReservationById(@WebParam Long reservationId) {
+        return reservationSessionBean.retrieveReservationById(reservationId);
     }
     
 }

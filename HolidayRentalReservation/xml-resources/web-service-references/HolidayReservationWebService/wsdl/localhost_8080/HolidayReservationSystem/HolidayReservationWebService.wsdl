@@ -4,6 +4,45 @@
 <xsd:import namespace="http://ws.session.ejb/" schemaLocation="http://localhost:8080/HolidayReservationSystem/HolidayReservationWebService?xsd=1"/>
 </xsd:schema>
 </types>
+<message name="retrieveAllOutlets">
+<part name="parameters" element="tns:retrieveAllOutlets"/>
+</message>
+<message name="retrieveAllOutletsResponse">
+<part name="parameters" element="tns:retrieveAllOutletsResponse"/>
+</message>
+<message name="calulateRentalRate">
+<part name="parameters" element="tns:calulateRentalRate"/>
+</message>
+<message name="calulateRentalRateResponse">
+<part name="parameters" element="tns:calulateRentalRateResponse"/>
+</message>
+<message name="ModelNotFoundException">
+<part name="fault" element="tns:ModelNotFoundException"/>
+</message>
+<message name="ModelNotAvailableException">
+<part name="fault" element="tns:ModelNotAvailableException"/>
+</message>
+<message name="CategoryNotAvailableException">
+<part name="fault" element="tns:CategoryNotAvailableException"/>
+</message>
+<message name="retrieveReservationByPartnerId">
+<part name="parameters" element="tns:retrieveReservationByPartnerId"/>
+</message>
+<message name="retrieveReservationByPartnerIdResponse">
+<part name="parameters" element="tns:retrieveReservationByPartnerIdResponse"/>
+</message>
+<message name="retrieveAllCategory">
+<part name="parameters" element="tns:retrieveAllCategory"/>
+</message>
+<message name="retrieveAllCategoryResponse">
+<part name="parameters" element="tns:retrieveAllCategoryResponse"/>
+</message>
+<message name="retrieveReservationById">
+<part name="parameters" element="tns:retrieveReservationById"/>
+</message>
+<message name="retrieveReservationByIdResponse">
+<part name="parameters" element="tns:retrieveReservationByIdResponse"/>
+</message>
 <message name="createReservationEntityCategory">
 <part name="parameters" element="tns:createReservationEntityCategory"/>
 </message>
@@ -16,29 +55,11 @@
 <message name="createReservationEntityModelResponse">
 <part name="parameters" element="tns:createReservationEntityModelResponse"/>
 </message>
-<message name="calculateAmountForReservation">
-<part name="parameters" element="tns:calculateAmountForReservation"/>
+<message name="updateReservation">
+<part name="parameters" element="tns:updateReservation"/>
 </message>
-<message name="calculateAmountForReservationResponse">
-<part name="parameters" element="tns:calculateAmountForReservationResponse"/>
-</message>
-<message name="retrieveModelByName">
-<part name="parameters" element="tns:retrieveModelByName"/>
-</message>
-<message name="retrieveModelByNameResponse">
-<part name="parameters" element="tns:retrieveModelByNameResponse"/>
-</message>
-<message name="ModelNotFoundException">
-<part name="fault" element="tns:ModelNotFoundException"/>
-</message>
-<message name="getAvailableModelsCategory">
-<part name="parameters" element="tns:getAvailableModelsCategory"/>
-</message>
-<message name="getAvailableModelsCategoryResponse">
-<part name="parameters" element="tns:getAvailableModelsCategoryResponse"/>
-</message>
-<message name="CategoryNotAvailableException">
-<part name="fault" element="tns:CategoryNotAvailableException"/>
+<message name="updateReservationResponse">
+<part name="parameters" element="tns:updateReservationResponse"/>
 </message>
 <message name="persist">
 <part name="parameters" element="tns:persist"/>
@@ -46,26 +67,23 @@
 <message name="persistResponse">
 <part name="parameters" element="tns:persistResponse"/>
 </message>
-<message name="retrieveAllCategory">
-<part name="parameters" element="tns:retrieveAllCategory"/>
+<message name="retrieveModelByName">
+<part name="parameters" element="tns:retrieveModelByName"/>
 </message>
-<message name="retrieveAllCategoryResponse">
-<part name="parameters" element="tns:retrieveAllCategoryResponse"/>
+<message name="retrieveModelByNameResponse">
+<part name="parameters" element="tns:retrieveModelByNameResponse"/>
 </message>
-<message name="calulateRentalRate">
-<part name="parameters" element="tns:calulateRentalRate"/>
+<message name="getAvailableModelsCategory">
+<part name="parameters" element="tns:getAvailableModelsCategory"/>
 </message>
-<message name="calulateRentalRateResponse">
-<part name="parameters" element="tns:calulateRentalRateResponse"/>
+<message name="getAvailableModelsCategoryResponse">
+<part name="parameters" element="tns:getAvailableModelsCategoryResponse"/>
 </message>
-<message name="ModelNotAvailableException">
-<part name="fault" element="tns:ModelNotAvailableException"/>
+<message name="calculateAmountForReservation">
+<part name="parameters" element="tns:calculateAmountForReservation"/>
 </message>
-<message name="retrieveAllOutlets">
-<part name="parameters" element="tns:retrieveAllOutlets"/>
-</message>
-<message name="retrieveAllOutletsResponse">
-<part name="parameters" element="tns:retrieveAllOutletsResponse"/>
+<message name="calculateAmountForReservationResponse">
+<part name="parameters" element="tns:calculateAmountForReservationResponse"/>
 </message>
 <message name="partnerLogin">
 <part name="parameters" element="tns:partnerLogin"/>
@@ -77,6 +95,29 @@
 <part name="fault" element="tns:InvalidLoginCredentialException"/>
 </message>
 <portType name="HolidayReservationWebService">
+<operation name="retrieveAllOutlets">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllOutletsRequest" message="tns:retrieveAllOutlets"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllOutletsResponse" message="tns:retrieveAllOutletsResponse"/>
+</operation>
+<operation name="calulateRentalRate">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calulateRentalRateRequest" message="tns:calulateRentalRate"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calulateRentalRateResponse" message="tns:calulateRentalRateResponse"/>
+<fault message="tns:ModelNotFoundException" name="ModelNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calulateRentalRate/Fault/ModelNotFoundException"/>
+<fault message="tns:ModelNotAvailableException" name="ModelNotAvailableException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calulateRentalRate/Fault/ModelNotAvailableException"/>
+<fault message="tns:CategoryNotAvailableException" name="CategoryNotAvailableException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calulateRentalRate/Fault/CategoryNotAvailableException"/>
+</operation>
+<operation name="retrieveReservationByPartnerId">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveReservationByPartnerIdRequest" message="tns:retrieveReservationByPartnerId"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveReservationByPartnerIdResponse" message="tns:retrieveReservationByPartnerIdResponse"/>
+</operation>
+<operation name="retrieveAllCategory">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllCategoryRequest" message="tns:retrieveAllCategory"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllCategoryResponse" message="tns:retrieveAllCategoryResponse"/>
+</operation>
+<operation name="retrieveReservationById">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveReservationByIdRequest" message="tns:retrieveReservationById"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveReservationByIdResponse" message="tns:retrieveReservationByIdResponse"/>
+</operation>
 <operation name="createReservationEntityCategory">
 <input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/createReservationEntityCategoryRequest" message="tns:createReservationEntityCategory"/>
 <output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/createReservationEntityCategoryResponse" message="tns:createReservationEntityCategoryResponse"/>
@@ -85,9 +126,13 @@
 <input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/createReservationEntityModelRequest" message="tns:createReservationEntityModel"/>
 <output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/createReservationEntityModelResponse" message="tns:createReservationEntityModelResponse"/>
 </operation>
-<operation name="calculateAmountForReservation">
-<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calculateAmountForReservationRequest" message="tns:calculateAmountForReservation"/>
-<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calculateAmountForReservationResponse" message="tns:calculateAmountForReservationResponse"/>
+<operation name="updateReservation">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/updateReservationRequest" message="tns:updateReservation"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/updateReservationResponse" message="tns:updateReservationResponse"/>
+</operation>
+<operation name="persist">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/persistRequest" message="tns:persist"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/persistResponse" message="tns:persistResponse"/>
 </operation>
 <operation name="retrieveModelByName">
 <input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveModelByNameRequest" message="tns:retrieveModelByName"/>
@@ -99,23 +144,10 @@
 <output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/getAvailableModelsCategoryResponse" message="tns:getAvailableModelsCategoryResponse"/>
 <fault message="tns:CategoryNotAvailableException" name="CategoryNotAvailableException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/getAvailableModelsCategory/Fault/CategoryNotAvailableException"/>
 </operation>
-<operation name="persist">
-<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/persistRequest" message="tns:persist"/>
-<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/persistResponse" message="tns:persistResponse"/>
-</operation>
-<operation name="retrieveAllCategory">
-<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllCategoryRequest" message="tns:retrieveAllCategory"/>
-<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllCategoryResponse" message="tns:retrieveAllCategoryResponse"/>
-</operation>
-<operation name="calulateRentalRate">
-<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calulateRentalRateRequest" message="tns:calulateRentalRate"/>
-<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calulateRentalRateResponse" message="tns:calulateRentalRateResponse"/>
-<fault message="tns:ModelNotFoundException" name="ModelNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calulateRentalRate/Fault/ModelNotFoundException"/>
-<fault message="tns:ModelNotAvailableException" name="ModelNotAvailableException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calulateRentalRate/Fault/ModelNotAvailableException"/>
-</operation>
-<operation name="retrieveAllOutlets">
-<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllOutletsRequest" message="tns:retrieveAllOutlets"/>
-<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/retrieveAllOutletsResponse" message="tns:retrieveAllOutletsResponse"/>
+<operation name="calculateAmountForReservation">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calculateAmountForReservationRequest" message="tns:calculateAmountForReservation"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calculateAmountForReservationResponse" message="tns:calculateAmountForReservationResponse"/>
+<fault message="tns:CategoryNotAvailableException" name="CategoryNotAvailableException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/calculateAmountForReservation/Fault/CategoryNotAvailableException"/>
 </operation>
 <operation name="partnerLogin">
 <input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
@@ -125,6 +157,60 @@
 </portType>
 <binding name="HolidayReservationWebServicePortBinding" type="tns:HolidayReservationWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<operation name="retrieveAllOutlets">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="calulateRentalRate">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="ModelNotFoundException">
+<soap:fault name="ModelNotFoundException" use="literal"/>
+</fault>
+<fault name="ModelNotAvailableException">
+<soap:fault name="ModelNotAvailableException" use="literal"/>
+</fault>
+<fault name="CategoryNotAvailableException">
+<soap:fault name="CategoryNotAvailableException" use="literal"/>
+</fault>
+</operation>
+<operation name="retrieveReservationByPartnerId">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="retrieveAllCategory">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="retrieveReservationById">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="createReservationEntityCategory">
 <soap:operation soapAction=""/>
 <input>
@@ -143,7 +229,16 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="calculateAmountForReservation">
+<operation name="updateReservation">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="persist">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -176,7 +271,7 @@
 <soap:fault name="CategoryNotAvailableException" use="literal"/>
 </fault>
 </operation>
-<operation name="persist">
+<operation name="calculateAmountForReservation">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -184,39 +279,9 @@
 <output>
 <soap:body use="literal"/>
 </output>
-</operation>
-<operation name="retrieveAllCategory">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="calulateRentalRate">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="ModelNotFoundException">
-<soap:fault name="ModelNotFoundException" use="literal"/>
+<fault name="CategoryNotAvailableException">
+<soap:fault name="CategoryNotAvailableException" use="literal"/>
 </fault>
-<fault name="ModelNotAvailableException">
-<soap:fault name="ModelNotAvailableException" use="literal"/>
-</fault>
-</operation>
-<operation name="retrieveAllOutlets">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
 </operation>
 <operation name="partnerLogin">
 <soap:operation soapAction=""/>

@@ -27,7 +27,6 @@ import util.exception.CarExistException;
 import util.exception.InputDataValidationException;
 import util.exception.ModelExistException;
 import util.exception.ModelNotFoundException;
-import util.exception.OutletExistException;
 import util.exception.UnknownPersistenceException;
 
 public class OperationManagerModule {

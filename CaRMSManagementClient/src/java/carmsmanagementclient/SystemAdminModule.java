@@ -25,7 +25,6 @@ import util.exception.CategoryExistException;
 import util.exception.InputDataValidationException;
 import util.exception.OutletExistException;
 import util.exception.PartnerExistException;
-import util.exception.PartnerNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UsernameExistException;
 

@@ -1,10 +1,7 @@
 package ejb.session.stateless;
 
-import Entity.CarEntity;
 import Entity.CategoryEntity;
-import Entity.RentalDayEntity;
 import Entity.RentalRateEntity;
-import Entity.ReservationEntity;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +15,6 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.CacheRetrieveMode;
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
@@ -28,7 +24,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.CategoryNotAvailableException;
-import util.exception.CategoryNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.RentalRateException;
 import util.exception.UnknownPersistenceException;
@@ -89,7 +84,7 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
     
     @Override
     public String retrieveCategoryNameOfCategoryId(long categoryEntityId) {
-        Map<String, Object> props = new HashMap<String, Object>();
+        Map<String, Object> props = new HashMap<>();
         props.put("javax.persistence.cache.retrieveMode", "BYPASS");
         return em.find(CategoryEntity.class, categoryEntityId, props).getCategoryName();
     }
@@ -149,10 +144,37 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         return totalSum;
     }
     
+    public RentalRateEntity getPrevailingRentalRate(Long categoryId, Date dateTime) {
+        
+        CategoryEntity category = em.find(CategoryEntity.class, categoryId);
+        List<RentalRateEntity> applicableRentalRates = new ArrayList<>();
+        
+        for (RentalRateEntity rentalRate: category.getRentalRates()) { 
+            
+            //if null, just include (default rate)
+            //check if date is in between the validity period of rental rate
+            if (rentalRate.getStartDateTime() == null || (dateTime.after(rentalRate.getStartDateTime()) && dateTime.before(rentalRate.getEndDateTime()))) {
+                applicableRentalRates.add(rentalRate);                
+            }
+        }
+        if (applicableRentalRates.isEmpty()) {
+            return null;
+        }
+        RentalRateEntity prevailingRentalRate = applicableRentalRates.get(0);
+        
+        for(RentalRateEntity rentalRate: applicableRentalRates) {
+            if (rentalRate.getRatePerDay() < prevailingRentalRate.getRatePerDay()) {
+                prevailingRentalRate = rentalRate;
+            }
+        }
+        
+        return prevailingRentalRate;
+    }
+    
     @Override
     public RentalRateEntity updateCategory(long recordId, long catId) {
         
-        Map<String, Object> props = new HashMap<String, Object>();
+        Map<String, Object> props = new HashMap<>();
         props.put("javax.persistence.cache.retrieveMode", "BYPASS");
         
         RentalRateEntity rentalRateEntity = em.find(RentalRateEntity.class, recordId, props);
@@ -166,7 +188,6 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         em.merge(rentalRateEntity);
         em.flush();
         return rentalRateEntity;
-        
     }
     
     @Override
@@ -208,34 +229,6 @@ public class RentalRateSessionBean implements RentalRateSessionBeanRemote, Renta
         Query query = em.createQuery("SELECT r from RentalRateEntity r");
         query.setHint("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
         return query.getResultList();
-    }
-    
-    public RentalRateEntity getPrevailingRentalRate(Long categoryId, Date dateTime) {
-        
-        CategoryEntity category = em.find(CategoryEntity.class, categoryId);
-        
-        List<RentalRateEntity> applicableRentalRates = new ArrayList<RentalRateEntity>();
-        
-        for (RentalRateEntity rentalRate: category.getRentalRates()) {
-            
-            //if null, just include (default rate)
-            //check if date is in between the validity period of rental rate
-            if (rentalRate.getStartDateTime() == null || (dateTime.after(rentalRate.getStartDateTime()) && dateTime.before(rentalRate.getEndDateTime()))) {
-                applicableRentalRates.add(rentalRate);                
-            }
-        }
-        if (applicableRentalRates.isEmpty()) {
-            return null;
-        }
-        RentalRateEntity prevailingRentalRate = applicableRentalRates.get(0);
-        
-        for(RentalRateEntity rentalRate: applicableRentalRates) {
-            if (rentalRate.getRatePerDay() < prevailingRentalRate.getRatePerDay()) {
-                prevailingRentalRate = rentalRate;
-            }
-        }
-        
-        return prevailingRentalRate;
     }
        
     @Override

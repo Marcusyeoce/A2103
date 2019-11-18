@@ -1,10 +1,8 @@
 package ejb.session.stateless;
 
 import Entity.CarEntity;
-import Entity.CustomerEntity;
 import Entity.ModelEntity;
 import Entity.OutletEntity;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +22,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import util.exception.CarExistException;
-import util.exception.CustomerNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.UnknownPersistenceException;
 
