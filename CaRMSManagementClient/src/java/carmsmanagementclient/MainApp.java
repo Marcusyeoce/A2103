@@ -120,7 +120,6 @@ public class MainApp {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
                     }
                 } else if (response == 3) {
-                    Date date = new Date();
                     newDay();
                 } else if (response == 4) {
                     break;
@@ -189,6 +188,7 @@ public class MainApp {
         c.set(Calendar.HOUR, 2);
         Date date = c.getTime();
         reservationSessionBean.allocateCarsToReservations(date);
+        System.out.println("Date: " + date);
         
         System.out.println("All reservations for today has been allocated cars and transit dispatch records has been created!");
     }
