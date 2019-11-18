@@ -1,5 +1,7 @@
 package ejb.session.stateless;
 
+import java.util.Calendar;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -20,6 +22,10 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
     
     @Schedule(hour = "2")
     public void allocateCurrentDayReservation() {
-        //reservationSessionBeanLocal.allocateReservations();
+        
+        Calendar c = Calendar.getInstance();
+        Date dateTime = c.getTime();
+        
+        reservationSessionBeanLocal.allocateCarsToReservations(dateTime);
     }
 }

@@ -17,9 +17,10 @@ public class TransitDispatchRecordEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transitDispatchRecordId;
-    
-    private Date dateTimeRequired;
-    
+    private int status; //0 for created, 1 for completed
+    private Date dateTimeRequiredBy;
+    private Date dateTimeLeave;
+    private Date dateTimeReturn;
     @OneToOne//(optional = false)
     private ReservationEntity reservation;
     @ManyToOne
@@ -28,6 +29,37 @@ public class TransitDispatchRecordEntity implements Serializable {
     private OutletEntity sourceOutlet;
     @ManyToOne//(optional = false)
     private OutletEntity destinationOutlet;
+
+    public TransitDispatchRecordEntity() {
+        status = 0;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Date getDateTimeLeave() {
+        return dateTimeLeave;
+    }
+
+    public void setDateTimeLeave(Date dateTimeLeave) {
+        this.dateTimeLeave = dateTimeLeave;
+    }
+
+    public Date getDateTimeReturn() {
+        return dateTimeReturn;
+    }
+
+    public void setDateTimeReturn(Date dateTimeReturn) {
+        this.dateTimeReturn = dateTimeReturn;
+    }
+    
+    
+    
     public Long getTransitDispatchRecordId() {
         return transitDispatchRecordId;
     }
@@ -36,12 +68,12 @@ public class TransitDispatchRecordEntity implements Serializable {
         this.transitDispatchRecordId = transitDispatchRecordId;
     }
 
-    public Date getDateTimeRequired() {
-        return dateTimeRequired;
+    public Date getDateTimeRequiredBy() {
+        return dateTimeRequiredBy;
     }
 
-    public void setDateTimeRequired(Date dateTimeRequired) {
-        this.dateTimeRequired = dateTimeRequired;
+    public void setDateTimeRequiredBy(Date dateTimeRequiredBy) {
+        this.dateTimeRequiredBy = dateTimeRequiredBy;
     }
 
     @XmlTransient

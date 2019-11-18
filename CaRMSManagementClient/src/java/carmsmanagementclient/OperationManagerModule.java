@@ -79,13 +79,11 @@ public class OperationManagerModule {
             System.out.println("6:  View all cars");
             System.out.println("7:  View car details");
             System.out.println("---------------------------------------------------------------------");
-            System.out.println("8:  View Transit driver dispatch records for current day reservations");
-            System.out.println("9:  Assign transit driver");
-            System.out.println("10: Update transit as completed");
-            System.out.println("11: Logout");
+            System.out.println("8:  View Transit driver dispatch records for current day reservations (assign & update)");
+            System.out.println("9: Logout");
             response = 0;
             
-            while(response < 1 || response > 11)
+            while(response < 1 || response > 9)
             {
                 while (true) {
                     try {
@@ -118,17 +116,13 @@ public class OperationManagerModule {
                     viewCarDetails();
                 } else if (response == 8) {
                     viewDispatchRecords();
-                } else if (response == 9) {
-                    assignTransitDriver();
-                } else if (response == 10) {
-                    updateTransitAsCompleted();
-                } else if (response == 11) {
+                }  else if (response == 9) {
                     break;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-            if (response == 11) {
+            if (response == 9) {
                 break;
             }
         }
@@ -592,18 +586,52 @@ public class OperationManagerModule {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***CaRMS Management System :: View transit driver dispatch records for current day reservations***\n");
         
-        List<TransitDispatchRecordEntity> dispatchRecords = transitDispatchRecordSessionBean.getAllTransitDispatchRecordForOutlet(currentEmployeeEntity.getOutletEntity());
+        List<TransitDispatchRecordEntity> dispatchRecords = transitDispatchRecordSessionBean.getAllTransitDispatchRecordForOutletForToday(currentEmployeeEntity.getOutletEntity().getOutletId());
         
         int counter = 1;
-        System.out.println("All transit dispatch records:");
+        System.out.println("All transit dispatch records for today:");
         for (TransitDispatchRecordEntity dispatchRecord: dispatchRecords) {
-            System.out.println(counter +") Pickup Outlet: " + "" + "Pickup Time: " + "" + "Status: " + "");
+            System.out.println(counter +") Pickup Outlet: " + dispatchRecord.getSourceOutlet().getOutletName() + "Time required by: " + dispatchRecord.getDateTimeRequiredBy() + "Status: ");
+            if (dispatchRecord.getStatus() == 0 && dispatchRecord.getEmployee() == null) {
+               System.out.println("All transit dispatch records for today:"); System.out.print("No employee allocated");
+            } else if (dispatchRecord.getStatus() == 0 && dispatchRecord.getEmployee() != null) {
+                System.out.print("Assigned to- " + dispatchRecord.getEmployee().getName());
+            } else {
+                System.out.print("Completed by- " + dispatchRecord.getEmployee().getName());
+            }
             counter++;
-        } 
+        }
+        
+        System.out.println("***More Options:***");
+        System.out.println("1) Assign employee to trasit dispatch record");
+        System.out.println("2) Update transit dispatch record as completed");
+        System.out.println("3) Exit");
+        int response = 0;
+                
+        while(response < 1 || response > 3)
+        {
+
+            System.out.print("> ");
+            response = scanner.nextInt();
+
+            if (response == 1) {
+                System.out.print("Please input which transit dispatch record \n>");
+                assignTransitDriver(dispatchRecords.get(scanner.nextInt()-1));
+            } else if (response == 2) {
+                System.out.print("Please input which transit dispatch record \n>");
+                updateTransitAsCompleted(dispatchRecords.get(scanner.nextInt()-1));
+            } else {
+                break;
+            }
+            if (response == 3) {
+                break;
+            }
+        }
+
     }
 
     //show the dispatch records with no driver, and drivers that are available, update dispatch records
-    private void assignTransitDriver() {
+    private void assignTransitDriver(TransitDispatchRecordEntity transitDispatchRecord) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***CaRMS Management System :: Assign transit driver***\n");
 
@@ -646,7 +674,7 @@ public class OperationManagerModule {
     }
 
     //update dispatch records
-    private void updateTransitAsCompleted() {
+    private void updateTransitAsCompleted(TransitDispatchRecordEntity transitDispatchRecord) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n***CaRMS Management System :: Update transit as completed***\n");
         System.out.println("Input number of the transit dispatch record to update it as completed:");

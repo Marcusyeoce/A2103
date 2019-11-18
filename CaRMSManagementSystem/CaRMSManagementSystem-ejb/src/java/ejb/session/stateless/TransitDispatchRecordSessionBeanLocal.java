@@ -16,5 +16,7 @@ public interface TransitDispatchRecordSessionBeanLocal {
     public List<TransitDispatchRecordEntity> getAllTransitDispatchRecordForOutlet(OutletEntity outlet);
 
     public Long createTransitDispatchRecord(TransitDispatchRecordEntity newTransitDispatchRecord) throws UnknownPersistenceException, InputDataValidationException;
+
+    public List<TransitDispatchRecordEntity> getAllTransitDispatchRecordForOutletForToday(Long outletId);
     
 }
